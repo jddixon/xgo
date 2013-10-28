@@ -1,4 +1,4 @@
 xgo
 ===
 
-a language processor
+Xgo is a language processor written in Go.
