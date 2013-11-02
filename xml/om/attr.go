@@ -10,11 +10,11 @@ import (
 //As required by the XML standard, neither <code>prefix</code> nor
 //<code>name</code> may contain a colon.  In the actual XML, the
 //value will be doubly (") or singly (') quoted.
-// 
+//
 type Attr struct {
-    Prefix string
-    Name string
-    Value string
+	Prefix string
+	Name   string
+	Value  string
 	Node
 }
 
@@ -24,11 +24,11 @@ type Attr struct {
 //@param name   attribute name, another NCNAME
 //@param value  the attribute's value
 //
-func NewAttr (prefix, name, value string) (a *Attr) {
-	a = & Attr{	
-    	Prefix : prefix,
-    	Name   : name,
-		Value  : value,
+func NewAttr(prefix, name, value string) (a *Attr) {
+	a = &Attr{
+		Prefix: prefix,
+		Name:   name,
+		Value:  value,
 	}
 	return a
 }
@@ -36,22 +36,24 @@ func NewAttr (prefix, name, value string) (a *Attr) {
 //Default constructor with nil prefix.
 //
 func NewNewAttr(name, value string) {
-    return NewAttr("", name, value)
+	return NewAttr("", name, value)
 }
 
 // PROPERTIES ///////////////////////////////////////////////////
 
 // return the prefix part of the name; may be nil//
 func (a *Attr) GetPrefix() {
-    return a.Prefix
+	return a.Prefix
 }
+
 // @return the unqualified name of the attribute//
 func (a *Attr) GetName() {
-    return a.Name
+	return a.Name
 }
+
 // @return the value assigned to the attribute//
 func (a *Attr) GetValue() {
-    return a.Value
+	return a.Value
 }
 
 // VISITOR-RELATED///////////////////////////////////////////////
@@ -60,17 +62,18 @@ func (a *Attr) GetValue() {
 //
 //@param v the Visitor walking the document
 //
-func (a *Attr) WalkAll (v *Visitor) (err error) {
-    err = v.OnEntry(a)
-    if err == nil {
+func (a *Attr) WalkAll(v VisitorI) (err error) {
+	err = v.OnEntry(a)
+	if err == nil {
 		err = v.OnExit(a)
 	}
 	return
 }
+
 // NODE METHODS /////////////////////////////////////////////////
 // @return true; this node is an Attr//
 func (a *Attr) IsAttr() bool {
-    return true
+	return true
 }
 
 //Convert the Node to XML form.  If the prefix is nil, it is
@@ -78,12 +81,12 @@ func (a *Attr) IsAttr() bool {
 //
 //@return the attribute in XML form
 //
-func (a *Attr) ToXml () (s string) {
+func (a *Attr) ToXml() (s string) {
 
 	if a.Prefix != "" {
 		s = fmt.Sprintf(" %s:%s=\"%s\"", a.Prefix, a.Name, a.Value)
 	} else {
 		s = fmt.Sprintf(" %s=\"%s\"")
 	}
-    return 
+	return
 }

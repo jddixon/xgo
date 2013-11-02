@@ -2,9 +2,7 @@ package om
 
 // xgo/xml/om/cycle_checker.go
 
-import (
-
-)
+import ()
 
 // Walk down the subtrees, child nodes and their descendents,
 // looking for this node; if found, there is a cycle in the graph.
@@ -19,8 +17,8 @@ func NewCycleChecker(h *Holder) (cc *CycleChecker, err error) {
 	if h == nil {
 		err = NilHolder
 	} else {
-		cc = CycleChecker {
-			ThisHolder:		h,
+		cc = CycleChecker{
+			ThisHolder: h,
 		}
 	}
 	return
@@ -28,8 +26,8 @@ func NewCycleChecker(h *Holder) (cc *CycleChecker, err error) {
 
 // On arriving at the node, do the identity check.//
 func (cc *CycleChecker) OnEntry(node Node) (err error) {
-    if node == cc.ThisHolder {
-        return GraphCycleError
+	if node == cc.ThisHolder {
+		return GraphCycleError
 	}
 }
 
