@@ -166,5 +166,7 @@ func (node *Node) IsProcessingInstruction() bool {
 // SERIALIZATION ////////////////////////////////////////////////
 // this should be changed to follow the same pattern as expr,
 // supporting indenting
-//public abstract String toXml()
-// }
+func (node *Node) ToXml() string {
+	// XXX ABSTRACT
+	return
+}

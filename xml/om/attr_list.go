@@ -51,7 +51,7 @@ func (aList *AttrList) Add(attr *Attr) (this *AttrList, err error) {
 //@throws IndexOutOfBoundsException if n is negative or out of range
 //@throws NullPointerException if the Attr argument is null
 //
-func (aList *AttrList) Insert(n uint, attr *Attr) (err error, this *AttrList) {
+func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
 	this = alist
 
 	if attr == nil {
@@ -119,10 +119,14 @@ func (aList *AttrList) SetHolder(h *Element) {
 //in turn.
 //@param v the visitor
 //
-func (aList *AttrList) WalkAll(v VisitorI) {
+func (aList *AttrList) WalkAll(v VisitorI) (err error) {
 	for i := uint(0); i < aList.Size(); i++ {
-		aList.attrs[i].WalkAll(v)
+		err = aList.attrs[i].WalkAll(v)
+		if err != nil {
+			break
+		}
 	}
+	return
 }
 
 // SERIALIZATION ////////////////////////////////////////////////
