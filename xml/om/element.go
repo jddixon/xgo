@@ -100,7 +100,7 @@ func (e *Element) GetAttr(n uint) (*Attr, error) {
 
 // VISITOR-RELATED///////////////////////////////////////////////
 
-func (e *Element) WalkAttrs(v *Visitor) error {
+func (e *Element) WalkAttrs(v VisitorI) error {
 	return e.aList.WalkAll(v)
 }
 
@@ -129,14 +129,14 @@ func (e *Element) ToXml() (s string) {
 
 	// conditionally output attributes
 	attrCount := e.aList.Size()
-	for i = uint(0); i < attrCount; i++ {
+	for i := uint(0); i < attrCount; i++ {
 		attr, _ := e.aList.Get(i)
 		s += " " + attr.ToXml()
 	}
 
 	// conditionally output ns2pf
 	for i := 0; i < len(e.nsUris); i++ {
-		ns := nsUris[i]
+		ns := e.nsUris[i]
 		p := e.ns2pf[ns]
 		s += " "
 		if p == "" {

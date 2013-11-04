@@ -32,9 +32,10 @@ func (cc *CycleChecker) OnEntry(node Node) (err error) {
 	if node == cc.ThisHolder {
 		return GraphCycleError
 	}
+	return
 }
 
 // On leaving, do nothing//
-func (cc *CycleChecker) OnExit(Node node) (err error) {
+func (cc *CycleChecker) OnExit(node *Node) (err error) {
 	return
 }

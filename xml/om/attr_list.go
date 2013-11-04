@@ -1,6 +1,8 @@
 package om
 
-import ()
+import (
+	"strings"
+)
 
 //A container for attributes.  The order of attributes in the
 //container is not significant and is not guaranteed to be
@@ -32,7 +34,7 @@ func NewAttrList(a ...*Attr) (aList *AttrList) {
 //@throws NullPointerException if the Attr argument is null
 //
 func (aList *AttrList) Add(attr *Attr) (this *AttrList, err error) {
-	this = alist
+	this = aList
 	if attr == nil {
 		err = NilAttr
 	} else {
@@ -52,7 +54,7 @@ func (aList *AttrList) Add(attr *Attr) (this *AttrList, err error) {
 //@throws NullPointerException if the Attr argument is null
 //
 func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
-	this = alist
+	this = aList
 
 	if attr == nil {
 		err = NilAttr
@@ -62,7 +64,7 @@ func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
 	if err == nil {
 		attr.SetHolder(aList.holder)
 		if n == len(aList.attrs) {
-			_, err = attrs.Add(attr)
+			_, err = aList.Add(attr)
 		} else {
 			head := aList.attrs[:n]
 			tail := aList.attrs[n:]

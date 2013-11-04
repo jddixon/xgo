@@ -13,7 +13,7 @@ type DocSetter struct {
 }
 
 func NewDocSetter(h *Holder) (ds *DocSetter, err error) {
-	if n == nil {
+	if h == nil {
 		err = NilHolder
 	} else {
 		ds = &DocSetter{
@@ -30,6 +30,7 @@ func (ds *DocSetter) OnEntry(n *Node) (err error) {
 	} else {
 		n.SetDocument(ds.ThisDocument)
 	}
+	return
 }
 
 // On leaving, do nothing.//

@@ -44,28 +44,28 @@ func (nc *NodeCounter) OnEntry(n *Node) {
 		nc.textCount++
 	}
 }
-func (nc *NodeCounter) OnExit(Node n) {
+func (nc *NodeCounter) OnExit(n *Node) {
 }
 
 // PROPERTIES /////////////////////////////////////
-func (nc *NodeCounter) attrCount() int {
+func (nc *NodeCounter) AttrCount() int {
 	return nc.attrCount
 }
-func (nc *NodeCounter) commentCount() int {
+func (nc *NodeCounter) CommentCount() int {
 	return nc.commentCount
 }
-func (nc *NodeCounter) docCount() int {
+func (nc *NodeCounter) DocCount() int {
 	return nc.docCount
 }
-func (nc *NodeCounter) docTypeCount() int {
+func (nc *NodeCounter) DocTypeCount() int {
 	return nc.docTypeCount
 }
-func (nc *NodeCounter) elementCount() int {
+func (nc *NodeCounter) ElementCount() int {
 	return nc.elementCount
 }
-func (nc *NodeCounter) piCount() int {
+func (nc *NodeCounter) PiCount() int {
 	return nc.piCount
 }
-func (nc *NodeCounter) textCount() int {
+func (nc *NodeCounter) TextCount() int {
 	return nc.textCount
 }

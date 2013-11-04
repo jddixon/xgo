@@ -22,7 +22,7 @@ type NodeList struct {
 }
 
 // Create an empty node list.
-func NewNewNodeList(node *Node) {
+func NewNewNodeList(node *Node) *NodeList {
 	var nodes []*Node
 	return &NodeList{
 		nodes: nodes,
@@ -30,7 +30,7 @@ func NewNewNodeList(node *Node) {
 }
 
 // Create a node list with only one member.
-func NewNodeList(node *Node) {
+func NewNodeList(node *Node) *NodeList {
 	nodes := []*Node{node}
 	return &NodeList{
 		nodes: nodes,
@@ -60,7 +60,7 @@ func (nl *NodeList) Append(node *Node) (this *NodeList) {
 //
 func (nl *NodeList) MoveFrom(otherList *NodeList) (this *NodeList, err error) {
 	if otherList == nil {
-		err = OtherListEmpty
+		err = EmptyOtherList
 	} else {
 		this = nl
 		for i := uint(0); i < otherList.Size(); i++ {
@@ -139,7 +139,7 @@ func (nl *NodeList) Size() uint {
 // PROPERTIES ///////////////////////////////////////////////////
 // @return the immediate parent of this list//
 func (nl *NodeList) GetHolder() *Holder {
-	return holder
+	return nl.holder
 }
 
 //
@@ -157,15 +157,15 @@ func (nl *NodeList) SetHolder(h *Holder) {
 	} else {
 		doc = h.GetDocument()
 	}
-	for i = uint(0); i < nl.Size(); i++ {
+	for i := uint(0); i < nl.Size(); i++ {
 		nl.Get(i).SetHolder(h)
 	}
 }
 
 // VISITOR-RELATED///////////////////////////////////////////////
 // Take the visitor through every node in the list, recursing.//
-func (nl *NodeList) WalkAll(v *Visitor) (err error) {
-	for i = uint(0); i < nl.Size(); i++ {
+func (nl *NodeList) WalkAll(v VisitorI) (err error) {
+	for i := uint(0); i < nl.Size(); i++ {
 		err = nl.Get(i).WalkAll(v)
 		if err != nil {
 			break
@@ -179,8 +179,9 @@ func (nl *NodeList) WalkAll(v *Visitor) (err error) {
 // a Holder, recursively.  Used when you don't want to visit, for
 // example, attributes.
 //
-func (nl *NodeList) WalkHolders(v *Visitor) (err error) {
-	for i = uint(0); err == nil && i < nl.Size(); i++ {
+func (nl *NodeList) WalkHolders(v VisitorI) (err error) {
+	for i := uint(0); err == nil && i < nl.Size(); i++ {
+		var n *Node
 		n, err = nl.Get(i)
 		if err == nil && n.IsHolder() {
 			err = n.WalkHolders(v)
@@ -195,7 +196,7 @@ func (nl *NodeList) WalkHolders(v *Visitor) (err error) {
 // without indenting.
 //
 func (nl *NodeList) ToXml() (s string) {
-	for i = uint(0); i < nl.Size(); i++ {
+	for i := uint(0); i < nl.Size(); i++ {
 		var node *Node
 		node, _ = nl.Get(i)
 		s += node.ToXml()

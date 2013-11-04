@@ -30,29 +30,29 @@ func NewAttr(prefix, name, value string) (a *Attr) {
 		Name:   name,
 		Value:  value,
 	}
-	return a
+	return
 }
 
 //Default constructor with nil prefix.
 //
-func NewNewAttr(name, value string) {
+func NewNewAttr(name, value string) *Attr {
 	return NewAttr("", name, value)
 }
 
 // PROPERTIES ///////////////////////////////////////////////////
 
 // return the prefix part of the name; may be nil//
-func (a *Attr) GetPrefix() {
+func (a *Attr) GetPrefix() string {
 	return a.Prefix
 }
 
 // @return the unqualified name of the attribute//
-func (a *Attr) GetName() {
+func (a *Attr) GetName() string {
 	return a.Name
 }
 
 // @return the value assigned to the attribute//
-func (a *Attr) GetValue() {
+func (a *Attr) GetValue() string {
 	return a.Value
 }
 

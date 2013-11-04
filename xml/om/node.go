@@ -62,7 +62,7 @@ func (node *Node) SetHolder(h *Holder) {
 // Walk a Visitor through a Node.  This is overridden when
 // suitable by subclasses.
 
-func (node *Node) WalkAll(v *Visitor) (err error) {
+func (node *Node) WalkAll(v VisitorI) (err error) {
 	err = v.OnEntry(node)
 
 	// Holders also visit their NodeLists
@@ -138,7 +138,7 @@ func (node *Node) IsProcessingInstruction() bool {
 // SERIALIZATION ////////////////////////////////////////////////
 // this should be changed to follow the same pattern as expr,
 // supporting indenting
-func (node *Node) ToXml() string {
+func (node *Node) ToXml() (s string) {
 	// XXX ABSTRACT
 	return
 }
