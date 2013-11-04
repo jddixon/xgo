@@ -58,48 +58,20 @@ func (node *Node) SetHolder(h *Holder) {
 
 // VISITOR-RELATED///////////////////////////////////////////////
 //
-// Runs down the graph counting nodes by type; another Visitor.
-//
-//public class NodeCounter implements Visitor {
-//    private int attrCount
-//    private int commentCount
-//    private int docCount
-//    private int docTypeCount
-//    private int elementCount
-//    private int piCount
-//    private int textCount
-//
-//    public NodeCounter () { }
-//
-//    public void onEntry (Node n) {
-//        if (n.isAttr())                     attrCount++
-//        if (n.isComment())                  commentCount++
-//        if (n.isDocument())                 docCount++
-//        if (n.isDocType())                  docTypeCount++
-//        if (n.isElement())                  elementCount++
-//        if (n.isProcessingInstruction())    piCount++
-//        if (n.isText())                     textCount++
-//    }
-//    public void onExit (Node n) { }
-//    // PROPERTIES /////////////////////////////////////
-//    public int attrCount()      { return attrCount; }
-//    public int commentCount()   { return commentCount; }
-//    public int docCount()       { return docCount; }
-//    public int docTypeCount()   { return docTypeCount; }
-//    public int elementCount()   { return elementCount; }
-//    public int piCount()        { return piCount; }
-//    public int textCount()      { return textCount; }
-//}
-//
-//
+
 // Walk a Visitor through a Node.  This is overridden when
 // suitable by subclasses.
 
-//public void walkAll (Visitor v) {
-//    v.onEntry(this)
-//    // Holders also visit their NodeLists
-//    v.onExit(this)
-//}
+func (node *Node) WalkAll(v *Visitor) (err error) {
+	err = v.OnEntry(node)
+
+	// Holders also visit their NodeLists
+	if err == nil {
+		err = v.OnExit(node)
+	}
+	return
+}
+
 //  // EVAL /////////////////////////////////////////////////////////
 //  public final Boolean evalAsBoolean(String s) {
 //      // STUB
@@ -136,7 +108,7 @@ func (node *Node) SetHolder(h *Holder) {
 //  public final String evalAsString(Context ctx, String s) {
 //      // STUB
 //      return nil
-//  }
+//  } // GEEP
 
 // TYPE IDENTIFIERS /////////////////////////////////////////////
 // one of these gets overridden in each subclass

@@ -13,6 +13,9 @@ type CycleChecker struct {
 	ThisHolder *Holder
 }
 
+// The Holder-child dependency forms a directed graph.  This
+// looks for cycles in that graph.
+//
 func NewCycleChecker(h *Holder) (cc *CycleChecker, err error) {
 	if h == nil {
 		err = NilHolder
