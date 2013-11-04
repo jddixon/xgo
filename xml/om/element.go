@@ -76,10 +76,8 @@ func (e *Element) GetAttrList() *AttrList {
 //@param value  the String value the attribute is set to
 //@return       a reference to this Element, to allow chaining
 //
-func (e *Element) AddAttr(prefix, name, value string) (
-	this *Element, err error) {
+func (e *Element) AddAttr(prefix, name, value string) (err error) {
 
-	this = e
 	attr := NewAttr(prefix, name, value)
 	_, err = e.aList.Add(attr)
 	return

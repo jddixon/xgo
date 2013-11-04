@@ -10,7 +10,7 @@ import (
 //
 type AttrList struct {
 	attrs  []*Attr
-	holder *Element
+	holder HolderI // *Element
 }
 
 // Create an empty attribute list with no holder specified.
@@ -22,7 +22,7 @@ func NewNewAttrList() *AttrList {
 func NewAttrList(a ...*Attr) (aList *AttrList) {
 	aList = NewNewAttrList()
 	for i := 0; i < len(a); i++ {
-		aList = append(aList, a[i])
+		aList.attrs = append(aList.attrs, a[i])
 	}
 	return
 }
@@ -58,12 +58,12 @@ func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
 
 	if attr == nil {
 		err = NilAttr
-	} else if n > len(aList.attrs) {
+	} else if n > uint(len(aList.attrs)) {
 		err = IndexOutOfBounds
 	}
 	if err == nil {
 		attr.SetHolder(aList.holder)
-		if n == len(aList.attrs) {
+		if n == uint(len(aList.attrs)) {
 			_, err = aList.Add(attr)
 		} else {
 			head := aList.attrs[:n]
@@ -82,7 +82,7 @@ func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
 //@throws IndexOutOfBoundsException
 //
 func (aList *AttrList) Get(n uint) (attr *Attr, err error) {
-	if n >= uint(len(aList.Attrs)) {
+	if n >= uint(len(aList.attrs)) {
 		err = IndexOutOfBounds
 	} else {
 		attr = aList.attrs[n]
@@ -93,12 +93,12 @@ func (aList *AttrList) Get(n uint) (attr *Attr, err error) {
 //@return number of attrs in the list
 //
 func (aList *AttrList) Size() uint {
-	return uint(aList.attrs)
+	return uint(len(aList.attrs))
 }
 
 // PROPERTIES ///////////////////////////////////////////////////
 // @return the Element that the attribute belongs to//
-func (aList *AttrList) GetHolder() *Holder {
+func (aList *AttrList) GetHolder() HolderI {
 	return aList.holder
 }
 

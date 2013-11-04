@@ -95,12 +95,14 @@ func (h *Holder) SetDocument(newDoc *Document) (err error) {
 // Add a child Node to the Holder.
 //
 // @param elm  child Node to be added
-// @return     reference to this Holder, for convenience in chaining
 // @throws     NullPointerException if the child is nil
 //
-func (h *Holder) AddChild(elm *Node) (this *Holder) {
-	this = h
-	h.nodes = append(h.nodes, elm)
+func (h *Holder) AddChild(elm *Node) (err error) {
+	if elm == nil {
+		err = NilChild
+	} else {
+		h.nodes = append(h.nodes, elm)
+	}
 	return
 }
 

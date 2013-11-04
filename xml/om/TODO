@@ -1,0 +1,5 @@
+xgo/xml/om/TODO
+
+2013-11-03
+    * where an error is being returned, cannot chain, so DO NOT
+        return 'this'

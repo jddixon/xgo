@@ -1,7 +1,5 @@
 package om
 
-// With apologies to org.xlattice.corexml.om.Node.java
-
 import ()
 
 type Node struct {
@@ -29,13 +27,18 @@ func (node *Node) GetDocument() *Document {
 //
 //  @param newDoc new value assigned; may be null
 //
-func (node *Node) SetDocument(newDoc *Document) {
-	node.doc = newDoc
+func (node *Node) SetDocument(newDoc *Document) (err error) {
+	if newDoc == nil {
+		err = NilDocument
+	} else {
+		node.doc = newDoc
+	}
+	return
 }
 
 // Get this node's parent.
 //
-func (node *Node) GetHolder() *Holder {
+func (node *Node) GetHolder() HolderI {
 	return node.holder
 }
 

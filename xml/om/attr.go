@@ -12,9 +12,9 @@ import (
 //value will be doubly (") or singly (') quoted.
 //
 type Attr struct {
-	Prefix string
-	Name   string
-	Value  string
+	prefix string
+	name   string
+	value  string
 	Node
 }
 
@@ -26,9 +26,9 @@ type Attr struct {
 //
 func NewAttr(prefix, name, value string) (a *Attr) {
 	a = &Attr{
-		Prefix: prefix,
-		Name:   name,
-		Value:  value,
+		prefix: prefix,
+		name:   name,
+		value:  value,
 	}
 	return
 }
@@ -43,17 +43,17 @@ func NewNewAttr(name, value string) *Attr {
 
 // return the prefix part of the name; may be nil//
 func (a *Attr) GetPrefix() string {
-	return a.Prefix
+	return a.prefix
 }
 
 // @return the unqualified name of the attribute//
 func (a *Attr) GetName() string {
-	return a.Name
+	return a.name
 }
 
 // @return the value assigned to the attribute//
 func (a *Attr) GetValue() string {
-	return a.Value
+	return a.value
 }
 
 // VISITOR-RELATED///////////////////////////////////////////////
@@ -84,9 +84,9 @@ func (a *Attr) IsAttr() bool {
 func (a *Attr) ToXml() (s string) {
 
 	if a.Prefix != "" {
-		s = fmt.Sprintf(" %s:%s=\"%s\"", a.Prefix, a.Name, a.Value)
+		s = fmt.Sprintf(" %s:%s=\"%s\"", a.prefix, a.name, a.value)
 	} else {
-		s = fmt.Sprintf(" %s=\"%s\"")
+		s = fmt.Sprintf(" %s=\"%s\"", a.name, a.value)
 	}
 	return
 }

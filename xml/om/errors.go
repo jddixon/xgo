@@ -10,6 +10,8 @@ var (
 	GraphCycleError  = e.New("graph cycle error")
 	IndexOutOfBounds = e.New("index out of bounds")
 	NilAttr          = e.New("nil Attr argument")
+	NilChild         = e.New("nil child argument")
+	NilDocType       = e.New("nil DocType argument")
 	NilHolder        = e.New("nil Holder argument")
 	NilNode          = e.New("nil Node argument")
 	NodeListNotEmpty = e.New("NodeList is not empty")
