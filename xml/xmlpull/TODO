@@ -1,0 +1,8 @@
+xgo/xml/xmlpull/TODO
+
+2013-11-05
+    * Complete rough transcription of comments from xmlpull specs,
+        budgeting
+        - about 270 lines day 1
+        - about 270 lines day 2
+        The object is not to translate all of the Java.
