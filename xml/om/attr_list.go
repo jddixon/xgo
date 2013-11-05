@@ -38,7 +38,7 @@ func (aList *AttrList) Add(attr *Attr) (this *AttrList, err error) {
 	if attr == nil {
 		err = NilAttr
 	} else {
-		attr.SetHolder(aList.holder)
+		attr.SetHolder(aList.holder.(*Holder))
 		aList.attrs = append(aList.attrs, attr)
 	}
 	return
@@ -62,7 +62,7 @@ func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
 		err = IndexOutOfBounds
 	}
 	if err == nil {
-		attr.SetHolder(aList.holder)
+		attr.SetHolder(aList.holder.(*Holder))
 		if n == uint(len(aList.attrs)) {
 			_, err = aList.Add(attr)
 		} else {
@@ -108,10 +108,11 @@ func (aList *AttrList) GetHolder() HolderI {
 //
 //@param h the Holder being assigned
 //
-func (aList *AttrList) SetHolder(h *Element) {
-	aList.holder = h
+func (aList *AttrList) SetHolder(elm HolderI) {
+	e := elm.(*Element)
+	aList.holder = e
 	for i := uint(0); i < aList.Size(); i++ {
-		aList.attrs[i].SetHolder(h)
+		aList.attrs[i].SetHolder(e)
 	}
 }
 

@@ -6,7 +6,7 @@ type NodeI interface {
 	GetDocument() *Document
 	SetDocument(newDoc *Document) error
 	GetHolder() HolderI
-	SetHolder(h *Holder)
+	SetHolder(h HolderI)
 	WalkAll(VisitorI) error
 	IsAttr() bool
 	IsComment() bool

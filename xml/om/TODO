@@ -1,5 +1,9 @@
 xgo/xml/om/TODO
 
+2013-11-05
+    * FIX: attr.go getting "invalid recursive type Node" and
+        "invalid recursive type Attr" 
+
 2013-11-03
     * where an error is being returned, cannot chain, so DO NOT
         return 'this'

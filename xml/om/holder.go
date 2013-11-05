@@ -106,6 +106,10 @@ func (h *Holder) AddChild(elm *Node) (err error) {
 	return
 }
 
+func (h *Holder) IsHolder() bool {
+	return true
+}
+
 // VISITOR-RELATED///////////////////////////////////////////////
 //
 // Take a Visitor on that walk down the subtrees, visiting

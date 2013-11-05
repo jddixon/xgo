@@ -12,6 +12,7 @@ var (
 	NilAttr          = e.New("nil Attr argument")
 	NilChild         = e.New("nil child argument")
 	NilDocType       = e.New("nil DocType argument")
+	NilDocument      = e.New("nil document argument")
 	NilHolder        = e.New("nil Holder argument")
 	NilNode          = e.New("nil Node argument")
 	NodeListNotEmpty = e.New("NodeList is not empty")
