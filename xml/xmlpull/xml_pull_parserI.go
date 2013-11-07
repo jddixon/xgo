@@ -4,16 +4,105 @@ import (
 	"io"
 )
 
-/////////////////////////////////////////////////////////////////////
-// XXX COMMENTS to be merged into this file; as text is merged in here,
-// it should be deleted from COMMENTS
-/////////////////////////////////////////////////////////////////////
-
 // XmlPull is derived from the XML Pull Parser, a Java interface that defines
 // parsing functionlity provided in the XMLPULL V1 API.  Visit
 // http://www.xmlpull.org to learn more about the API and its Java
 // implementations.
-
+//
+// 2013-11-07: The comments that follow are  taken directly from the XML Pull
+// Parser spec with little modification.  As time permits these will be
+// edited to suit the Go environment.
+//
+// <p>There are following different
+// kinds of parser depending on which features are set:<ul>
+// <li>behaves like XML 1.0 comliant non-validating parser
+//  <em>if no DOCDECL is present</em> in XML documents when
+//   FEATURE_PROCESS_DOCDECL is false (this is <b>default parser</b>
+//   and internal enetites can still be defiend with defineEntityReplacementText())
+// <li>non-validating parser as defined in XML 1.0 spec when
+//   FEATURE_PROCESS_DOCDECL is true
+// <li>validating parser as defined in XML 1.0 spec when
+//   FEATURE_VALIDATION is true (and that implies that FEATURE_PROCESS_DOCDECL is true)
+// </ul>
+//
+// <p>There are only two key methods: next() and nextToken() that provides
+// access to high level parsing events and to lower level tokens.
+//
+// <p>The parser is always in some event state and type of the current event
+// can be determined by calling
+// <a href="#next()">getEventType()</a> mehod.
+// Initially parser is in <a href="#START_DOCUMENT">START_DOCUMENT</a> state.
+//
+// <p>Method <a href="#next()">next()</a> return int that contains identifier of parsing event.
+// This method can return following events (and will change parser state to the returned event):<dl>
+// <dt><a href="#START_TAG">START_TAG</a><dd> XML start tag was read
+// <dt><a href="#TEXT">TEXT</a><dd> element contents was read and is available via getText()
+// <dt><a href="#END_TAG">END_TAG</a><dd> XML end tag was read
+// <dt><a href="#END_DOCUMENT">END_DOCUMENT</a><dd> no more events is available
+// </dl>
+//
+// The minimal working example of use of API would be looking like this:
+// <pre>
+// import java.io.IOException;
+// import java.io.StringReader;
+//
+// import org.xmlpull.v1.XmlPullParser;
+// import org.xmlpull.v1.XmlPullParserException;
+// import org.xmlpull.v1.XmlPullParserFactory;
+//
+// public class SimpleXmlPullApp
+// {
+//
+//     public static void main (String args[])
+//         throws XmlPullParserException, IOException
+//     {
+//         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+//         factory.setNamespaceAware(true);
+//         XmlPullParser xpp = factory.newPullParser();
+//
+//         xpp.setInput ( new StringReader ( "&lt;foo>Hello World!&lt;/foo>" ) );
+//         int eventType = xpp.getEventType();
+//         while (eventType != xpp.END_DOCUMENT) {
+//          if(eventType == xpp.START_DOCUMENT) {
+//              System.out.println("Start document");
+//          } else if(eventType == xpp.END_DOCUMENT) {
+//              System.out.println("End document");
+//          } else if(eventType == xpp.START_TAG) {
+//              System.out.println("Start tag "+xpp.getName());
+//          } else if(eventType == xpp.END_TAG) {
+//              System.out.println("End tag "+xpp.getName());
+//          } else if(eventType == xpp.TEXT) {
+//              System.out.println("Text "+xpp.getText());
+//          }
+//          eventType = xpp.next();
+//         }
+//     }
+// }
+// </pre>
+//
+// <p>When run it will produce following output:
+// <pre>
+// Start document
+// Start tag foo
+// Text Hello World!
+// End tag foo
+// </pre>
+//
+// <p>For more details on use of API please read
+// Quick Introduction available at <a href="http://www.xmlpull.org">http://www.xmlpull.org</a>
+//
+// @see XmlPullParserFactory
+// @see #defineEntityReplacementText
+// @see #next
+// @see #nextToken
+// @see #FEATURE_PROCESS_DOCDECL
+// @see #FEATURE_VALIDATION
+// @see #START_DOCUMENT
+// @see #START_TAG
+// @see #TEXT
+// @see #END_TAG
+// @see #END_DOCUMENT
+//
 type XmlPullParserI interface {
 
 	// -- SetFeature ------------------------------------------------
