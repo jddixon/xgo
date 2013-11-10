@@ -81,7 +81,8 @@ func (h *Holder) SetDocument(newDoc *Document) (err error) {
 	}
 	if err == nil {
 		if h.IsElement() {
-			err = h.GetAttrList().WalkAll(docSetter)
+			e := ElementI(h)
+			err = e.GetAttrList().WalkAll(docSetter)
 		}
 	}
 	if err == nil {
@@ -135,7 +136,7 @@ func (h *Holder) WalkAll(v VisitorI) (err error) {
 func (h *Holder) WalkHolders(v VisitorI) (err error) {
 	h = v.OnEntry(h)
 	if err == nil {
-		err = h.nodes.walkHolders(v)
+		err = h.nodes.WalkHolders(v)
 		if err == nil {
 			h = v.OnExit(h)
 		}

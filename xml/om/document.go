@@ -15,9 +15,7 @@ const (
 type Document struct {
 	version  string
 	encoding string
-	// Commenting this undefined field out causes mysterious
-	// "invalid recursive type" for attr.go type Attr struct to go away !
-	// docType  *DocumentType
+	docType  *DocumentType
 	Element
 }
 
@@ -123,7 +121,7 @@ func (doc *Document) IsDocument() bool {
 func (doc *Document) ToXml() (s string) {
 	s = "<?xml version=\"" + doc.version +
 		"\" encoding=\"" + doc.encoding + "\"?>\n"
-	for i := uint(0); i < nodes.Size(); i++ {
+	for i := uint(0); i < doc.nodes.Size(); i++ {
 		node, _ := doc.nodes.Get(i)
 		s += node.ToXml()
 	}

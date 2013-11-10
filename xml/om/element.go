@@ -32,7 +32,10 @@ type Element struct {
 func NewElement(prefix, name string) (e *Element, err error) {
 	// super()
 
-	aList, err := NewAttrList()
+	aList := NewAttrList()
+
+	// XXX nothing changes err
+
 	if err == nil {
 		e = &Element{
 			prefix: prefix,
@@ -54,12 +57,12 @@ func (e *Element) NewNewElement(name string) (*Element, error) {
 // PROPERTIES ///////////////////////////////////////////////////
 // @return the prefix, an NCName ""
 func (e *Element) GetPrefix() string {
-	return e.Prefix
+	return e.prefix
 }
 
 // @return the element name, an NCName, which may not be nil//
 func (e *Element) GetName() string {
-	return e.Name
+	return e.name
 }
 
 //@return the attribute list - may be empty, may not be nil
@@ -114,7 +117,7 @@ func (e *Element) IsElement() bool {
 //
 
 func (e *Element) ToString() string {
-	return fmt.Sprintf("[Element: tag: %s ...]", e.Name)
+	return fmt.Sprintf("[Element: tag: %s ...]", e.name)
 }
 
 //@return the element and its attributes in XML form, unindented
@@ -123,7 +126,7 @@ func (e *Element) ToXml() (s string) {
 
 	// conditionally output prefix
 
-	s = "<" + e.Name
+	s = "<" + e.name
 
 	// conditionally output attributes
 	attrCount := e.aList.Size()
@@ -145,14 +148,16 @@ func (e *Element) ToXml() (s string) {
 		s += ns + "\""
 	}
 
-	if len(e.nodes) > 0 {
+	nodes := e.GetNodeList()
+	if nodes.Size() > 0 {
 		// line separator
 		s += ">\n"
 		ss := []string{s}
 
 		// conditionally output body
-		for i := 0; i < len(e.nodes); i++ {
-			body := e.nodes[i].ToXml()
+		for i := uint(0); i < nodes.Size(); i++ {
+			node, _ := nodes.Get(i)
+			body := node.ToXml()
 			ss = append(ss, body)
 		}
 		// prefix ?

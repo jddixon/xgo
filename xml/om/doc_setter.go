@@ -24,7 +24,7 @@ func NewDocSetter(h *Holder) (ds *DocSetter, err error) {
 }
 
 // On arriving at the node, set its Document.
-func (ds *DocSetter) OnEntry(n *Node) (err error) {
+func (ds *DocSetter) OnEntry(n NodeI) (err error) {
 	if n == nil {
 		err = NilNode
 	} else {
@@ -34,7 +34,7 @@ func (ds *DocSetter) OnEntry(n *Node) (err error) {
 }
 
 // On leaving, do nothing.//
-func (ds *DocSetter) OnExit(n *Node) (err error) {
+func (ds *DocSetter) OnExit(n NodeI) (err error) {
 	if n == nil {
 		err = NilNode
 	}

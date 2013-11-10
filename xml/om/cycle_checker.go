@@ -28,7 +28,8 @@ func NewCycleChecker(h HolderI) (cc *CycleChecker, err error) {
 }
 
 // On arriving at the node, do the identity check.//
-func (cc *CycleChecker) OnEntry(node Node) (err error) {
+func (cc *CycleChecker) OnEntry(node *Node) (err error) {
+	// XXX should be node.Equal(cc.ThisHolder)
 	if node == cc.ThisHolder {
 		return GraphCycleError
 	}
