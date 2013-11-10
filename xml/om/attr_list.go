@@ -33,8 +33,7 @@ func NewAttrList(a ...*Attr) (aList *AttrList) {
 //@return a reference to this list, to allow chaining
 //@throws NullPointerException if the Attr argument is null
 //
-func (aList *AttrList) Add(attr *Attr) (this *AttrList, err error) {
-	this = aList
+func (aList *AttrList) Add(attr *Attr) (err error) {
 	if attr == nil {
 		err = NilAttr
 	} else {
@@ -49,13 +48,10 @@ func (aList *AttrList) Add(attr *Attr) (this *AttrList, err error) {
 //
 //@param n    zero-based index at which the Attr is to be inserted
 //@param attr the attribute to be inserted
-//@return a reference to this list, to allow chaining
 //@throws IndexOutOfBoundsException if n is negative or out of range
 //@throws NullPointerException if the Attr argument is null
 //
-func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
-	this = aList
-
+func (aList *AttrList) Insert(n uint, attr *Attr) (err error) {
 	if attr == nil {
 		err = NilAttr
 	} else if n > uint(len(aList.attrs)) {
@@ -64,7 +60,7 @@ func (aList *AttrList) Insert(n uint, attr *Attr) (this *AttrList, err error) {
 	if err == nil {
 		attr.SetHolder(aList.holder.(*Holder))
 		if n == uint(len(aList.attrs)) {
-			_, err = aList.Add(attr)
+			err = aList.Add(attr)
 		} else {
 			head := aList.attrs[:n]
 			tail := aList.attrs[n:]

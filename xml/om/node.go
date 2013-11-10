@@ -52,7 +52,7 @@ func (node *Node) GetHolder() HolderI {
 func (node *Node) SetHolder(h HolderI) {
 	if h == nil {
 		node.doc = nil
-	} else if h.getDocument() != node.doc {
+	} else if h.GetDocument() != node.doc {
 		node.SetDocument(h.GetDocument())
 	}
 }

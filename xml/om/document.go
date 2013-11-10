@@ -121,8 +121,8 @@ func (doc *Document) IsDocument() bool {
 func (doc *Document) ToXml() (s string) {
 	s = "<?xml version=\"" + doc.version +
 		"\" encoding=\"" + doc.encoding + "\"?>\n"
-	for i := uint(0); i < doc.nodes.Size(); i++ {
-		node, _ := doc.nodes.Get(i)
+	for i := uint(0); i < doc.nodeList.Size(); i++ {
+		node, _ := doc.nodeList.Get(i)
 		s += node.ToXml()
 	}
 	return

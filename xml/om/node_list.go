@@ -4,34 +4,29 @@ package om
 
 import ()
 
-const DEFAULT_NODELIST_SIZE = 8 // XXX DROP ASAP
-
 // A container for Nodes.  Each Holder (Document or Element) has a
 // NodeList, but the reverse is not necessarily true.
-// <p/>
-// XXX NEED TO SIMPLIFY THE HANDLING OF THE ELEMENT NODE IN A
-// XXX DOCUMENT
+//
 type NodeList struct {
-
-	// list of child nodes//
-	nodes []*Node
-	// immediate parent, might be nil//
-	holder *Holder
-	// ultimate parent, might be nil*/
-	doc *Document
+	// list of child nodes
+	nodes []NodeI
+	// immediate parent, might be nil
+	holder HolderI
+	// ultimate parent, might be nil
+	doc DocumentI
 }
 
 // Create an empty node list.
-func NewNewNodeList(node *Node) *NodeList {
-	var nodes []*Node
+func NewNewNodeList() *NodeList {
+	var nodes []NodeI
 	return &NodeList{
 		nodes: nodes,
 	}
 }
 
 // Create a node list with only one member.
-func NewNodeList(node *Node) *NodeList {
-	nodes := []*Node{node}
+func NewNodeList(node NodeI) *NodeList {
+	nodes := []NodeI{node}
 	return &NodeList{
 		nodes: nodes,
 	}
@@ -42,15 +37,22 @@ func NewNodeList(node *Node) *NodeList {
 // XXX Should check for cycles; if the Holder is a document,
 // XXX there may be only one Element node.
 //
-// @param node the node to be appended
-// @return a reference to this list, to allow chaining
-// @throws NullPointerException if the Node argument is nil
+// Returns NilNode if the Node argument is nil.
 //
-func (nl *NodeList) Append(node *Node) (this *NodeList) {
-	this = nl
-	node.setHolder(this)
-	nl.nodes = append(nl.nodes, node)
-	return this
+func (nl *NodeList) Append(node NodeI) (err error) {
+
+	if node == nil {
+		err = NilNode
+	} else {
+		// XXX nl not HolderI, so can't be param
+		node.SetHolder(nl)
+		nl.nodes = append(nl.nodes, node)
+	}
+	return
+}
+
+func (nl *NodeList) AddChild(node NodeI) error {
+	return nl.Append(node)
 }
 
 // Copy the nodes from another NodeList into this one, then
@@ -62,15 +64,15 @@ func (nl *NodeList) MoveFrom(otherList *NodeList) (this *NodeList, err error) {
 	if otherList == nil {
 		err = EmptyOtherList
 	} else {
-		this = nl
 		for i := uint(0); i < otherList.Size(); i++ {
-			var node *Node
+			var node NodeI
 			node, err = otherList.Get(i)
 			if err != nil {
 				break
 			}
-			node.SetHolder(this)
-			nl.nodes = append(nl.nodes(node))
+			// XXX nl not HolderI, so can't be param
+			node.SetHolder(nl)
+			nl.nodes = append(nl.nodes, node)
 		}
 	}
 	if err == nil {
@@ -79,7 +81,7 @@ func (nl *NodeList) MoveFrom(otherList *NodeList) (this *NodeList, err error) {
 	return
 }
 func (nl *NodeList) Clear() {
-	var nodes []*Node
+	var nodes []NodeI
 	nl.nodes = nodes
 }
 
@@ -97,6 +99,7 @@ func (nl *NodeList) Insert(n uint, node *Node) (err error) {
 		err = NilNode
 	}
 	if err == nil {
+		// XXX nl not HolderI, so can't be param
 		node.SetHolder(nl)
 		if n == nl.Size() {
 			nl.nodes = append(nl.nodes, node)
@@ -121,7 +124,7 @@ func (nl *NodeList) IsEmpty() bool {
 // @return the Nth node in the list
 // @throws IndexOutOfBoundsException
 //
-func (nl *NodeList) Get(n uint) (node *Node, err error) {
+func (nl *NodeList) Get(n uint) (node NodeI, err error) {
 	if n >= nl.Size() {
 		err = IndexOutOfBounds
 	} else {
@@ -138,7 +141,7 @@ func (nl *NodeList) Size() uint {
 
 // PROPERTIES ///////////////////////////////////////////////////
 // @return the immediate parent of this list//
-func (nl *NodeList) GetHolder() *Holder {
+func (nl *NodeList) GetHolder() HolderI {
 	return nl.holder
 }
 
@@ -158,7 +161,8 @@ func (nl *NodeList) SetHolder(h *Holder) {
 		doc = h.GetDocument()
 	}
 	for i := uint(0); i < nl.Size(); i++ {
-		nl.Get(i).SetHolder(h)
+		node, _ := nl.Get(i)
+		node.SetHolder(h)
 	}
 }
 
@@ -166,7 +170,8 @@ func (nl *NodeList) SetHolder(h *Holder) {
 // Take the visitor through every node in the list, recursing.//
 func (nl *NodeList) WalkAll(v VisitorI) (err error) {
 	for i := uint(0); i < nl.Size(); i++ {
-		err = nl.Get(i).WalkAll(v)
+		node, _ := nl.Get(i)
+		err = node.WalkAll(v)
 		if err != nil {
 			break
 		}
@@ -181,10 +186,14 @@ func (nl *NodeList) WalkAll(v VisitorI) (err error) {
 //
 func (nl *NodeList) WalkHolders(v VisitorI) (err error) {
 	for i := uint(0); err == nil && i < nl.Size(); i++ {
-		var n *Node
+		var n NodeI
 		n, err = nl.Get(i)
-		if err == nil && n.IsHolder() {
-			err = n.WalkHolders(v)
+		if err == nil {
+			isHolder := n.IsElement() || n.IsDocument()
+			if isHolder {
+				holder := n.(*Holder)
+				err = holder.WalkHolders(v)
+			}
 		}
 	}
 	return
@@ -197,7 +206,7 @@ func (nl *NodeList) WalkHolders(v VisitorI) (err error) {
 //
 func (nl *NodeList) ToXml() (s string) {
 	for i := uint(0); i < nl.Size(); i++ {
-		var node *Node
+		var node NodeI
 		node, _ = nl.Get(i)
 		s += node.ToXml()
 	}

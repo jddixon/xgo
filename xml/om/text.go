@@ -17,7 +17,7 @@ func NewText(text string) (this *Text) {
 	node := NewNode()
 	this = &Text{
 		text: text,
-		Node: *Node,
+		Node: *node,
 	}
 	return
 }

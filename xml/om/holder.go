@@ -10,8 +10,8 @@ import (
 // Document or an Element.
 type Holder struct {
 	// every Holder has a list of child Nodes//
-	nodes  *NodeList
-	nsUris []string
+	nodeList *NodeList
+	nsUris   []string
 
 	// maps namespaces into prefixes//
 	ns2pf map[string]string
@@ -27,17 +27,16 @@ type Holder struct {
 //
 func NewHolder() (h *Holder) {
 	// super ()
-	// nodes.setHolder(this)
 
-	// SILLY OVERKILL //
-	ns2pf := make(map[string]string) // namespace --> prefix map
-	pf2ns := make(map[string]string) // prefix --> namespace map
 	var nsUris []string
-
 	h = &Holder{
-		ns2pf: ns2pf,
-		pf2ns: pf2ns,
+		ns2pf:    make(map[string]string), // namespace --> prefix map
+		pf2ns:    make(map[string]string), // prefix --> namespace map
+		nsUris:   nsUris,
+		nodeList: NewNewNodeList(), // creates empty list
 	}
+	h.nodeList.SetHolder(h)
+
 	return
 }
 
@@ -65,7 +64,7 @@ func (h *Holder) AddNamespace(prefix, namespace string) (err error) {
 // Return a pointer to the list of children of this Holder.
 // XXX This is not secure.
 func (h *Holder) GetNodeList() *NodeList {
-	return h.nodes
+	return h.nodeList
 }
 
 // Set this Holder's ultimate parent, the Document it belongs
@@ -80,13 +79,15 @@ func (h *Holder) SetDocument(newDoc *Document) (err error) {
 		docSetter, err = NewDocSetter(h) // will use h's Document
 	}
 	if err == nil {
-		if h.IsElement() {
-			e := ElementI(h)
-			err = e.GetAttrList().WalkAll(docSetter)
+		var node NodeI
+		node = h
+		switch v := node.(type) {
+		case *Element:
+			err = v.GetAttrList().WalkAll(docSetter)
 		}
 	}
 	if err == nil {
-		h.nodes.WalkAll(docSetter) // set in subtree
+		h.nodeList.WalkAll(docSetter) // set in subtree
 	}
 	return
 }
@@ -98,11 +99,11 @@ func (h *Holder) SetDocument(newDoc *Document) (err error) {
 // @param elm  child Node to be added
 // @throws     NullPointerException if the child is nil
 //
-func (h *Holder) AddChild(elm *Node) (err error) {
+func (h *Holder) AddChild(elm NodeI) (err error) {
 	if elm == nil {
 		err = NilChild
 	} else {
-		h.nodes = append(h.nodes, elm)
+		h.nodeList.nodes = append(h.nodeList.nodes, elm)
 	}
 	return
 }
@@ -118,11 +119,16 @@ func (h *Holder) IsHolder() bool {
 //
 func (h *Holder) WalkAll(v VisitorI) (err error) {
 	err = v.OnEntry(h)
-	if err == nil && h.IsElement() {
-		err = h.WalkAttrs(v)
+	if err == nil {
+		var node NodeI
+		node = h
+		switch w := node.(type) {
+		case *Element:
+			err = w.WalkAttrs(v)
+		}
 	}
 	if err == nil {
-		err = h.nodes.WalkAll(v)
+		err = h.nodeList.WalkAll(v)
 		if err == nil {
 			err = v.OnExit(h)
 		}
@@ -131,14 +137,14 @@ func (h *Holder) WalkAll(v VisitorI) (err error) {
 }
 
 // Take a Visitor on that walk down the subtrees, visiting
-// only subnodes which are themselves Holders.
+// only subnode which are themselves Holders.
 //
 func (h *Holder) WalkHolders(v VisitorI) (err error) {
-	h = v.OnEntry(h)
+	err = v.OnEntry(h)
 	if err == nil {
-		err = h.nodes.WalkHolders(v)
+		err = h.nodeList.WalkHolders(v)
 		if err == nil {
-			h = v.OnExit(h)
+			err = v.OnExit(h)
 		}
 	}
 	return
@@ -154,7 +160,7 @@ func (h *Holder) WalkHolders(v VisitorI) (err error) {
 // func (h *Holder) Populator (xpp pp.XmlPullParserI, depth, endEvent int) (
 // 	err error) {
 //
-//     if (!nodes.isEmpty())
+//     if (!nodeList.isEmpty())
 //         throw new IllegalStateException("NodeList is not empty")
 //     int elementCount = 0
 //     int event
@@ -202,7 +208,7 @@ func (h *Holder) WalkHolders(v VisitorI) (err error) {
 //                 elementCount++
 //                 Element elm = new Element(xpp.getName())
 //                 elm.populator(xpp, depth + 1, pp.END_TAG)
-//                 nodes.append(elm)
+//                 nodeList.append(elm)
 //                 if (isDocument()) {
 //                     Document me = (Document) this
 //                     if (me.getElementNode() == nil)
@@ -214,16 +220,16 @@ func (h *Holder) WalkHolders(v VisitorI) (err error) {
 //                 break
 //             case pp.IGNORABLE_WHITESPACE:
 //             case pp.TEXT:
-//                 nodes.append( new Text(xpp.getText()))
+//                 nodeList.append( new Text(xpp.getText()))
 //                 break
 //             case pp.COMMENT:
-//                 nodes.append( new Comment(xpp.getText()))
+//                 nodeList.append( new Comment(xpp.getText()))
 //                 break
 //             case pp.CDSECT:
-//                 nodes.append( new Cdata(xpp.getText()))
+//                 nodeList.append( new Cdata(xpp.getText()))
 //                 break
 //             case pp.PROCESSING_INSTRUCTION:
-//                 nodes.append( new ProcessingInstruction (xpp.getText() ))
+//                 nodeList.append( new ProcessingInstruction (xpp.getText() ))
 //                 break
 //
 //             // //////////////////////////////////////////////////

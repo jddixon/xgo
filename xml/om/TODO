@@ -1,9 +1,13 @@
 xgo/xml/om/TODO
 
+2013-11-09
+    * FIX: NodeList invokes SetHolder(), making itself the holder,
+        but it doesn't satisfy HolderI 
+
 2013-11-05
-    * FIX: attr.go getting "invalid recursive type Node" and
-        "invalid recursive type Attr" 
+    * FIX: attr.go getting "invalid recursive type Node" and            * DONE
+        "invalid recursive type Attr"                                   * DONE
 
 2013-11-03
-    * where an error is being returned, cannot chain, so DO NOT
-        return 'this'
+    * where an error is being returned, cannot chain, so DO NOT         * DONE
+        return 'this'                                                   * DONE

@@ -82,7 +82,7 @@ func (e *Element) GetAttrList() *AttrList {
 func (e *Element) AddAttr(prefix, name, value string) (err error) {
 
 	attr := NewAttr(prefix, name, value)
-	_, err = e.aList.Add(attr)
+	err = e.aList.Add(attr)
 	return
 }
 
