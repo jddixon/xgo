@@ -12,12 +12,12 @@ type DocSetter struct {
 	ThisDocument *Document
 }
 
-func NewDocSetter(h *Holder) (ds *DocSetter, err error) {
-	if h == nil {
+func NewDocSetter(e *Element) (ds *DocSetter, err error) {
+	if e == nil {
 		err = NilHolder
 	} else {
 		ds = &DocSetter{
-			ThisDocument: h.GetDocument(),
+			ThisDocument: e.GetDocument(),
 		}
 	}
 	return

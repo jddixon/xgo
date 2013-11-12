@@ -4,7 +4,7 @@ import ()
 
 type Node struct {
 	doc    *Document // this node's ultimate parent; may be nil
-	holder HolderI   // this node's immediate parent; may be nil
+	holder *Element  // this node's immediate parent; may be nil
 }
 
 func NewNode() (node *Node) {
@@ -36,7 +36,7 @@ func (node *Node) SetDocument(newDoc *Document) (err error) {
 
 // Get this node's parent.
 //
-func (node *Node) GetHolder() HolderI {
+func (node *Node) GetHolder() *Element {
 	return node.holder
 }
 
@@ -49,11 +49,11 @@ func (node *Node) GetHolder() HolderI {
 //
 // @param h a reference to the new parent, may be nil
 //
-func (node *Node) SetHolder(h HolderI) {
-	if h == nil {
+func (node *Node) SetHolder(e *Element) {
+	if e == nil {
 		node.doc = nil
-	} else if h.GetDocument() != node.doc {
-		node.SetDocument(h.GetDocument())
+	} else if e.GetDocument() != node.doc {
+		node.SetDocument(e.GetDocument())
 	}
 }
 

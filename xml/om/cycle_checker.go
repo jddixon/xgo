@@ -10,13 +10,13 @@ import ()
 // This implements VisitorI
 //
 type CycleChecker struct {
-	ThisHolder HolderI
+	ThisHolder *Element
 }
 
 // The Holder-child dependency forms a directed graph.  This
 // looks for cycles in that graph.
 //
-func NewCycleChecker(h HolderI) (cc *CycleChecker, err error) {
+func NewCycleChecker(h *Element) (cc *CycleChecker, err error) {
 	if h == nil {
 		err = NilHolder
 	} else {

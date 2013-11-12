@@ -10,7 +10,7 @@ import (
 //
 type AttrList struct {
 	attrs  []*Attr
-	holder HolderI // *Element
+	holder *Element
 }
 
 // Create an empty attribute list with no holder specified.
@@ -37,7 +37,7 @@ func (aList *AttrList) Add(attr *Attr) (err error) {
 	if attr == nil {
 		err = NilAttr
 	} else {
-		attr.SetHolder(aList.holder.(*Holder))
+		attr.SetHolder(aList.holder)
 		aList.attrs = append(aList.attrs, attr)
 	}
 	return
@@ -58,7 +58,7 @@ func (aList *AttrList) Insert(n uint, attr *Attr) (err error) {
 		err = IndexOutOfBounds
 	}
 	if err == nil {
-		attr.SetHolder(aList.holder.(*Holder))
+		attr.SetHolder(aList.holder)
 		if n == uint(len(aList.attrs)) {
 			err = aList.Add(attr)
 		} else {

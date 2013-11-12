@@ -10,8 +10,8 @@ const (
 	DEFAULT_XML_DECL = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 )
 
-// An XML Document, a Holder which can contain only one Element in
-// its NodeList, has no attributes, and no namespaces.
+// An XML Document, a Holder which can contain only one Element instead
+// of a NodeList, has no attributes, and no namespaces.
 type Document struct {
 	version  string
 	encoding string
@@ -95,7 +95,7 @@ func (doc *Document) GetElementNode() *Element {
 // cycles into the graph.
 //
 func (doc *Document) SetElement(elm *Element) (err error) {
-	elm.SetHolder(doc)
+	elm.SetHolder(doc) // XXX must be *Element
 	elm.SetDocument(doc)
 	return
 }

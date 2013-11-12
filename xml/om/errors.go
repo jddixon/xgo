@@ -17,5 +17,4 @@ var (
 	NilNode          = e.New("nil Node argument")
 	NodeListNotEmpty = e.New("NodeList is not empty")
 	RuntimeError     = e.New("runtime error")
-	SettingDocsDoc   = e.New("setting document's document")
 )

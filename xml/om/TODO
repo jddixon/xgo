@@ -1,5 +1,8 @@
 xgo/xml/om/TODO
 
+2013-11-12
+    * drop Holder, merging its data structures into Element
+
 2013-11-09
     * FIX: NodeList invokes SetHolder(), making itself the holder,
         but it doesn't satisfy HolderI 

@@ -9,11 +9,9 @@ import ()
 //
 type NodeList struct {
 	// list of child nodes
-	nodes []NodeI
-	// immediate parent, might be nil
-	holder HolderI
-	// ultimate parent, might be nil
-	doc DocumentI
+	nodes  []NodeI
+	holder *Element  // immediate parent, might be nil
+	doc    *Document // ultimate parent, might be nil
 }
 
 // Create an empty node list.
@@ -44,8 +42,7 @@ func (nl *NodeList) Append(node NodeI) (err error) {
 	if node == nil {
 		err = NilNode
 	} else {
-		// XXX nl not HolderI, so can't be param
-		node.SetHolder(nl)
+		node.SetHolder(nl.holder)
 		nl.nodes = append(nl.nodes, node)
 	}
 	return
@@ -70,8 +67,7 @@ func (nl *NodeList) MoveFrom(otherList *NodeList) (this *NodeList, err error) {
 			if err != nil {
 				break
 			}
-			// XXX nl not HolderI, so can't be param
-			node.SetHolder(nl)
+			node.SetHolder(nl.holder)
 			nl.nodes = append(nl.nodes, node)
 		}
 	}
@@ -99,8 +95,7 @@ func (nl *NodeList) Insert(n uint, node *Node) (err error) {
 		err = NilNode
 	}
 	if err == nil {
-		// XXX nl not HolderI, so can't be param
-		node.SetHolder(nl)
+		node.SetHolder(nl.holder)
 		if n == nl.Size() {
 			nl.nodes = append(nl.nodes, node)
 		} else {
@@ -141,7 +136,7 @@ func (nl *NodeList) Size() uint {
 
 // PROPERTIES ///////////////////////////////////////////////////
 // @return the immediate parent of this list//
-func (nl *NodeList) GetHolder() HolderI {
+func (nl *NodeList) GetHolder() *Element {
 	return nl.holder
 }
 
@@ -153,7 +148,7 @@ func (nl *NodeList) GetHolder() HolderI {
 //
 // @param h the new parent; may be nil
 //
-func (nl *NodeList) SetHolder(h *Holder) {
+func (nl *NodeList) SetHolder(h *Element) {
 	var doc *Document
 	if h == nil {
 		doc = nil
@@ -189,10 +184,9 @@ func (nl *NodeList) WalkHolders(v VisitorI) (err error) {
 		var n NodeI
 		n, err = nl.Get(i)
 		if err == nil {
-			isHolder := n.IsElement() || n.IsDocument()
-			if isHolder {
-				holder := n.(*Holder)
-				err = holder.WalkHolders(v)
+			switch w := n.(type) {
+			case *Element:
+				err = w.WalkHolders(v)
 			}
 		}
 	}

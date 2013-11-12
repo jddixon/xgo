@@ -5,8 +5,8 @@ package om
 type NodeI interface {
 	GetDocument() *Document
 	SetDocument(newDoc *Document) error
-	GetHolder() HolderI
-	SetHolder(h HolderI)
+	GetHolder() *Element
+	SetHolder(h *Element)
 	WalkAll(VisitorI) error
 	IsAttr() bool
 	IsComment() bool

@@ -16,10 +16,18 @@ import (
 // list.
 //
 type Element struct {
-	prefix string
-	name   string
-	aList  *AttrList
-	Holder
+	prefix   string
+	name     string
+	aList    *AttrList
+	nodeList *NodeList
+	nsUris   []string
+
+	// maps namespaces into prefixes
+	ns2pf map[string]string
+	// reverse mapping, prefixes into namespaces
+	pf2ns map[string]string
+
+	Node
 }
 
 //Create an XML element, given its prefix and name.  Both
@@ -30,19 +38,22 @@ type Element struct {
 //@param name   NCName, must not be nil
 //
 func NewElement(prefix, name string) (e *Element, err error) {
-	// super()
 
 	aList := NewAttrList()
 
-	// XXX nothing changes err
-
+	var nsUris []string
 	if err == nil {
 		e = &Element{
-			prefix: prefix,
-			name:   name,
-			aList:  aList,
+			prefix:   prefix,
+			name:     name,
+			aList:    aList,
+			ns2pf:    make(map[string]string), // namespace --> prefix map
+			pf2ns:    make(map[string]string), // prefix --> namespace map
+			nsUris:   nsUris,
+			nodeList: NewNewNodeList(), // creates empty list
 		}
 		aList.SetHolder(e)
+		e.nodeList.SetHolder(e)
 	}
 	return
 }
@@ -69,6 +80,48 @@ func (e *Element) GetName() string {
 //
 func (e *Element) GetAttrList() *AttrList {
 	return e.aList
+}
+
+// Add a prefix-namespace pair, updating the maps.
+//
+// @param prefix    the prefix, a NCNAME, may not be null
+// @param namespace XML-compatible namespace
+//
+func (e *Element) AddNamespace(prefix, namespace string) (err error) {
+	// XXX NEED MORE REASONABLE CHECKS
+	if namespace == "" {
+		err = EmptyNamespace
+	}
+	e.ns2pf[namespace] = prefix
+	if prefix != "" {
+		e.pf2ns[prefix] = namespace
+	}
+	e.nsUris = append(e.nsUris, namespace) // SILLY LEVEL OF OVERKILL
+	return
+}
+
+// Return a pointer to the list of children of this Element.
+// XXX This is not secure.
+func (e *Element) GetNodeList() *NodeList {
+	return e.nodeList
+}
+
+// Set this Element's ultimate parent, the Document it belongs
+// to.
+//
+func (e *Element) SetDocument(newDoc *Document) (err error) {
+	var docSetter *DocSetter
+
+	e.doc = newDoc
+	docSetter, err = NewDocSetter(e) // will use e's Document
+
+	if err == nil {
+		err = e.GetAttrList().WalkAll(docSetter)
+	}
+	if err == nil {
+		e.nodeList.WalkAll(docSetter) // set in subtree
+	}
+	return
 }
 
 // ATTRIBUTES ///////////////////////////////////////////////////
@@ -99,10 +152,54 @@ func (e *Element) GetAttr(n uint) (*Attr, error) {
 	return e.aList.Get(n)
 }
 
-// VISITOR-RELATED///////////////////////////////////////////////
+// CHILDREN /////////////////////////////////////////////////////////
+//
+// Add a child Node to the Element.
+//
+func (e *Element) AddChild(elm NodeI) (err error) {
+	if elm == nil {
+		err = NilChild
+	} else {
+		e.nodeList.nodes = append(e.nodeList.nodes, elm)
+	}
+	return
+}
+
+// VISITOR-RELATED///////////////////////////////////////////////////
 
 func (e *Element) WalkAttrs(v VisitorI) error {
 	return e.aList.WalkAll(v)
+}
+
+// Take a Visitor on that walk down the subtrees, visiting
+// every Node.
+//
+func (e *Element) WalkAll(v VisitorI) (err error) {
+	err = v.OnEntry(e)
+	if err == nil {
+		err = e.WalkAttrs(v)
+	}
+	if err == nil {
+		err = e.nodeList.WalkAll(v)
+		if err == nil {
+			err = v.OnExit(e)
+		}
+	}
+	return
+}
+
+// Take a Visitor on that walk down the subtrees, visiting
+// only subnode which are themselves Holders.
+//
+func (e *Element) WalkHolders(v VisitorI) (err error) {
+	err = v.OnEntry(e)
+	if err == nil {
+		err = e.nodeList.WalkHolders(v)
+		if err == nil {
+			err = v.OnExit(e)
+		}
+	}
+	return
 }
 
 // NODE METHODS /////////////////////////////////////////////////
@@ -170,3 +267,108 @@ func (e *Element) ToXml() (s string) {
 	}
 	return
 }
+
+// OTHER METHODS ////////////////////////////////////////////////
+//
+// XXX Replace h *Holder with e *Element throughout.
+//
+// Arrive here having seen either START_DOCUMENT or START_TAG and
+// having created a Node of the appropriate type.
+//
+// throws CoreXmlException, IOException, XmlPullParserException
+
+// func (h *Holder) Populator (xpp pp.XmlPullParserI, depth, endEvent int) (
+// 	err error) {
+//
+//     if (!nodeList.isEmpty())
+//         throw new IllegalStateException("NodeList is not empty")
+//     int elementCount = 0
+//     int event
+//
+//     // COLLECT ANY NAME SPACES ////////////////////////
+//     int myDepth = xpp.getDepth()
+//     int nsPrev  = myDepth <= 0 ? 0 : xpp.getNamespaceCount(myDepth - 1)
+//     int nsNow   = xpp.getNamespaceCount(myDepth)
+//     nsUris = new ArrayList (nsNow - nsPrev);  // XXX CHECK ME
+//
+//     for (int i = nsPrev; i < nsNow; i++) {
+//         String prefix = xpp.getNamespacePrefix(i)
+//         String uri    = xpp.getNamespaceUri(i)
+//         addNamespace (prefix, uri)
+//         // DEBUG
+//         //System.out.println("namespace " + i + ", " + prefix + ":" + uri)
+//         // END
+//     }
+//     // COLLECT ATTRIBUTES /////////////////////////////
+//     if (isElement()) {
+//         int count = xpp.getAttributeCount()
+//         Element me = (Element)this
+//         for (int i = 0; i < count; i++) {
+//             // IGNORE TYPE FOR NOW
+//             // IGNORE ATTR NAMESPACE
+//             me.addAttr(xpp.getAttributePrefix(i),
+//                         xpp.getAttributeName(i), xpp.getAttributeValue(i))
+//         }
+//     }
+//     // COLLECT CHILDREN ///////////////////////////////
+//     // detect empty document
+//     try {
+//         event = xpp.nextToken()
+//     } catch (IOException ioe) {
+//         return
+//     }
+// 		// empty document detection did nextToken()
+//     for (event != pp.END_DOCUMENT && event != endEvent
+//                     event = xpp.nextToken()) {
+//         switch (event) {
+//             case pp.START_TAG:
+//                 if (isDocument() && elementCount > 0)
+//                     throw new CoreXmlException(
+//                             "more than one root element found")
+//                 elementCount++
+//                 Element elm = new Element(xpp.getName())
+//                 elm.populator(xpp, depth + 1, pp.END_TAG)
+//                 nodeList.append(elm)
+//                 if (isDocument()) {
+//                     Document me = (Document) this
+//                     if (me.getElementNode() == nil)
+//                         me.setElementNode(elm)
+//                     else
+//                         throw new IllegalStateException (
+//                             "second element at root level in document")
+//                 }
+//                 break
+//             case pp.IGNORABLE_WHITESPACE:
+//             case pp.TEXT:
+//                 nodeList.append( new Text(xpp.getText()))
+//                 break
+//             case pp.COMMENT:
+//                 nodeList.append( new Comment(xpp.getText()))
+//                 break
+//             case pp.CDSECT:
+//                 nodeList.append( new Cdata(xpp.getText()))
+//                 break
+//             case pp.PROCESSING_INSTRUCTION:
+//                 nodeList.append( new ProcessingInstruction (xpp.getText() ))
+//                 break
+//
+//             // //////////////////////////////////////////////////
+//             // THESE ARE NOT YET HANDLED ////////////////////////
+//             // //////////////////////////////////////////////////
+//             case pp.DOCDECL:
+//                 // DEBUG
+//                 System.out.println("    *** IGNORING DOCDECL TOKEN ***")
+//                 // END
+//                 break
+//             case pp.ENTITY_REF:
+//                 // DEBUG
+//                 System.out.println("    *** IGNORING ENTITY_REF TOKEN ***")
+//                 // END
+//                 break
+//             default:
+//                 throw new CoreXmlException(
+//                     "unknown event type " + event)
+//         }
+//     }
+// }
+//

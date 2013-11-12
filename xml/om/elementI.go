@@ -13,5 +13,8 @@ type ElementI interface {
 	// IsElement() bool		// in NodeI
 	ToString() string
 	// ToXml() string		// in NodeI
-	HolderI
+
+	// XXX MISSING Element FUNCTIONS MOVED THERE FROM Holder
+
+	NodeI
 }
