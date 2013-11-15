@@ -9,7 +9,7 @@ package om
 // Implements VisitorI
 //
 type DocSetter struct {
-	ThisDocument *Document
+	ThisDocument DocumentI
 }
 
 func NewDocSetter(e *Element) (ds *DocSetter, err error) {

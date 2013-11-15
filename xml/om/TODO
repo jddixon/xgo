@@ -1,16 +1,21 @@
 xgo/xml/om/TODO
 
+2013-11-15
+    * write/translate attr_list_test.go                                 * DONE
+    * text_test.go
+    * cdata.go, cdata_test.go
+    * comment.go, comment_test.go
+    * pi.go, pi_test.go
+    * node_test.go
+    * node_list_test.go
+    * element_test.go
+    * document_test.go
+
 2013-11-12
-    * drop Holder, merging its data structures into Element
-
-2013-11-09
-    * FIX: NodeList invokes SetHolder(), making itself the holder,
-        but it doesn't satisfy HolderI 
-
-2013-11-05
-    * FIX: attr.go getting "invalid recursive type Node" and            * DONE
-        "invalid recursive type Attr"                                   * DONE
-
-2013-11-03
-    * where an error is being returned, cannot chain, so DO NOT         * DONE
-        return 'this'                                                   * DONE
+    * drop Holder, merging its data structures into Element             * DONE
+    * fix one remaining error, line 98 document.go, using *Document     * DONE
+        in SetHolder()                                                  * DONE
+    * drop or make useful holderI.go
+    * drop holder.go
+    * get rid of IsAttr(), IsComment(), etc
+    * write attr_test.go                                                * DONE

@@ -3,10 +3,10 @@ package om
 // xgo/xml/om/nodeI.go
 
 type NodeI interface {
-	GetDocument() *Document
-	SetDocument(newDoc *Document) error
-	GetHolder() *Element
-	SetHolder(h *Element)
+	GetDocument() DocumentI
+	SetDocument(newDoc DocumentI) error
+	GetHolder() ElementI
+	SetHolder(h ElementI)
 	WalkAll(VisitorI) error
 	IsAttr() bool
 	IsComment() bool

@@ -148,16 +148,15 @@ func (nl *NodeList) GetHolder() *Element {
 //
 // @param h the new parent; may be nil
 //
-func (nl *NodeList) SetHolder(h *Element) {
-	var doc *Document
-	if h == nil {
-		doc = nil
-	} else {
+func (nl *NodeList) SetHolder(h ElementI) {
+	var doc DocumentI
+	if h != nil {
 		doc = h.GetDocument()
 	}
 	for i := uint(0); i < nl.Size(); i++ {
 		node, _ := nl.Get(i)
 		node.SetHolder(h)
+		node.SetDocument(doc)
 	}
 }
 

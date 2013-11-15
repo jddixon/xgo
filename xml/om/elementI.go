@@ -3,6 +3,11 @@ package om
 // xgo/xml/om/elementI.go
 
 type ElementI interface {
+	AddNamespace(prefix, namespace string) error
+	GetNodeList() *NodeList
+	AddChild(elm NodeI) error
+	WalkHolders(v VisitorI) error
+
 	GetPrefix() string
 	GetName() string
 	GetAttrList() *AttrList

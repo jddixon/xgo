@@ -3,8 +3,8 @@ package om
 import ()
 
 type Node struct {
-	doc    *Document // this node's ultimate parent; may be nil
-	holder *Element  // this node's immediate parent; may be nil
+	doc    DocumentI // this node's ultimate parent; may be nil
+	holder ElementI  // this node's immediate parent; may be nil
 }
 
 func NewNode() (node *Node) {
@@ -13,7 +13,7 @@ func NewNode() (node *Node) {
 }
 
 // Return this node's ultimate parent, the XML document.
-func (node *Node) GetDocument() *Document {
+func (node *Node) GetDocument() DocumentI {
 	return node.doc
 }
 
@@ -25,7 +25,7 @@ func (node *Node) GetDocument() *Document {
 //
 //  @param newDoc new value assigned; may be nil
 //
-func (node *Node) SetDocument(newDoc *Document) (err error) {
+func (node *Node) SetDocument(newDoc DocumentI) (err error) {
 	if newDoc == nil {
 		err = NilDocument
 	} else {
@@ -36,7 +36,7 @@ func (node *Node) SetDocument(newDoc *Document) (err error) {
 
 // Get this node's parent.
 //
-func (node *Node) GetHolder() *Element {
+func (node *Node) GetHolder() ElementI {
 	return node.holder
 }
 
@@ -49,11 +49,16 @@ func (node *Node) GetHolder() *Element {
 //
 // @param h a reference to the new parent, may be nil
 //
-func (node *Node) SetHolder(e *Element) {
+func (node *Node) SetHolder(e ElementI) {
 	if e == nil {
 		node.doc = nil
-	} else if e.GetDocument() != node.doc {
-		node.SetDocument(e.GetDocument())
+	} else {
+		eDoc := e.GetDocument()
+		if eDoc == nil {
+			node.doc = nil
+		} else if eDoc != node.doc {
+			node.SetDocument(eDoc)
+		}
 	}
 }
 

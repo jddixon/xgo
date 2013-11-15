@@ -109,7 +109,7 @@ func (e *Element) GetNodeList() *NodeList {
 // Set this Element's ultimate parent, the Document it belongs
 // to.
 //
-func (e *Element) SetDocument(newDoc *Document) (err error) {
+func (e *Element) SetDocument(newDoc DocumentI) (err error) {
 	var docSetter *DocSetter
 
 	e.doc = newDoc

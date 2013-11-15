@@ -10,10 +10,11 @@ import (
 //
 type AttrList struct {
 	attrs  []*Attr
-	holder *Element
+	holder ElementI
 }
 
 // Create an empty attribute list with no holder specified.
+//
 func NewNewAttrList() *AttrList {
 	return &AttrList{}
 }
@@ -29,15 +30,13 @@ func NewAttrList(a ...*Attr) (aList *AttrList) {
 
 //Add an attribute to an existing container.
 //
-//@param  attr the attribute to be inserted
-//@return a reference to this list, to allow chaining
-//@throws NullPointerException if the Attr argument is null
-//
 func (aList *AttrList) Add(attr *Attr) (err error) {
 	if attr == nil {
 		err = NilAttr
 	} else {
-		attr.SetHolder(aList.holder)
+		if aList.holder != nil {
+			attr.SetHolder(aList.holder)
+		}
 		aList.attrs = append(aList.attrs, attr)
 	}
 	return
@@ -129,12 +128,14 @@ func (aList *AttrList) WalkAll(v VisitorI) (err error) {
 }
 
 // SERIALIZATION ////////////////////////////////////////////////
-// @return the list in XML String form//
+
+// Return the list in XML String form.
+//
 func (aList *AttrList) ToXml() string {
 
 	var ss []string
 	for i := uint(0); i < aList.Size(); i++ {
 		ss = append(ss, aList.attrs[i].ToXml())
 	}
-	return strings.Join(ss, "\n")
+	return strings.Join(ss, "")
 }

@@ -84,7 +84,7 @@ func (doc *Document) GetEncoding() string {
 //
 // @return a reference to the document's element node
 //
-func (doc *Document) GetElementNode() *Element {
+func (doc *Document) GetElementNode() ElementI {
 	return &doc.Element
 }
 
@@ -94,8 +94,8 @@ func (doc *Document) GetElementNode() *Element {
 // element is well-formed AND that this does not introduce
 // cycles into the graph.
 //
-func (doc *Document) SetElement(elm *Element) (err error) {
-	elm.SetHolder(doc) // XXX must be *Element
+func (doc *Document) SetElement(elm ElementI) (err error) {
+	elm.SetHolder(doc)
 	elm.SetDocument(doc)
 	return
 }
