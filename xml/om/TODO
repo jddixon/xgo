@@ -1,10 +1,13 @@
 xgo/xml/om/TODO
 
+2013-11-16
+    * verify that all node-type tests test String()
+
 2013-11-15
     * write/translate attr_list_test.go                                 * DONE
-    * text_test.go
-    * cdata.go, cdata_test.go
-    * comment.go, comment_test.go
+    * text_test.go                                                      * DONE
+    * cdata.go, cdata_test.go                                           * DONE
+    * comment.go, comment_test.go                                       * DONE
     * pi.go, pi_test.go
     * node_test.go
     * node_list_test.go
@@ -16,6 +19,6 @@ xgo/xml/om/TODO
     * fix one remaining error, line 98 document.go, using *Document     * DONE
         in SetHolder()                                                  * DONE
     * drop or make useful holderI.go
-    * drop holder.go
+    * drop holder.go (it's empty)
     * get rid of IsAttr(), IsComment(), etc
     * write attr_test.go                                                * DONE

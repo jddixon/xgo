@@ -1,8 +1,6 @@
 package om
 
-import (
-	"fmt"
-)
+import ()
 
 // An XML Node containing text in String format.
 type Text struct {
@@ -41,9 +39,9 @@ func (t *Text) IsText() bool {
 	return true
 }
 func (t *Text) String() string {
-	return fmt.Sprintf("[Text:'%s']", t.text)
+	return "[Text:'" + t.text + "']"
 }
 
-func (t *Text) toXml() string {
+func (t *Text) ToXml() string {
 	return t.text
 }
