@@ -4,10 +4,13 @@ package om
 
 type NodeI interface {
 	GetDocument() DocumentI
-	SetDocument(newDoc DocumentI) error
 	GetHolder() ElementI
+	SetDocument(newDoc DocumentI) error
 	SetHolder(h ElementI)
+	ToXml() string
 	WalkAll(VisitorI) error
+
+	// are these of any value at all?
 	IsAttr() bool
 	IsComment() bool
 	IsDocument() bool
@@ -15,5 +18,4 @@ type NodeI interface {
 	IsElement() bool
 	IsText() bool
 	IsProcessingInstruction() bool
-	ToXml() string
 }

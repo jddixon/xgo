@@ -8,7 +8,8 @@ xgo/xml/om/TODO
     * text_test.go                                                      * DONE
     * cdata.go, cdata_test.go                                           * DONE
     * comment.go, comment_test.go                                       * DONE
-    * pi.go, pi_test.go
+
+    * pi.go, pi_test.go                                                 * DONE
     * node_test.go
     * node_list_test.go
     * element_test.go

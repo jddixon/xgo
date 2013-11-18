@@ -8,6 +8,7 @@ var (
 	EmptyNamespace   = e.New("empty namespace argument")
 	EmptyOtherList   = e.New("other list is empty")
 	GraphCycleError  = e.New("graph cycle error")
+	IllFormedPI      = e.New("ill-formed processing instruction")
 	IndexOutOfBounds = e.New("index out of bounds")
 	NilAttr          = e.New("nil Attr argument")
 	NilChild         = e.New("nil child argument")
