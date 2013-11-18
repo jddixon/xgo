@@ -15,12 +15,11 @@ type ProcessingInstruction struct {
 // Create a node by specifying the target (language) and text
 // separately.
 //
-func NewProcessingInstruction(target string, text string) (
-	*ProcessingInstruction) {
+func NewProcessingInstruction(target string, text string) *ProcessingInstruction {
 
-	return &ProcessingInstruction {
-		target : target,
-		text : text,
+	return &ProcessingInstruction{
+		target: target,
+		text:   text,
 	}
 }
 
@@ -36,9 +35,9 @@ func ProcessingInstructionFromString(comboText string) (
 	if spaceAt == -1 {
 		err = IllFormedPI
 	} else {
-		this = & ProcessingInstruction {
-			target:  comboText[0:spaceAt],
-			text: comboText[spaceAt+1:],
+		this = &ProcessingInstruction{
+			target: comboText[0:spaceAt],
+			text:   comboText[spaceAt+1:],
 		}
 	}
 	return

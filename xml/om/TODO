@@ -8,9 +8,9 @@ xgo/xml/om/TODO
     * text_test.go                                                      * DONE
     * cdata.go, cdata_test.go                                           * DONE
     * comment.go, comment_test.go                                       * DONE
-
     * pi.go, pi_test.go                                                 * DONE
-    * node_test.go
+    * node_test.go                                                      * DONE
+
     * node_list_test.go
     * element_test.go
     * document_test.go
@@ -20,6 +20,6 @@ xgo/xml/om/TODO
     * fix one remaining error, line 98 document.go, using *Document     * DONE
         in SetHolder()                                                  * DONE
     * drop or make useful holderI.go
-    * drop holder.go (it's empty)
+    * drop holder.go (it's empty)                                       * DONE
     * get rid of IsAttr(), IsComment(), etc
     * write attr_test.go                                                * DONE

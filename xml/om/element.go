@@ -61,7 +61,7 @@ func NewElement(prefix, name string) (e *Element, err error) {
 //
 //Create an XML element, defaulting the prefix to nil.
 //
-func (e *Element) NewNewElement(name string) (*Element, error) {
+func NewNewElement(name string) (*Element, error) {
 	return NewElement("", name)
 }
 

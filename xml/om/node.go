@@ -1,6 +1,10 @@
 package om
 
-import ()
+import (
+	"fmt"
+)
+
+var _ = fmt.Print // DEBUG
 
 type Node struct {
 	doc    DocumentI // this node's ultimate parent; may be nil
