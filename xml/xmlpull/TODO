@@ -1,8 +1,14 @@
 xgo/xml/xmlpull/TODO
 
+2013-11-08
+    * For string interning see eg stackoverflow 13017499            * DONE
+        is-there-an-equivalent-to-javas-string-intern-function-in-go* DONE
+
+    * but We should be interning []byte instead!
+
 2013-11-05
-    * Complete rough transcription of comments from xmlpull specs,
-        budgeting
-        - about 270 lines day 1
-        - about 270 lines day 2
-        The object is not to translate all of the Java.
+    * Complete rough transcription of comments from xmlpull specs,	* DONE
+        budgeting			                                      	* DONE
+        - about 270 lines day 1				                        * DONE
+        - about 270 lines day 2				                        * DONE
+        The object is not to translate all of the Java.				* DONE

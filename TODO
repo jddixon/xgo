@@ -1,4 +1,5 @@
 xgo/TODO
 
-2013-10-28
-    * 
+2013-11-13
+    * look at Python ElementTree
+    * go implementation, go-etree, seems to be very much incomplete

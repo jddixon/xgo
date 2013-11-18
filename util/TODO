@@ -1,0 +1,7 @@
+xgo/util/TODO
+
+2013-11-08
+    * StrIntern needs a Count() or Size() function
+        - need to read lock the map for this
+        - and need to test
+    * Need ByteIntern as well or instead

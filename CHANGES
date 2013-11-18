@@ -1,4 +1,8 @@
 xgo/CHANGES
 
-2013-10-28
-    * 
+2013-11-18
+    v0.1.0
+        * util StrIntern coded, tested
+        * skeletal xml/xmlpull parser, xml_pull_parserI.go 
+        * xml/om node types complete, also attr,attr_list,cdata,    SLOC  1231
+            comment,pi,text,node_test.go
