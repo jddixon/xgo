@@ -1,5 +1,7 @@
 package om
 
+// xgo/xml/om/node_list_test.go
+
 import (
 	. "launchpad.net/gocheck"
 )

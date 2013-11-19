@@ -1,5 +1,10 @@
 xgo/xml/om/TODO
 
+2013-11-19
+    * drop node_test.go, which is just a mistranslation of Java
+    * consider writing a node_test.go
+    * elaborate element_test.go
+
 2013-11-16
     * verify that all node-type tests test String()
 
@@ -10,9 +15,9 @@ xgo/xml/om/TODO
     * comment.go, comment_test.go                                       * DONE
     * pi.go, pi_test.go                                                 * DONE
     * node_test.go                                                      * DONE
+    * node_list_test.go                                                 * DONE
+    * element_test.go                                                   * DONE
 
-    * node_list_test.go
-    * element_test.go
     * document_test.go
 
 2013-11-12
