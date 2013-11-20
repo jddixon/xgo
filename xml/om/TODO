@@ -1,7 +1,7 @@
 xgo/xml/om/TODO
 
 2013-11-19
-    * drop node_test.go, which is just a mistranslation of Java
+    * drop node_test.go, which is just a mistranslation of Java         * DONE
     * consider writing a node_test.go
     * elaborate element_test.go
 
@@ -17,14 +17,8 @@ xgo/xml/om/TODO
     * node_test.go                                                      * DONE
     * node_list_test.go                                                 * DONE
     * element_test.go                                                   * DONE
-
-    * document_test.go
+    * document_test.go                                                  * DONE
 
 2013-11-12
-    * drop Holder, merging its data structures into Element             * DONE
-    * fix one remaining error, line 98 document.go, using *Document     * DONE
-        in SetHolder()                                                  * DONE
     * drop or make useful holderI.go
-    * drop holder.go (it's empty)                                       * DONE
     * get rid of IsAttr(), IsComment(), etc
-    * write attr_test.go                                                * DONE

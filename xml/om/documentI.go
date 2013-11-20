@@ -7,7 +7,7 @@ type DocumentI interface {
 	SetDocType(dt *DocumentType) error
 	GetEncoding() string
 	GetElementNode() ElementI
-	SetElement(elm ElementI) error
+	SetElementNode(elm ElementI) error
 	GetVersion() string
 	ElementI
 }

@@ -2,13 +2,64 @@ package om
 
 // xgo/xml/om/document.go
 
-import ()
+import (
+	"fmt"
+	"strings"
+)
+
+var _ = fmt.Print
 
 const (
 	DEFAULT_VERSION  = "1.0"
 	DEFAULT_ENCODING = "UTF-8"
 	DEFAULT_XML_DECL = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 )
+
+// A simplistic XML decl parser.
+//
+func ParseXmlDecl(decl string) (version, encoding string, err error) {
+
+	var ndx int
+	decl = strings.TrimSpace(decl)
+	if !strings.HasPrefix(decl, "<?xml ") {
+		err = IllFormedDecl
+	} else {
+		decl = decl[6:]
+		ndx = strings.Index(decl, "?>")
+		if ndx == -1 {
+			err = IllFormedDecl
+		} else {
+			decl = decl[:ndx]
+		}
+	}
+	if err == nil {
+		parts := strings.Split(decl, " ")
+		if len(parts) == 2 {
+			subParts := strings.Split(parts[0], "\"")
+			if len(subParts) != 3 {
+				err = IllFormedDecl
+			} else if subParts[0] == "version=" {
+				version = subParts[1]
+			} else {
+				err = IllFormedDecl
+			}
+			if err == nil {
+				subParts = strings.Split(parts[1], "\"")
+				if len(subParts) != 3 {
+					err = IllFormedDecl
+				} else if subParts[0] == "encoding=" {
+					encoding = subParts[1]
+				} else {
+					err = IllFormedDecl
+				}
+			}
+
+		} else {
+			err = IllFormedDecl
+		}
+	}
+	return
+}
 
 // An XML Document, a Holder which can contain only one Element instead
 // of a NodeList, has no attributes, and no namespaces.
@@ -24,13 +75,19 @@ type Document struct {
 // @param decl the XML declaration
 //
 func NewDocumentFromDecl(decl string) (doc *Document, err error) {
-	// super()
-	// XXX SHOULD PROPERLY PARSE DECLARATION ! //
 
+	version, encoding, err := ParseXmlDecl(decl)
+	if err == nil {
+		doc = &Document{
+			version:  version,
+			encoding: encoding,
+		}
+	}
 	return
 }
 
-// Create an XML document with the default XML declaration.//
+// Create an XML document with the default XML declaration.
+//
 func NewNewDocument() (*Document, error) {
 	return NewDocumentFromDecl(DEFAULT_XML_DECL)
 }
@@ -44,7 +101,7 @@ func NewNewDocument() (*Document, error) {
 // @param encoding if nil, the default is used
 //
 func NewDocument(version, encoding string) (doc *Document, err error) {
-	// super()
+
 	if version == "" {
 		version = DEFAULT_VERSION
 	}
@@ -94,9 +151,16 @@ func (doc *Document) GetElementNode() ElementI {
 // element is well-formed AND that this does not introduce
 // cycles into the graph.
 //
-func (doc *Document) SetElement(elm ElementI) (err error) {
-	elm.SetHolder(doc)
-	elm.SetDocument(doc)
+func (doc *Document) SetElementNode(elm ElementI) (err error) {
+
+	if elm == nil {
+		err = NilElement
+	} else {
+		ePtr := elm.(*Element)
+		ePtr.SetHolder(doc)
+		ePtr.SetDocument(doc)
+		doc.Element = *ePtr
+	}
 	return
 }
 
@@ -121,9 +185,6 @@ func (doc *Document) IsDocument() bool {
 func (doc *Document) ToXml() (s string) {
 	s = "<?xml version=\"" + doc.version +
 		"\" encoding=\"" + doc.encoding + "\"?>\n"
-	for i := uint(0); i < doc.nodeList.Size(); i++ {
-		node, _ := doc.nodeList.Get(i)
-		s += node.ToXml()
-	}
+	s += doc.Element.ToXml()
 	return
 }

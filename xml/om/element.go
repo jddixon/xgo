@@ -217,53 +217,57 @@ func (e *Element) ToString() string {
 	return fmt.Sprintf("[Element: tag: %s ...]", e.name)
 }
 
-//@return the element and its attributes in XML form, unindented
+// Return the element and its attributes in XML form, unindented.
+// If the element has no name, we return an empty string.
 //
 func (e *Element) ToXml() (s string) {
 
 	// conditionally output prefix
+	if e.name != "" {
+		s = "<" + e.name
 
-	s = "<" + e.name
+		// conditionally output attributes
+		if e.aList != nil {
+			attrCount := e.aList.Size()
+			for i := uint(0); i < attrCount; i++ {
+				attr, _ := e.aList.Get(i)
+				s += " " + attr.ToXml()
+			}
+		}
 
-	// conditionally output attributes
-	attrCount := e.aList.Size()
-	for i := uint(0); i < attrCount; i++ {
-		attr, _ := e.aList.Get(i)
-		s += " " + attr.ToXml()
-	}
+		// conditionally output ns2pf
+		for i := 0; i < len(e.nsUris); i++ {
+			ns := e.nsUris[i]
+			p := e.ns2pf[ns]
+			s += " "
+			if p == "" {
+				s += "xmlns=\""
+			} else {
+				s += "xmlns:" + p + "=\""
+			}
+			s += ns + "\""
+		}
 
-	// conditionally output ns2pf
-	for i := 0; i < len(e.nsUris); i++ {
-		ns := e.nsUris[i]
-		p := e.ns2pf[ns]
-		s += " "
-		if p == "" {
-			s += "xmlns=\""
+		nodes := e.GetNodeList()
+		if (nodes != nil) && (nodes.Size() > 0) {
+			// line separator
+			s += ">\n"
+			ss := []string{s}
+
+			// conditionally output body
+			for i := uint(0); i < nodes.Size(); i++ {
+				node, _ := nodes.Get(i)
+				body := node.ToXml()
+				ss = append(ss, body)
+			}
+			// prefix ?
+			ss = append(ss, "</"+e.name+">\n")
+			s += strings.Join(ss, "\n")
+
 		} else {
-			s += "xmlns:" + p + "=\""
+			// empty element
+			s += "/>\n"
 		}
-		s += ns + "\""
-	}
-
-	nodes := e.GetNodeList()
-	if nodes.Size() > 0 {
-		// line separator
-		s += ">\n"
-		ss := []string{s}
-
-		// conditionally output body
-		for i := uint(0); i < nodes.Size(); i++ {
-			node, _ := nodes.Get(i)
-			body := node.ToXml()
-			ss = append(ss, body)
-		}
-		// prefix ?
-		ss = append(ss, "</"+e.name+">\n")
-		s += strings.Join(ss, "\n")
-
-	} else {
-		// empty element
-		s += "/>\n"
 	}
 	return
 }
