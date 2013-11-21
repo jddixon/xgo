@@ -11,6 +11,7 @@ var (
 	IllegalArgument          = e.New("XmlPullParser illegal argument")
 	IndexOutOfBounds         = e.New("XmlPullParser index out of bounds")
 	IOError                  = e.New("XmlPullParser io error")
+	NilReader                = e.New("nil reader argument")
 	NotOnStartTag            = e.New("XmlPullParser not on start tag")
 	NotElementContentRelated = e.New("XmlPullParser not element-content-related")
 	PosOutOfRange            = e.New("XmlPullParser pos out of range")

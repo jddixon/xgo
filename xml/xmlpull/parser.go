@@ -1,26 +1,21 @@
 package xmlpull
 
-import(
+import (
 	gu "github.com/jddixon/xgo/util"
 )
 
 type Parser struct {
-	si	gu.StrIntern
-
-
+	si gu.StrIntern
 }
 
 func NewParser() (p *Parser, err error) {
 
 	si := gu.NewStrIntern()
 
-
 	if err == nil {
-		p = &Parser {
-			si:	si,
+		p = &Parser{
+			si: si,
 		}
 	}
 	return
 }
-
-

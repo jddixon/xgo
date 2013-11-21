@@ -1,5 +1,14 @@
 xgo/xml/xmlpull/TODO
 
+2013-11-20
+    * build skeletal parser as xpp.go
+        - be able to read and parse first line
+            * parseXmlDecl()
+
+    * write basic parser functions 
+        - IsSpace()
+        - ExpectSpace()
+
 2013-11-08
     * For string interning see eg stackoverflow 13017499            * DONE
         is-there-an-equivalent-to-javas-string-intern-function-in-go* DONE

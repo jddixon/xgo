@@ -164,7 +164,7 @@ type XmlPullParserI interface {
 	// allowing parser to free internal resources (such as parsing buffers).
 	//
 	// May return XmlPullParserException
-	SetInput(in io.Reader) error
+	SetInput(in *io.Reader) error
 
 	// -- DefineEntityReplacement -----------------------------------
 
@@ -421,7 +421,7 @@ type XmlPullParserI interface {
 	// @param zero based index of attribute
 	// @return attribute namespace or "" if namesapces processing is not enabled.
 	//
-	GetAttributeNamespace(index int) string
+	GetAttributeNamespace(index int) (ns string, err error)
 
 	// -- GetAttributeName ------------------------------------------
 
@@ -446,7 +446,7 @@ type XmlPullParserI interface {
 	// @param zero based index of attribute
 	// @return attribute prefix or null if namesapces processing is not enabled.
 	//
-	GetAttributePrefix(index int) string
+	GetAttributePrefix(index int) (string, error)
 
 	// -- GetAttributeValue -----------------------------------------
 
@@ -475,7 +475,7 @@ type XmlPullParserI interface {
 	// @see #nextToken()
 	// May throw XmlPullParserException
 	//
-	GetEventType() (int, error)
+	GetEventType() (PullToken, error)
 
 	// -- Next ------------------------------------------------------
 
