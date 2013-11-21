@@ -1,0 +1,43 @@
+package xmlpull
+import ( "io")
+type XmlPullParserI interface {
+
+	SetFeature(name string, state bool) error
+	GetFeature(name string) (bool, error)
+	SetProperty(name string, value interface{}) error
+	GetProperty(name string) interface{}
+	SetInput(in io.Reader) error
+
+	DefineEntityReplacementText(entityName, replacementText string) error
+	GetNamespaceCount(depth int) (int, error)
+	GetNamespacePrefix(pos int) (string, error)
+	GetNamespaceUri(pos int) (string, error)
+	GetNamespaceForPrefix(prefix string) (string, error)
+
+	GetDepth() int
+	GetPositionDescription() string
+	GetLineNumber() int
+	GetColumnNumber() int
+	IsWhitespace() (bool, error)
+
+	GetText() string
+	GetTextCharacters(holderForStartAndLength []int) []byte
+	GetNamespace() (string, error)
+	GetName() string
+	GetPrefix() string
+
+	IsEmptyElementTag() (bool, error)
+	GetAttributeCount() int
+	GetAttributeNamespace(index int) string
+	GetAttributeName(index int) string
+	GetAttributePrefix(index int) string
+
+	GetAttributeValue(index int) (string, error)
+	GetAttributeValueNS(namespace, name string) (string, error)
+	GetEventType() (int, error)
+	Next() (int, error)
+	NextToken() (int, error)
+
+	Require(type_ int, namespace, name string)
+	ReadText() string
+}

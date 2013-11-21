@@ -1,0 +1,57 @@
+public class MXParser
+    public MXParser() {
+
+    public void setFeature(String name,
+    public boolean getFeature(String name)
+    public void setProperty(String name,
+    public Object getProperty(String name)
+    public void setInput(Reader in) throws XmlPullParserException
+    public void setInput(java.io.InputStream inputStream, String inputEncoding)
+    public String getInputEncoding() {
+    
+    public void defineEntityReplacementText(String entityName,
+    public int getNamespaceCount(int depth)
+    public String getNamespacePrefix(int pos)
+    public String getNamespaceUri(int pos) throws XmlPullParserException
+    public String getNamespace( String prefix )
+
+    public int getDepth()
+    public String getPositionDescription ()
+    public int getLineNumber()
+    public int getColumnNumber()
+    public boolean isWhitespace() throws XmlPullParserException
+
+    public String getText()
+    public char[] getTextCharacters(int [] holderForStartAndLength)
+    public String getNamespace()
+    public String getName()
+    public String getPrefix()
+
+    public boolean isEmptyElementTag() throws XmlPullParserException
+    public int getAttributeCount()
+    public String getAttributeNamespace(int index)
+    public String getAttributeName(int index)
+    public String getAttributePrefix(int index)
+    
+    public String getAttributeValue(int index)
+    public String getAttributeValue(String namespace,
+    public int getEventType()
+    public String nextText() throws XmlPullParserException, IOException
+    public int next()
+    public int nextToken()
+   
+    // These have been moved here. ------------------------------------
+
+    public void require(int type, String namespace, String name)
+    // public String readText() throws XmlPullParserException, IOException
+
+    // These are not part of the formal interface ---------------------
+
+    public String getAttributeType(int index) {
+    public boolean isAttributeDefault(int index) {
+    public int nextTag() throws XmlPullParserException, IOException
+    
+    public void skipSubTree()
+    public int parseEndTag() throws XmlPullParserException, IOException {
+    public int parseStartTag() throws XmlPullParserException, IOException {
+    //    public int getCurrentInputPosition() {

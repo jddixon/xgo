@@ -1,7 +1,7 @@
 xgo/xml/xmlpull/TODO
 
-2013-11-20
-    * build skeletal parser as xpp.go
+2013-11-21 (11-20, edited)
+    * build skeletal parser as parser.go
         - be able to read and parse first line
             * parseXmlDecl()
 
@@ -9,15 +9,17 @@ xgo/xml/xmlpull/TODO
         - IsSpace()
         - ExpectSpace()
 
+    * write parser_test.go, initially testing that reset() works 
+        as expected
+
+    * SWAP NAMES parser.go <--> xpp.go                                  * DONE
+    * move strIntern stuff into parser.go                               * DONE
+    * xpp.go becomes the command line program, and so should move to    * DONE
+        xgo/cmd/xpp or xgo/cmd/xgoXPP                                   * DONE
+
 2013-11-08
-    * For string interning see eg stackoverflow 13017499            * DONE
-        is-there-an-equivalent-to-javas-string-intern-function-in-go* DONE
+    * For string interning see eg stackoverflow 13017499                * DONE
+        is-there-an-equivalent-to-javas-string-intern-function-in-go    * DONE
 
     * but We should be interning []byte instead!
 
-2013-11-05
-    * Complete rough transcription of comments from xmlpull specs,	* DONE
-        budgeting			                                      	* DONE
-        - about 270 lines day 1				                        * DONE
-        - about 270 lines day 2				                        * DONE
-        The object is not to translate all of the Java.				* DONE
