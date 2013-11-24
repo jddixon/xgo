@@ -1,0 +1,9 @@
+xgo/lex/TODO
+
+2013-11-23
+    * need a lex.SyntaxError that adds line and column number
+        - this satisfies the error interface and so has an
+            Error(string) method
+    * convert lex_input.go to use runes instead of ASCII characters
+
+

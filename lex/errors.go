@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	ExpectedSpace			= e.New("expected space")
+	ExpectedSpace = e.New("expected space")
 )
