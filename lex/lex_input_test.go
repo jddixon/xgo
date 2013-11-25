@@ -4,76 +4,107 @@ package lex
 
 import (
 	"fmt"
+	"io"
 	. "launchpad.net/gocheck"
-	//"strings"
+	"strings"
 	u "unicode"
-	"unicode/utf8"
+	//"unicode/utf8"
 )
 
 var _ = fmt.Print
 
 func (s *XLSuite) TestS(c *C) {
-
 	whitespace := " \n\r\t"
 	for _, r := range whitespace {
 		c.Assert(u.IsSpace(r), Equals, true)
 	}
+}
 
-	nihongo := "This is \u65e5\u672c\u8a93"
-	// 3 bytes per kanji
-	c.Assert(len(nihongo), Equals, 17)
-	c.Assert(utf8.RuneCountInString(nihongo), Equals, 11)
-	fmt.Printf("THE ENTIRE STRING:     '%s'\n", nihongo)
-	fmt.Printf("A CHARACTER AT A TIME: '")
+func (s *XLSuite) TestStringReader(c *C) {
 
-	// This prints out each Unicode character, each rune, as expected.
-	for _, ch := range nihongo {
-		fmt.Printf("%c", ch)
-	}
-	fmt.Println("'")
+	var rd1 io.Reader = strings.NewReader(TOKYO)
+	var runes []rune
+	lx, err := NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
 
-	tokyo := "私たちは、約3年半、東京の若松町に住んでいました。"
-	c.Assert(utf8.RuneCountInString(tokyo), Equals, 25)
-	// 3 bytes per kanji less two
-	c.Assert(len(tokyo), Equals, 73)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 0)
 
-	for _, ch := range tokyo {
-		// no spaces in Japanese ;-)
-		c.Assert(u.IsSpace(ch), Equals, false)
-		fmt.Printf("%#U\n", ch)
-	}
-	fmt.Println("'")
+	r, err := lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(r, Equals, rune(0x79c1))
+	runes = append(runes, r)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 1)
 
-	// hiragana 3041 through 3093
-	var hiragana []rune
-	for r := rune(0x3041); r < rune(0x3094); r++ {
-		fmt.Printf("%c", r)
-		if r == 0x304a || r == 0x3054 || r == 0x305e || r == 0x3069 ||
-			r == 0x306e || r == 0x307d || r == 0x3082 || r == 0x3088 ||
-			r == 0x308d {
+	lx.SkipS() // exercises lx.pushBack()
 
-			fmt.Println()
-		}
-		hiragana = append(hiragana, r)
-	}
-	fmt.Println()
-	strH := string(hiragana)
-	// hiragana are 3 bytes each
-	c.Assert(3*len(hiragana), Equals, len(strH))
+	r, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(r, Equals, rune(0x305f))
+	runes = append(runes, r)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 2)
 
-	// hatakana 30a1 through 30ef
-	var katakana []rune
-	for r := rune(0x30a1); r < 0x30f0; r++ {
-		fmt.Printf("%c", r)
-		if r == 0x30aa || r == 0x30b4 || r == 0x30be || r == 0x30c9 ||
-			r == 0x30ce || r == 0x30d4 || r == 0x30dc || r == 0x30e2 ||
-			r == 0x30e8 || r == 0x30ed {
+	_, _ = rd1, runes
 
-			fmt.Println()
-		}
-		katakana = append(katakana, r)
-	}
-	fmt.Println()
-	strK := string(katakana)
-	c.Assert(3*len(katakana), Equals, len(strK))
+}
+
+func (s *XLSuite) TestEnglishReader(c *C) {
+
+	//               ....x....1....x....2....x....3....x....4..
+	const ENGLISH = "This    is a   test \nof many things   !  "
+	var rd1 io.Reader = strings.NewReader(ENGLISH)
+	var runes []rune
+	lx, err := NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
+
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 0)
+
+	r, err := lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(r, Equals, rune('T'))
+	runes = append(runes, r)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 1)
+
+	lx.SkipS() // exercises lx.pushBack()
+
+	r, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(r, Equals, rune('h'))
+	runes = append(runes, r)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 2)
+
+	r, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(r, Equals, rune('i'))
+	runes = append(runes, r)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 3)
+
+	r, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(r, Equals, rune('s'))
+	runes = append(runes, r)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 4)
+
+	err = lx.ExpectS() // skips 4 spaces
+	c.Assert(err, IsNil)
+	lx.SkipS() // redundant, of course
+
+	r, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(r, Equals, rune('i'))
+	runes = append(runes, r)
+	c.Assert(lx.LineNo(), Equals, 1)
+	c.Assert(lx.ColNo(), Equals, 9)
+
+	// XXX MOVE ON UP TO THE NEWLINE, PLEASE
+
 }

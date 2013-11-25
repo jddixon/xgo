@@ -6,4 +6,5 @@ import (
 
 var (
 	ExpectedSpace = e.New("expected space")
+	NilReader     = e.New("nil reader parameter")
 )

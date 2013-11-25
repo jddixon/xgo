@@ -1,9 +1,17 @@
 xgo/lex/TODO
 
+2013-11-24
+    * drop IsS(), use unicode IsSpace() instead                         * DONE
+    * handle newlines within NextCh, automatically correcting
+        lineNo, colNo
+    * pushback needs a little data structure (char, lineNo, colNo?)
+        to enable it to properly restore state where newlines are
+        involved
+
 2013-11-23
     * need a lex.SyntaxError that adds line and column number
-        - this satisfies the error interface and so has an
+        - this must satisfy the error interface and so have an
             Error(string) method
-    * convert lex_input.go to use runes instead of ASCII characters
+    * convert lex_input.go to use runes instead of ASCII characters     * DONE
 
 
