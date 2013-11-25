@@ -1,0 +1,6 @@
+xgo/context/TODO
+
+2013-11-24
+    * Add serialization and deserialization methods.                    * DONE
+        - these need not be efficient but must be human-readable        * DONE
+    * add a hash to ensure data integrity

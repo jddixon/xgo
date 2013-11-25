@@ -1,6 +1,8 @@
 package context
 
 import (
+	"fmt"
+	"strings"
 	"sync"
 )
 
@@ -119,4 +121,53 @@ func (k *Context) SetParent(newParent *Context) *Context {
 	defer k.mu.Unlock()
 	k.parent = newParent
 	return k
+}
+
+// Serialize a map[string]string context.
+//
+// XXX This will not handle a map[string]interface{}.
+// XXX Missing data integrity hash.
+//
+func (k *Context) String() string {
+	k.mu.RLock()
+	defer k.mu.RUnlock()
+	var ss []string
+	for k, v := range k.ctx {
+		s := fmt.Sprintf("%s\t%s\n", k, v)
+		ss = append(ss, s)
+	}
+	return strings.Join(ss, "")
+}
+
+// Parse a context which has been serialized using Context.String().
+//
+// XXX This will not handle a map[string]interface{}.
+// XXX Does not handle any data integrity hash.
+//
+func ParseContext(s string) (k *Context, err error) {
+	if s == "" {
+		err = EmptySerialization
+	} else {
+		ss := strings.Split(s, "\n")
+		m := make(map[string]interface{})
+		for i := 0; i < len(ss); i++ {
+			s := strings.TrimSpace(ss[i])
+			if len(s) == 0 {
+				continue
+			}
+			parts := strings.Split(s, "\t")
+			if len(parts) != 2 {
+				err = IllFormedSerialization
+				break
+			} else {
+				k := strings.TrimRight(parts[0], " ")
+				v := strings.TrimLeft(parts[1], " ")
+				m[k] = v
+			}
+		}
+		if err == nil {
+			k = &Context{ctx: m}
+		}
+	}
+	return
 }

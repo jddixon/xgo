@@ -3,6 +3,7 @@ package context
 // xgo/context/context_test.go
 
 import (
+	xr "github.com/jddixon/xlattice_go/rnglib"
 	. "launchpad.net/gocheck"
 )
 
@@ -81,4 +82,43 @@ func (s *XLSuite) TestNestedContexts(c *C) {
 	value, err = ctx2.Lookup("wombat")
 	c.Assert(err, IsNil)
 	c.Assert(value, IsNil) // broke chain of contexts
+}
+
+func (s *XLSuite) TestSerialization(c *C) {
+	var err error
+	rng := xr.MakeSimpleRNG()
+	n := 16 + rng.Intn(16)
+	var keys []string
+	var values []string
+	mCheck := make(map[string]string)
+	for i := 0; i < n; i++ {
+		key := rng.NextFileName(8)
+		ok := false
+		for ok {
+			if _, ok = mCheck[key]; !ok {
+				break
+			}
+		}
+		// we have a unique key
+		val := rng.NextFileName(8)
+		mCheck[key] = val
+		keys = append(keys, key)
+		values = append(values, val)
+	}
+	// build a context using these key/value pairs
+	ctx := NewNewContext()
+	for k, v := range mCheck {
+		err = ctx.Bind(k, v)
+		c.Assert(err, IsNil)
+	}
+	ser := ctx.String()
+	deser, err := ParseContext(ser)
+	c.Assert(err, IsNil)
+	c.Assert(deser.Size(), Equals, n)
+	for k, v := range mCheck {
+		var v2 interface{}
+		v2, err = deser.Lookup(k)
+		c.Assert(err, IsNil)
+		c.Assert(v2, Equals, v)
+	}
 }
