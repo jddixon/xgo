@@ -47,6 +47,10 @@ func NewLexInput(reader io.Reader, encoding string) (
 	return
 }
 
+func NewNewLexInput(reader io.Reader) (*LexInput, error) {
+	return NewLexInput(reader, "utf-8")
+}
+
 // Return the byte offset into the input.
 //
 func (lx *LexInput) GetOffset() int {

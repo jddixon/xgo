@@ -1,12 +1,18 @@
 xgo/lex/TODO
 
+2013-11-26 (11-24, edited)
+    * to handle newlines, pushback needs a slice of lastColNo
+        to enable it to properly restore state where newlines are
+        involved
+        - if a pushBack() is exposed, this will be inevitably error-
+            prone, as users can push back characters that they haven't
+            actually seen
+
 2013-11-24
     * drop IsS(), use unicode IsSpace() instead                         * DONE
     * handle newlines within NextCh, automatically correcting
         lineNo, colNo
-    * pushback needs a little data structure (char, lineNo, colNo?)
-        to enable it to properly restore state where newlines are
-        involved
+    * need to test with file Reader as well
 
 2013-11-23
     * need a lex.SyntaxError that adds line and column number
