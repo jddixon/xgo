@@ -2,17 +2,21 @@ package template
 
 import (
 	"bufio"
+	"fmt"
 	gc "github.com/jddixon/xgo/context"
 	gl "github.com/jddixon/xgo/lex"
 	"io"
 )
 
+var _ = fmt.Print
+
 type Template struct {
-	ctx    *gc.Context
-	rd     io.Reader
-	lx     *gl.LexInput
+	ctx *gc.Context
+	rd  io.Reader
+	lx  *gl.LexInput
+	wr  *bufio.Writer
+
 	writer io.Writer // DEBUG ONLY
-	wr     *bufio.Writer
 }
 
 func NewTemplate(reader io.Reader, writer io.Writer, ctx *gc.Context) (
@@ -31,6 +35,9 @@ func NewTemplate(reader io.Reader, writer io.Writer, ctx *gc.Context) (
 	}
 	if err == nil {
 		wr := bufio.NewWriter(writer)
+		// DEBUG
+		fmt.Printf("wr Available: %d\n", wr.Available())
+		// END
 		t = &Template{
 			ctx:    ctx,
 			rd:     reader,
@@ -42,7 +49,7 @@ func NewTemplate(reader io.Reader, writer io.Writer, ctx *gc.Context) (
 	return
 }
 
-func (t *Template) Apply() (s string, err error) {
+func (t *Template) Apply() (err error) {
 
 	var r rune
 	for r, err = t.lx.NextCh(); err == nil; r, err = t.lx.NextCh() {
@@ -50,22 +57,25 @@ func (t *Template) Apply() (s string, err error) {
 		if haveDollar {
 			r, err = t.lx.NextCh()
 			if err != nil {
+				fmt.Println("ERR A") // DEBUG
 				break
 			} else if r == '{' {
 				var sym string
 				var value interface{}
 				sym, err = t.getSymbol()
 				if err != nil {
+					fmt.Println("ERR B") // DEBUG
 					break
 				}
 				value, err = t.ctx.Lookup(sym)
-				if err == nil {
+				if err != nil {
+					fmt.Println("ERR C %s", err.Error()) // DEBUG
 					break
 				}
 				_, err = t.wr.WriteString(value.(string))
 			} else {
 				_, err = t.wr.WriteRune('$')
-				if err == nil {
+				if err != nil {
 					_, err = t.wr.WriteRune(r)
 				}
 			}
@@ -73,6 +83,7 @@ func (t *Template) Apply() (s string, err error) {
 			_, err = t.wr.WriteRune(r)
 		}
 	}
+	t.wr.Flush()
 	return
 }
 

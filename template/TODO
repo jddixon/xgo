@@ -1,4 +1,4 @@
 xgo/template/TODO
 
-2013-11-25
-    * 
+2013-11-26
+    * Need Apply test on file much larger than the buffer being used
