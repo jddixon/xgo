@@ -5,7 +5,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	gc "github.com/jddixon/xgo/context"
 	gt "github.com/jddixon/xgo/template"
+	"io/ioutil"
 	"os"
 )
 
@@ -23,6 +25,10 @@ const (
 	DEFAULT_B_EXT    = ".go"
 )
 
+// The main purpose of this code is to collect these command line parameters
+// and then use them to create an Options block.  This is then passed on to
+// the template processor for execution.
+//
 var (
 	// these need to be referenced as pointers
 	bDir = flag.String("b", DEFAULT_B_DIR,
@@ -45,19 +51,29 @@ var (
 )
 
 func main() {
-	var err error
+	var (
+		context *gc.Context
+		ctxData []byte
+		err     error
+	)
 
 	flag.Usage = Usage
 	flag.Parse()
+	fileNames := flag.Args()
 
 	// FIXUPS ///////////////////////////////////////////////////////
-	// XXX STUB XXX
 
 	// SANITY CHECKS ////////////////////////////////////////////////
-	if _, err = os.Stat(*tDir); os.IsNotExist(err) {
+	if len(fileNames) == 0 {
+		err = NothingToDo
+	} else if _, err = os.Stat(*tDir); os.IsNotExist(err) {
 		err = SrcDirDoesNotExist
+	} else {
+		ctxData, err = ioutil.ReadFile(*ctxFile)
+		if err == nil {
+			context, err = gc.ParseContext(string(ctxData))
+		}
 	}
-	// XXX STUB XXX
 
 	// DISPLAY STUFF ////////////////////////////////////////////////
 	if *verbose || *justShow {
@@ -69,6 +85,13 @@ func main() {
 		fmt.Printf("tDir         = %s\n", *tDir)
 		fmt.Printf("testing      = %v\n", *testing)
 		fmt.Printf("verbose      = %v\n", *verbose)
+		if len(fileNames) > 0 {
+			fmt.Print("files: ")
+			for i := 0; i < len(fileNames); i++ {
+				fmt.Printf("%s ", fileNames[i])
+			}
+			fmt.Println()
+		}
 	}
 
 	if err != nil {
@@ -81,7 +104,8 @@ func main() {
 	// SET UP OPTIONS ///////////////////////////////////////////////
 	options := new(gt.Options)
 	options.BDir = *bDir
-	options.CtxFile = *ctxFile
+	options.Context = context
+	options.FileNames = fileNames
 	options.InputExt = *inputExt
 	options.JustShow = *justShow
 	options.OutputExt = *outputExt
@@ -90,7 +114,9 @@ func main() {
 	options.Verbose = *verbose
 
 	// DO USEFUL THINGS /////////////////////////////////////////////
-	// XXX STUB XXX
-
+	err = gt.Processor(options)
+	if err != nil {
+		fmt.Printf("\nerror processing input files %s\n", err.Error())
+	}
 	return
 }

@@ -2,6 +2,10 @@ xgo/template/TODO
 
 2013-11-26
     * write skeletal xgo/cmd/xgoT/xgoT.go command line processor        * DONE
+    * if the output directory does not exist, should make it; 0755
+        should be OK.  os.MkdirAll(path, 0755)
+    * add any unprocessed args after call to flag.Parse() to
+        Options.FileNames
     * write xgo/template/processor.go which the above invokes
 
     * modify test to use bytes.Buffer
