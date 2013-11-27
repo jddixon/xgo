@@ -1,4 +1,17 @@
 xgo/template/TODO
 
 2013-11-26
+    * write skeletal xgo/cmd/xgoT/xgoT.go command line processor        * DONE
+    * write xgo/template/processor.go which the above invokes
+
+    * modify test to use bytes.Buffer
+        - drop xgo/util/byte_buffer.go if this works
+
+    * test dollar as last character in file
+    * modify to allow only well-formed symbols within ${}
+        - initial character should be drawn from a designated set
+        - other characters from a presumably larger but still 
+            limited set
+        - spaces (those for which IsSpace() is true) must be 
+            excluded
     * Need Apply test on file much larger than the buffer being used
