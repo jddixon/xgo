@@ -114,7 +114,7 @@ func main() {
 	options.Verbose = *verbose
 
 	// DO USEFUL THINGS /////////////////////////////////////////////
-	err = gt.Processor(options)
+	err = gt.Process(options)
 	if err != nil {
 		fmt.Printf("\nerror processing input files %s\n", err.Error())
 	}

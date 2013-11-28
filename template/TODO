@@ -1,17 +1,27 @@
 xgo/template/TODO
 
+2013-11-27
+    * FIX BUG: doubled dollar signs in input cause Apply() to           * DONE
+        leave expression unresolved                                     * DONE
+    * FIX BUG 2:  handle $ at end of file                               * DONE
+    * processor_test must NOT use .go as outputExc: change!             * DONE
+
+    * xgo/cmd/xgoT _must_ put .go extension on output files
+    * modify processor_test.go to write context to scratch 
+        directory
+
 2013-11-26
     * write skeletal xgo/cmd/xgoT/xgoT.go command line processor        * DONE
-    * if the output directory does not exist, should make it; 0755
-        should be OK.  os.MkdirAll(path, 0755)
-    * add any unprocessed args after call to flag.Parse() to
-        Options.FileNames
-    * write xgo/template/processor.go which the above invokes
+    * if the output directory does not exist, should make it; 0755      * DONE
+        should be OK.  os.MkdirAll(path, 0755)                          * DONE
+    * add any unprocessed args after call to flag.Parse() to            * DONE
+        Options.FileNames                                               * DONE
+    * write xgo/template/processor.go which the above invokes           * DONE
 
     * modify test to use bytes.Buffer
         - drop xgo/util/byte_buffer.go if this works
 
-    * test dollar as last character in file
+    * test dollar as last character in file                             * DONE
     * modify to allow only well-formed symbols within ${}
         - initial character should be drawn from a designated set
         - other characters from a presumably larger but still 

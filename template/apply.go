@@ -35,9 +35,6 @@ func NewTemplate(reader io.Reader, writer io.Writer, ctx *gc.Context) (
 	}
 	if err == nil {
 		wr := bufio.NewWriter(writer)
-		// DEBUG
-		fmt.Printf("wr Available: %d\n", wr.Available())
-		// END
 		t = &Template{
 			ctx:    ctx,
 			rd:     reader,
@@ -53,14 +50,11 @@ func (t *Template) Apply() (err error) {
 
 	var r rune
 	for r, err = t.lx.NextCh(); err == nil; r, err = t.lx.NextCh() {
-		haveDollar := r == '$'
-		if haveDollar {
+		if r == '$' {
 			r, err = t.lx.NextCh()
 			if err != nil {
 				if err == io.EOF {
-					err = nil
-				} else {
-					fmt.Printf("ERR A: %v\n", err) // DEBUG
+					_, err = t.wr.WriteRune('$')
 				}
 				break
 			} else if r == '{' {
@@ -68,18 +62,17 @@ func (t *Template) Apply() (err error) {
 				var value interface{}
 				sym, err = t.getSymbol()
 				if err != nil {
-					fmt.Println("ERR B") // DEBUG
 					break
 				}
 				value, err = t.ctx.Lookup(sym)
 				if err != nil {
-					fmt.Println("ERR C %s", err.Error()) // DEBUG
 					break
 				}
 				_, err = t.wr.WriteString(value.(string))
 			} else {
+				// this is the $ we have seen, which is not part of ${
 				_, err = t.wr.WriteRune('$')
-				if err != nil {
+				if err == nil {
 					t.lx.PushBack(r)
 				}
 			}

@@ -100,10 +100,6 @@ func (s *XLSuite) makeDocumentPair(c *C, rng *xr.PRNG, k, v []string,
 		tDoc += more
 		bDoc += more
 	}
-	// DEBUG
-	fmt.Printf("TDOC: %s\n", tDoc)
-	fmt.Printf("BDOC: %s\n", bDoc)
-	// END
 	return
 }
 
@@ -111,7 +107,7 @@ func (s *XLSuite) TestProcessor(c *C) {
 
 	var (
 		inputExt  = ".t"
-		outputExt = ".go"
+		outputExt = ".OUT"
 	)
 	rng := xr.MakeSimpleRNG()
 	fCount := 3 + rng.Intn(5) // so 3 to 7 inclusive
@@ -130,7 +126,6 @@ func (s *XLSuite) TestProcessor(c *C) {
 	tDir := filepath.Join(pathToDir, "t")
 	bDir := filepath.Join(pathToDir, "b")
 
-	fmt.Printf("test directory: %s\n", dirName) // DEBUG
 	err = os.MkdirAll(tDir, 0755)
 	c.Assert(err, IsNil)
 	err = os.MkdirAll(bDir, 0755)

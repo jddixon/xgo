@@ -36,12 +36,8 @@ func Process(options *Options) (err error) {
 		pathToIn := filepath.Join(tDir, inName)
 		outName := fileNames[i] + outputExt
 		pathToOut := filepath.Join(bDir, outName)
-		// DEBUG
-		fmt.Printf("opening input file %s\n", pathToIn)
-		// END
 		in, err = os.Open(pathToIn)
 		if err == nil {
-			fmt.Printf("opening output file %s\n", pathToOut) // DEBUG
 			out, err = os.Create(pathToOut)
 			if err == nil {
 				t, err := NewTemplate(in, out, context)
