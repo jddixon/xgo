@@ -57,7 +57,11 @@ func (t *Template) Apply() (err error) {
 		if haveDollar {
 			r, err = t.lx.NextCh()
 			if err != nil {
-				fmt.Println("ERR A") // DEBUG
+				if err == io.EOF {
+					err = nil
+				} else {
+					fmt.Printf("ERR A: %v\n", err) // DEBUG
+				}
 				break
 			} else if r == '{' {
 				var sym string
@@ -76,7 +80,7 @@ func (t *Template) Apply() (err error) {
 			} else {
 				_, err = t.wr.WriteRune('$')
 				if err != nil {
-					_, err = t.wr.WriteRune(r)
+					t.lx.PushBack(r)
 				}
 			}
 		} else {

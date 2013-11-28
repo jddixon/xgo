@@ -115,7 +115,7 @@ func (lx *LexInput) ColNo() int {
 //
 // XXX This treatment may not be acceptable.
 //
-func (lx *LexInput) pushBack(r rune) {
+func (lx *LexInput) PushBack(r rune) {
 	if len(lx.pushedBack) < MAX_PUSH_BACK {
 		lx.pushedBack = append(lx.pushedBack, r)
 		lx.offset--
@@ -134,7 +134,7 @@ func (lx *LexInput) SkipS() {
 	for {
 		r, err := lx.NextCh()
 		if err != nil {
-			lx.pushBack(r)
+			lx.PushBack(r)
 		} else {
 			if !u.IsSpace(r) {
 				lx.pushedBack = append(lx.pushedBack, r)
@@ -151,7 +151,7 @@ func (lx *LexInput) SkipS() {
 func (lx *LexInput) ExpectS() (err error) {
 	r, err := lx.NextCh()
 	if err != nil {
-		lx.pushBack(r)
+		lx.PushBack(r)
 	} else {
 		if !u.IsSpace(r) {
 			err = ExpectedSpace
