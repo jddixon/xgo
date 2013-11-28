@@ -15,6 +15,7 @@ type Options struct {
 	FileNames []string
 	JustShow  bool
 	OutputExt string
+	Prefix    string // prefixed to output file names, default ""
 	TDir      string
 	Testing   bool
 	Verbose   bool

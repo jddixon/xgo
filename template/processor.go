@@ -25,6 +25,7 @@ func Process(options *Options) (err error) {
 	bDir := options.BDir // path to output/build directory
 	fileNames := options.FileNames
 	inputExt := options.InputExt
+	prefix := options.Prefix
 	outputExt := options.OutputExt
 	verbose := options.Verbose
 
@@ -34,7 +35,7 @@ func Process(options *Options) (err error) {
 	for i := 0; i < len(fileNames); i++ {
 		inName := fileNames[i] + inputExt
 		pathToIn := filepath.Join(tDir, inName)
-		outName := fileNames[i] + outputExt
+		outName := prefix + fileNames[i] + outputExt
 		pathToOut := filepath.Join(bDir, outName)
 		in, err = os.Open(pathToIn)
 		if err == nil {
@@ -47,7 +48,6 @@ func Process(options *Options) (err error) {
 			}
 		}
 	}
-
 	_ = verbose
 	return
 }

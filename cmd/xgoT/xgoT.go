@@ -23,6 +23,7 @@ const (
 	DEFAULT_CTX_FILE = "context"
 	DEFAULT_T_EXT    = ".t"
 	DEFAULT_B_EXT    = ".go"
+	DEFAULT_B_PREFIX = ""
 )
 
 // The main purpose of this code is to collect these command line parameters
@@ -41,6 +42,8 @@ var (
 		"display option settings and exit")
 	outputExt = flag.String("E", DEFAULT_B_EXT,
 		"output file extension")
+	prefix = flag.String("p", DEFAULT_B_PREFIX,
+		"output file prefix")
 	tDir = flag.String("t", DEFAULT_T_DIR,
 		"path to source *.t files")
 
@@ -82,6 +85,7 @@ func main() {
 		fmt.Printf("inputExt     = %v\n", *inputExt)
 		fmt.Printf("justShow     = %v\n", *justShow)
 		fmt.Printf("outputExt    = %s\n", *outputExt)
+		fmt.Printf("prefix       = %s\n", *prefix)
 		fmt.Printf("tDir         = %s\n", *tDir)
 		fmt.Printf("testing      = %v\n", *testing)
 		fmt.Printf("verbose      = %v\n", *verbose)
@@ -109,6 +113,7 @@ func main() {
 	options.InputExt = *inputExt
 	options.JustShow = *justShow
 	options.OutputExt = *outputExt
+	options.Prefix = *prefix
 	options.TDir = *tDir
 	options.Testing = *testing
 	options.Verbose = *verbose

@@ -108,6 +108,7 @@ func (s *XLSuite) TestProcessor(c *C) {
 	var (
 		inputExt  = ".t"
 		outputExt = ".OUT"
+		prefix    string // empty for now
 	)
 	rng := xr.MakeSimpleRNG()
 	fCount := 3 + rng.Intn(5) // so 3 to 7 inclusive
@@ -134,11 +135,19 @@ func (s *XLSuite) TestProcessor(c *C) {
 	tFiles := make([]string, fCount) // input files
 	bFiles := make([]string, fCount) // output files
 	baseNames := s.makeSymbolSet(c, rng, fCount)
+
 	// create the paths to the files
+	prefixLen := rng.Intn(3)
+	switch prefixLen {
+	case 1:
+		prefix = "x"
+	case 2:
+		prefix = "yz"
+	}
 	for i := 0; i < fCount; i++ {
 		fileName := baseNames[i] + inputExt
 		tFiles[i] = filepath.Join(tDir, fileName)
-		fileName = baseNames[i] + outputExt
+		fileName = prefix + baseNames[i] + outputExt
 		bFiles[i] = filepath.Join(bDir, fileName)
 	}
 	k, v, context := s.makeContext(c, rng, fCount)
@@ -157,6 +166,7 @@ func (s *XLSuite) TestProcessor(c *C) {
 		Context:   context,
 		InputExt:  inputExt,
 		FileNames: baseNames,
+		Prefix:    prefix,
 		OutputExt: outputExt,
 		TDir:      tDir,
 	}
