@@ -68,7 +68,12 @@ func (t *Template) Apply() (err error) {
 				if err != nil {
 					break
 				}
-				_, err = t.wr.WriteString(value.(string))
+				// HACKING ABOUT
+				if value == nil {
+					fmt.Printf("symbol '%s' returns a nil value\n", sym)
+				} else {
+					_, err = t.wr.WriteString(value.(string))
+				}
 			} else {
 				// this is the $ we have seen, which is not part of ${
 				_, err = t.wr.WriteRune('$')

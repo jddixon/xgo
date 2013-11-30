@@ -1,5 +1,13 @@
 xgo/template/TODO
 
+2013-11-29
+    * HANDLE: apply.go about line 73 Lookup returns nil
+
+2013-11-28
+    * when Apply does a lookup in the context and the symbol is
+        not there, error msg is completely opaque. Need to add 
+        an explanation interpreting the error from Context.Lookup().
+
 2013-11-27
     * FIX BUG: doubled dollar signs in input cause Apply() to           * DONE
         leave expression unresolved                                     * DONE
