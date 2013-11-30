@@ -157,7 +157,7 @@ func ParseContext(s string) (k *Context, err error) {
 			}
 			parts := strings.Split(s, "\t")
 			if len(parts) != 2 {
-				err = IllFormedSerialization
+				err = IllFormedCtxSerialization
 				break
 			} else {
 				k := strings.TrimRight(parts[0], " ")
