@@ -4,6 +4,8 @@ package lex
 
 import (
 	"bufio"
+	"errors"
+	"fmt"
 	"io"
 	u "unicode"
 )
@@ -157,6 +159,24 @@ func (lx *LexInput) ExpectS() (err error) {
 			err = ExpectedSpace
 		} else {
 			lx.SkipS()
+		}
+	}
+	return
+}
+
+// Expect the next characters to exactly match the expected string,
+// returning an error if there is a mismatch.  If the parameter is
+// an empty string, do nothing.
+func (lx *LexInput) ExpectStr(expected string) (err error) {
+	
+	for _, r := range expected {
+		var ch rune
+		ch, err = lx.NextCh()
+		if ch != r {
+			msg := fmt.Sprintf("expected '%c' in '%s', found '%c'", 
+				r, expected, ch)
+			err = errors.New(msg)
+			break
 		}
 	}
 	return

@@ -108,3 +108,31 @@ func (s *XLSuite) TestEnglishReader(c *C) {
 	// XXX MOVE ON UP TO THE NEWLINE, PLEASE
 
 }
+
+func (s *XLSuite) TestExpectStr(c *C) {
+
+	var rd1 io.Reader = strings.NewReader("version 97.1 ")
+	lx, err := NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
+
+	err = lx.ExpectStr("version")
+	c.Assert(err, IsNil)
+	err = lx.ExpectS()
+	c.Assert(err, IsNil)
+	err = lx.ExpectStr("97.1")
+	c.Assert(err, IsNil)
+	err = lx.ExpectS()
+	c.Assert(err, IsNil)
+
+	rd1 = strings.NewReader("verxion 97.1 ")
+	lx, err = NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
+
+	err = lx.ExpectStr("version")
+	c.Assert(err, NotNil)
+
+	expectedMsg := "expected 's' in 'version', found 'x'"
+	c.Assert(err.Error(), Equals, expectedMsg)
+}
