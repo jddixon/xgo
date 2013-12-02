@@ -1,6 +1,10 @@
 xgo/context/TODO
 
-2013-11-24
-    * Add serialization and deserialization methods.                    * DONE
-        - these need not be efficient but must be human-readable        * DONE
+2013-12-01
+    * Modify ParserContext() to allow comments begining with #          * DONE
+    * Also permit serialization of nested contexts
+        - requires some thought
+
+2013-12-01 (from 11-24)
     * add a hash to ensure data integrity
+        - SHA3-256, last line in file, as comment

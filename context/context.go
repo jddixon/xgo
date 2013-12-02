@@ -152,7 +152,7 @@ func ParseContext(s string) (k *Context, err error) {
 		m := make(map[string]interface{})
 		for i := 0; i < len(ss); i++ {
 			s := strings.TrimSpace(ss[i])
-			if len(s) == 0 {
+			if len(s) == 0 || strings.HasPrefix(s, "#") {
 				continue
 			}
 			parts := strings.Split(s, "\t")

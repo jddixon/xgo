@@ -3,9 +3,13 @@ package context
 // xgo/context/context_test.go
 
 import (
+	"fmt"
 	xr "github.com/jddixon/xlattice_go/rnglib"
 	. "launchpad.net/gocheck"
+	"strings"
 )
+
+var _ = fmt.Print
 
 func (s *XLSuite) TestEmpty(c *C) {
 	ctx := NewNewContext()
@@ -105,6 +109,9 @@ func (s *XLSuite) TestSerialization(c *C) {
 		keys = append(keys, key)
 		values = append(values, val)
 	}
+	c.Assert(len(keys), Equals, n)
+	c.Assert(len(values), Equals, n)
+
 	// build a context using these key/value pairs
 	ctx := NewNewContext()
 	for k, v := range mCheck {
@@ -112,6 +119,26 @@ func (s *XLSuite) TestSerialization(c *C) {
 		c.Assert(err, IsNil)
 	}
 	ser := ctx.String()
+	ss := strings.Split(ser, "\n")
+	ss = ss[0 : len(ss)-1] // we split on newline, so last line is empty
+	length := len(ss)
+	c.Assert(length, Equals, n)
+	where := rng.Intn(length)
+	indent := rng.Intn(3)
+	var spaces string
+	for i := 0; i < indent; i++ {
+		spaces += " "
+	}
+	comment := []string{spaces + "# this goes somewhere in the serialization"}
+	chunk1 := ss[0:where]
+	chunk2 := ss[where:]
+	// XXX Apparent bug in Go: if we start with ss2 := chunk1, this fails,
+	// with the comment overwriting the last line of chunk1
+	var ss2 []string
+	ss2 = append(ss2, chunk1...)
+	ss2 = append(ss2, comment...)
+	ss2 = append(ss2, chunk2...)
+	ser = strings.Join(ss2, "\n")
 	deser, err := ParseContext(ser)
 	c.Assert(err, IsNil)
 	c.Assert(deser.Size(), Equals, n)
