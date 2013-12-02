@@ -10,12 +10,12 @@ type NodeI interface {
 	ToXml() string
 	WalkAll(VisitorI) error
 
-	// are these of any value at all?
+	// value is questsionable
 	IsAttr() bool
+	IsCdata() bool
 	IsComment() bool
-	IsDocument() bool
 	IsDocType() bool
 	IsElement() bool
-	IsText() bool
 	IsProcessingInstruction() bool
+	IsText() bool
 }

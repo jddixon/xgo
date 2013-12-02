@@ -31,14 +31,13 @@ func (t *Text) SetText(s string) {
 }
 
 // NODE METHODS /////////////////////////////////////////////////
-// CDATASection overrides.
-func (t *Text) IsCdata() bool {
-	return false // default
-}
-func (t *Text) IsText() bool {
+
+// Return true; this node is an Text.
+func (a *Text) IsText() bool {
 	return true
 }
-func (t *Text) String() string {
+
+func (t *Text) ToString() string {
 	return "[Text:'" + t.text + "']"
 }
 

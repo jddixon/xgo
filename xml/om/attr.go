@@ -80,7 +80,7 @@ func (a *Attr) WalkAll(v VisitorI) (err error) {
 
 // NODE METHODS /////////////////////////////////////////////////
 
-// @return true; this node is an Attr//
+// Return true; this node is an Attr.
 func (a *Attr) IsAttr() bool {
 	return true
 }

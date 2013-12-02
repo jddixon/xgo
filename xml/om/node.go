@@ -121,8 +121,12 @@ func (node *Node) WalkAll(v VisitorI) (err error) {
 //  } // GEEP
 
 // TYPE IDENTIFIERS /////////////////////////////////////////////
+
 // one of these gets overridden in each subclass
 func (node *Node) IsAttr() bool { return false }
+
+// one of these gets overridden in each subclass
+func (node *Node) IsCdata() bool { return false }
 
 // one of these gets overridden in each subclass
 func (node *Node) IsComment() bool { return false }

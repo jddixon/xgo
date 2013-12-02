@@ -34,11 +34,12 @@ func (co *Comment) GetText() string {
 
 // NODE METHODS /////////////////////////////////////////////////
 
-func (co *Comment) IsComment() bool {
+// Return true; this node is an Comment.
+func (a *Comment) IsComment() bool {
 	return true
 }
 
-// return the comment enclosed within XML comment delimiters.
+// Return the comment enclosed within XML comment delimiters.
 //
 func (co *Comment) ToXml() string {
 

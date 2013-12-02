@@ -170,12 +170,12 @@ func (doc *Document) GetVersion() string {
 }
 
 // NODE METHODS /////////////////////////////////////////////////
-// @return true: this is a document node//
-func (doc *Document) IsDocument() bool {
+
+// Return true; this node is an Document.
+func (a *Document) IsDocument() bool {
 	return true
 }
 
-//
 // Generate the XML document in String form.  The standard XML
 // declaration is prefixed.  This method traverses the entire
 // document recursively.  The document is <b>not</b> indented.

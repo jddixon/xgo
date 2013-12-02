@@ -204,15 +204,15 @@ func (e *Element) WalkHolders(v VisitorI) (err error) {
 
 // NODE METHODS /////////////////////////////////////////////////
 
-func (e *Element) IsElement() bool {
+// Return true; this node is an Element.
+func (a *Element) IsElement() bool {
 	return true
 }
 
-//Preliminary version, for debugging.
+// Preliminary version, for debugging.
 //
-//@return the element in string form, without its attributes
+// Return the element in string form, without its attributes
 //
-
 func (e *Element) ToString() string {
 	return fmt.Sprintf("[Element: tag: %s ...]", e.name)
 }

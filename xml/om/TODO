@@ -1,5 +1,8 @@
 xgo/xml/om/TODO
 
+2013-11-20
+    * write/translate visitor_test.go
+
 2013-11-19
     * drop node_test.go, which is just a mistranslation of Java         * DONE
     * consider writing a node_test.go
@@ -21,4 +24,4 @@ xgo/xml/om/TODO
 
 2013-11-12
     * drop or make useful holderI.go
-    * get rid of IsAttr(), IsComment(), etc
+    * get rid of IsAttr(), IsComment(), etc                             * SKIP

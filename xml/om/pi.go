@@ -59,6 +59,11 @@ func (pi *ProcessingInstruction) GetText() string {
 
 // NODE METHODS /////////////////////////////////////////////////
 
+// Return true; this node is an ProcessingInstruction.
+func (a *ProcessingInstruction) IsProcessingInstruction() bool {
+	return true
+}
+
 // Output properly bracketed PI content with a line separator,
 // without indenting.
 //

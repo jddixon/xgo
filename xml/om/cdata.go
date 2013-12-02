@@ -15,7 +15,7 @@ func NewCdata(text string) (this *Cdata) {
 	return
 }
 
-func (cd *Cdata) IsCdata() bool {
+func IsCdata() bool {
 	return true
 }
 
