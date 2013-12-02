@@ -1,5 +1,8 @@
 xgo/xml/om/TODO
 
+2013-12-02
+    * Translate/implement Element.Populator()
+
 2013-11-20
     * write/translate visitor_test.go
 

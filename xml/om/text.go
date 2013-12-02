@@ -10,14 +10,14 @@ type Text struct {
 
 // Create the node, initializing its value.
 //
-// XXX the text should be XML-escaped.
-func NewText(text string) (this *Text) {
+// XXX The text should be XML-escaped.
+// XXX Should the text be trimmed?
+func NewText(text string) *Text {
 	node := NewNode()
-	this = &Text{
+	return &Text{
 		text: text,
 		Node: *node,
 	}
-	return
 }
 
 func (t *Text) GetText() string {
@@ -35,10 +35,6 @@ func (t *Text) SetText(s string) {
 // Return true; this node is an Text.
 func (a *Text) IsText() bool {
 	return true
-}
-
-func (t *Text) ToString() string {
-	return "[Text:'" + t.text + "']"
 }
 
 func (t *Text) ToXml() string {

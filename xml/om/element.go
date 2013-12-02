@@ -1,7 +1,6 @@
 package om
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -30,12 +29,9 @@ type Element struct {
 	Node
 }
 
-//Create an XML element, given its prefix and name.  Both
-//prefix and name should conformant to the XML specifications
-//and must not contain colons (that is, they must be NCNames).
-//
-//@param prefix NCName or nil
-//@param name   NCName, must not be nil
+// Create an XML element, given its prefix and name.  Both
+// prefix and name should conformant to the XML specifications
+// and must not contain colons (that is, they must be NCNames).
 //
 func NewElement(prefix, name string) (e *Element, err error) {
 
@@ -58,45 +54,42 @@ func NewElement(prefix, name string) (e *Element, err error) {
 	return
 }
 
-//
-//Create an XML element, defaulting the prefix to nil.
-//
+// Create an XML element, defaulting the prefix to nil.
 func NewNewElement(name string) (*Element, error) {
 	return NewElement("", name)
 }
 
 // PROPERTIES ///////////////////////////////////////////////////
-// @return the prefix, an NCName ""
+
+// Return the prefix, an NCName.
 func (e *Element) GetPrefix() string {
 	return e.prefix
 }
 
-// @return the element name, an NCName, which may not be nil//
+// Return the element name, an NCName, which may not be nil.
 func (e *Element) GetName() string {
 	return e.name
 }
 
-//@return the attribute list - may be empty, may not be nil
-//
+// Return the attribute list - may be empty, may not be nil.
 func (e *Element) GetAttrList() *AttrList {
 	return e.aList
 }
 
-// Add a prefix-namespace pair, updating the maps.
-//
-// @param prefix    the prefix, a NCNAME, may not be null
-// @param namespace XML-compatible namespace
+// Add a prefix-namespace pair, updating the maps.  The prefix must
+// be a non-colonized name (NCNAME) which must not be empty.
 //
 func (e *Element) AddNamespace(prefix, namespace string) (err error) {
 	// XXX NEED MORE REASONABLE CHECKS
 	if namespace == "" {
 		err = EmptyNamespace
+	} else {
+		e.ns2pf[namespace] = prefix
+		if prefix != "" {
+			e.pf2ns[prefix] = namespace
+		}
+		e.nsUris = append(e.nsUris, namespace) // SILLY LEVEL OF OVERKILL
 	}
-	e.ns2pf[namespace] = prefix
-	if prefix != "" {
-		e.pf2ns[prefix] = namespace
-	}
-	e.nsUris = append(e.nsUris, namespace) // SILLY LEVEL OF OVERKILL
 	return
 }
 
@@ -106,9 +99,7 @@ func (e *Element) GetNodeList() *NodeList {
 	return e.nodeList
 }
 
-// Set this Element's ultimate parent, the Document it belongs
-// to.
-//
+// Set this Element's ultimate parent, the Document it belongs to.
 func (e *Element) SetDocument(newDoc DocumentI) (err error) {
 	var docSetter *DocSetter
 
@@ -126,12 +117,8 @@ func (e *Element) SetDocument(newDoc DocumentI) (err error) {
 
 // ATTRIBUTES ///////////////////////////////////////////////////
 
-//Add an attribute to this element.
-//@param prefix to attribute name, may be nil
-//@param name   the attribute name itself
-//@param value  the String value the attribute is set to
-//@return       a reference to this Element, to allow chaining
-//
+// Add an attribute to this element.  The prefix may be empty; the
+// name and value must not be.
 func (e *Element) AddAttr(prefix, name, value string) (err error) {
 
 	attr := NewAttr(prefix, name, value)
@@ -139,15 +126,13 @@ func (e *Element) AddAttr(prefix, name, value string) (err error) {
 	return
 }
 
-//Add an element, defaulting its prefix to nil.
-//
+// Add an attribute to the element, defaulting its prefix to empty
 // func (e *Element) Element AddAttr (name, value string) {
 //    return addAttr (nil, name, value)
 // }
 
-//@param  n index of the parameter to be returned
-//@return the Nth attribute
-//
+// Get the Nth attribute, returning an error if there is no such
+// attribute.
 func (e *Element) GetAttr(n uint) (*Attr, error) {
 	return e.aList.Get(n)
 }
@@ -207,14 +192,6 @@ func (e *Element) WalkHolders(v VisitorI) (err error) {
 // Return true; this node is an Element.
 func (a *Element) IsElement() bool {
 	return true
-}
-
-// Preliminary version, for debugging.
-//
-// Return the element in string form, without its attributes
-//
-func (e *Element) ToString() string {
-	return fmt.Sprintf("[Element: tag: %s ...]", e.name)
 }
 
 // Return the element and its attributes in XML form, unindented.
@@ -375,4 +352,3 @@ func (e *Element) ToXml() (s string) {
 //         }
 //     }
 // }
-//
