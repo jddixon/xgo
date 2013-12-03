@@ -136,3 +136,42 @@ func (s *XLSuite) TestExpectStr(c *C) {
 	expectedMsg := "expected 's' in 'version', found 'x'"
 	c.Assert(err.Error(), Equals, expectedMsg)
 }
+func (s *XLSuite) TestAcceptStr(c *C) {
+
+	var found bool
+	var rd1 io.Reader = strings.NewReader("version 97.1 ")
+	lx, err := NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
+
+	found, err = lx.AcceptStr("version")
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true)
+	err = lx.ExpectS()
+	c.Assert(err, IsNil)
+	found, err = lx.AcceptStr("97.1")
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true)
+	err = lx.ExpectS()
+	c.Assert(err, IsNil)
+
+	rd2 := strings.NewReader("verxion 97.1 ")
+	lx2, err := NewLexInput(rd2, "")
+	c.Assert(err, IsNil)
+	c.Assert(lx2, NotNil)
+
+	found, err = lx2.AcceptStr("version")
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, false)
+
+	found, err = lx2.AcceptStr("verxion")
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true)
+	err = lx2.ExpectS()
+	c.Assert(err, IsNil)
+	found, err = lx2.AcceptStr("97.1")
+	c.Assert(err, IsNil)
+	c.Assert(found, Equals, true)
+	err = lx2.ExpectS()
+	c.Assert(err, IsNil)
+}

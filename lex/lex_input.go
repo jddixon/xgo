@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	MAX_PUSH_BACK = 3 // an arbitrary number
+	MAX_PUSH_BACK = 256 // an arbitrary number
 )
 
 type LexInput struct {
@@ -168,22 +168,47 @@ func (lx *LexInput) ExpectS() (err error) {
 // returning an error if there is a mismatch.  If the parameter is
 // an empty string, do nothing.
 func (lx *LexInput) ExpectStr(expected string) (err error) {
-	
+
 	for _, r := range expected {
 		var ch rune
 		ch, err = lx.NextCh()
-		if ch != r {
-			msg := fmt.Sprintf("expected '%c' in '%s', found '%c'", 
+		if err == nil && ch != r {
+			msg := fmt.Sprintf("expected '%c' in '%s', found '%c'",
 				r, expected, ch)
 			err = errors.New(msg)
+		}
+		if err != nil {
 			break
 		}
 	}
 	return
 }
 
-// XXX Drop this, use unicode/IsSpace(r rune) bool (and similar functions)
-// instead
-func IsS(ch byte) bool {
-	return ch == 0x20 || ch == 0x0a || ch == 0x0d || ch == 0x09
+// If the next characters exactly match the parameter, return true.
+// If there is a mismatch, return false and push any characters read
+// back on the input.
+func (lx *LexInput) AcceptStr(acceptable string) (found bool, err error) {
+
+	var runes []rune
+	found = true
+	for _, r := range acceptable {
+		var ch rune
+		ch, err = lx.NextCh()
+		if err != nil {
+			break
+		}
+		runes = append(runes, ch)
+		if ch != r {
+			found = false
+			break
+		}
+	}
+	// If we didn't get a match, we need to push back any characters
+	// read, FIFO-style.
+	if err == nil && !found {
+		for i := 0; i < len(runes); i++ {
+			lx.PushBack(runes[i])
+		}
+	}
+	return
 }
