@@ -9,8 +9,7 @@ import (
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
-	xmlDeclVersion string
-	si             gu.StrIntern
+	si gu.StrIntern
 
 	// parser state
 	curEvent PullToken // defined in const.go
