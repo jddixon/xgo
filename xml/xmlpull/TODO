@@ -1,13 +1,19 @@
 xgo/xml/xmlpull/TODO
 
+2013-12-02
+    * parseXmlDecl() should return the values collected or put them
+        in p
+
 2013-11-21 (11-20, edited)
-    * build skeletal parser as parser.go
+    * build skeletal parser as parser.go                                * DONE
         - be able to read and parse first line
             * parseXmlDecl()
 
-    * write basic parser functions 
-        - IsSpace()
-        - ExpectSpace()
+    * write basic parser functions (in gl "xgo/lexutil")
+        - IsS()                                                         * SKIP
+        - ExpectS()                                                     * DONE
+        - SkipS()                                                       * DONE
+            // needs a max parameter                                    * SKIP
 
     * write parser_test.go, initially testing that reset() works 
         as expected

@@ -1,6 +1,7 @@
 package xmlpull
 
 import (
+	gl "github.com/jddixon/xgo/lex"
 	gu "github.com/jddixon/xgo/util"
 	"io"
 )
@@ -8,17 +9,8 @@ import (
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
-	si gu.StrIntern
-
-	lineNo int // line number
-	colNo  int // column number
-
-	// buffer management
-	reader   *io.Reader
-	encoding string
-	buf      []byte
-	bufStart int
-	bufEnd   int
+	xmlDeclVersion string
+	si             gu.StrIntern
 
 	// parser state
 	curEvent PullToken // defined in const.go
@@ -32,6 +24,12 @@ type Parser struct {
 	nsCount  int
 	nsPrefix []string
 	nsUri    []string
+
+	lineNo int // line number
+	colNo  int // column number
+
+	// buffer management
+	gl.LexInput
 }
 
 func NewParser() (p *Parser, err error) {
@@ -47,13 +45,7 @@ func NewParser() (p *Parser, err error) {
 }
 
 func (xpp *Parser) reset() {
-	xpp.lineNo = 1
-	xpp.colNo = 0
-	xpp.reader = nil
-	xpp.encoding = "utf-8"
 	xpp.elmDepth = 0
-	xpp.bufStart = 0
-	xpp.bufEnd = 0
 
 	// XXX STUB XXX
 
@@ -84,7 +76,7 @@ func (xpp *Parser) SetInput(in *io.Reader) (err error) {
 		err = NilReader
 	} else {
 		xpp.reset()
-		xpp.reader = in
+		xpp.LexInput.Reset()
 	}
 	return
 }
