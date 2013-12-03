@@ -147,6 +147,19 @@ func (lx *LexInput) SkipS() {
 	}
 }
 
+// Expect the next character to match the expected char,
+// returning an error if there is a mismatch.
+func (lx *LexInput) ExpectCh(expected rune) (err error) {
+
+	ch, err := lx.NextCh()
+	if err == nil && ch != expected {
+		msg := fmt.Sprintf("expected '%c', found '%c'", expected, ch)
+		err = errors.New(msg)
+		lx.PushBack(ch)
+	}
+	return
+}
+
 // Expect the next char to be a space; if it isn't, return an error.
 // Otherwise, skip any spaces found
 //

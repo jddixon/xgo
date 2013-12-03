@@ -109,6 +109,26 @@ func (s *XLSuite) TestEnglishReader(c *C) {
 
 }
 
+func (s *XLSuite) TestExpectCh(c *C) {
+
+	var rd1 io.Reader = strings.NewReader("version 97.1 ")
+	lx, err := NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
+
+	err = lx.ExpectCh('v')
+	c.Assert(err, IsNil)
+	err = lx.ExpectCh('e')
+	c.Assert(err, IsNil)
+	err = lx.ExpectCh('x')
+	c.Assert(err, NotNil)
+	c.Assert(err.Error(), Equals, "expected 'x', found 'r'")
+	// The 'r' will have been puhsed back.
+	err = lx.ExpectCh('r')
+	c.Assert(err, IsNil)
+	err = lx.ExpectCh('s')
+	c.Assert(err, IsNil)
+}
 func (s *XLSuite) TestExpectStr(c *C) {
 
 	var rd1 io.Reader = strings.NewReader("version 97.1 ")
