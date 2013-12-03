@@ -64,9 +64,11 @@ func (lx *LexInput) GetOffset() int {
 // responsible for dealing with line breaks.
 //
 func (lx *LexInput) NextCh() (r rune, err error) {
-	if len(lx.pushedBack) > 0 {
-		r = lx.pushedBack[0]
-		lx.pushedBack = lx.pushedBack[1:]
+	depth := len(lx.pushedBack)
+	if depth > 0 {
+		depth--
+		r = lx.pushedBack[depth]
+		lx.pushedBack = lx.pushedBack[:depth]
 	} else {
 		var delta int
 		r, delta, err = lx.rd.ReadRune()
@@ -74,6 +76,17 @@ func (lx *LexInput) NextCh() (r rune, err error) {
 			lx.offset += delta // byte offset
 			lx.colNo++         // character offset
 		}
+	}
+	return
+}
+
+func (lx *LexInput) PeekCh() (r rune, err error) {
+	depth := len(lx.pushedBack)
+	if depth > 0 {
+		r = lx.pushedBack[depth-1]
+	} else {
+		r, err = lx.NextCh()
+		lx.PushBack(r)
 	}
 	return
 }
@@ -139,8 +152,7 @@ func (lx *LexInput) SkipS() {
 			lx.PushBack(r)
 		} else {
 			if !u.IsSpace(r) {
-				lx.pushedBack = append(lx.pushedBack, r)
-				lx.offset--
+				lx.PushBack(r)
 				break
 			}
 		}
@@ -217,10 +229,11 @@ func (lx *LexInput) AcceptStr(acceptable string) (found bool, err error) {
 		}
 	}
 	// If we didn't get a match, we need to push back any characters
-	// read, FIFO-style.
+	// read.
 	if err == nil && !found {
-		for i := 0; i < len(runes); i++ {
-			lx.PushBack(runes[i])
+		length := len(runes)
+		for i := 0; i < length; i++ {
+			lx.PushBack(runes[length-i-1])
 		}
 	}
 	return

@@ -1,5 +1,8 @@
 xgo/lex/TODO
 
+2013-12-03
+    * need LexError(msg) which prepends line and column numbers
+
 2013-11-26 (11-24, edited)
     * to handle newlines, pushback needs a slice of lastColNo
         to enable it to properly restore state where newlines are

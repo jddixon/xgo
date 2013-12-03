@@ -195,3 +195,63 @@ func (s *XLSuite) TestAcceptStr(c *C) {
 	err = lx2.ExpectS()
 	c.Assert(err, IsNil)
 }
+
+func (s *XLSuite) TestPushBackAndPeek(c *C) {
+
+	var rd1 io.Reader = strings.NewReader("version 97.1 ")
+	lx, err := NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
+
+	err = lx.ExpectCh('v')
+	c.Assert(err, IsNil)
+	err = lx.ExpectCh('e')
+	c.Assert(err, IsNil)
+	err = lx.ExpectCh('x')
+	c.Assert(err, NotNil)
+	c.Assert(err.Error(), Equals, "expected 'x', found 'r'")
+	// The 'r' will have been pushed back.
+	err = lx.ExpectCh('r')
+	c.Assert(err, IsNil)
+	err = lx.ExpectCh('s')
+	c.Assert(err, IsNil)
+
+	var ch rune
+	lx.PushBack('s')
+	c.Assert(err, IsNil)
+	lx.PushBack('r')
+	c.Assert(err, IsNil)
+
+	ch, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 'r')
+	lx.PushBack(ch)
+
+	ch, err = lx.PeekCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 'r')
+
+	// a second peek should have no effect
+	ch, err = lx.PeekCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 'r')
+
+	ch, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 'r')
+
+	ch, err = lx.PeekCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 's')
+	ch, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 's')
+
+	ch, err = lx.PeekCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 'i')
+	ch, err = lx.NextCh()
+	c.Assert(err, IsNil)
+	c.Assert(ch, Equals, 'i')
+
+}
