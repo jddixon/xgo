@@ -9,10 +9,15 @@ import (
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
-	si gu.StrIntern
+	xmlDeclVersion, xmlDeclEncoding string
+	xmlDeclStandalone               bool
+
+	tokenize bool
 
 	// parser state
-	curEvent PullToken // defined in const.go
+	curEvent PullToken // aka eventType; PullToken defined in const.go
+
+	afterLT bool // have encountered <
 
 	// element stack
 	elmDepth int
@@ -24,27 +29,52 @@ type Parser struct {
 	nsPrefix []string
 	nsUri    []string
 
-	lineNo int // line number
-	colNo  int // column number
+	si gu.StrIntern
 
 	// buffer management
+	lineNo int // line number		// redundant
+	colNo  int // column number		// redundant
+
 	gl.LexInput
 }
 
-func NewParser() (p *Parser, err error) {
+// Return an XmlPullParser with the default encoding
+func NewNewParser(reader io.Reader) (*Parser, error) {
+	return NewParser(reader, "")
+}
 
-	si := gu.NewStrIntern()
+func NewParser(reader io.Reader, encoding string) (p *Parser, err error) {
+
+	var lx *gl.LexInput
+	if reader == nil {
+		err = NilReader
+	} else {
+		lx, err = gl.NewLexInput(reader, encoding)
+	}
 
 	if err == nil {
+		si := gu.NewStrIntern()
 		p = &Parser{
-			si: si,
+			si:       si,
+			LexInput: *lx,
 		}
+		p.reset()
 	}
 	return
 }
 
+// Return a pointer to the parser's lexer.
+func (xpp *Parser) GetLexer() *gl.LexInput {
+	return &xpp.LexInput
+}
+
+// All fields in the Parser struct should be reinitialized here.
 func (xpp *Parser) reset() {
+	xpp.afterLT = false
+	xpp.colNo = 0
 	xpp.elmDepth = 0
+	xpp.lineNo = 1
+	xpp.nsCount = 0
 
 	// XXX STUB XXX
 

@@ -5,6 +5,11 @@ import (
 	"fmt"
 )
 
+// ------------------------------------------------------------------
+// Beware: parseXmlDecl() is called by parseProcessingInstruction()
+// because it is a specific type of PI.
+// ------------------------------------------------------------------
+
 // [25] Eq ::= S? '=' S?
 func (p *Parser) expectEq() (err error) {
 	lx := &p.LexInput
@@ -60,8 +65,7 @@ func (p *Parser) getEncodingNameCh(quoteCh rune) (ch rune, err error) {
 // Function called after encountering <?xmlS at the beginning of the input,
 // where S as usual represents a space.
 //
-func (p *Parser) parseXmlDecl() (xmlDeclVersion, xmlDeclEncoding string,
-	xmlDeclStandalone bool, err error) {
+func (p *Parser) parseXmlDecl() (err error) {
 
 	var (
 		found       bool
@@ -102,8 +106,8 @@ func (p *Parser) parseXmlDecl() (xmlDeclVersion, xmlDeclEncoding string,
 		}
 		if err == nil {
 			// ch is guaranteed to be quoteCh
-			xmlDeclVersion = string(vRunes)
-			if xmlDeclVersion != "1.0" {
+			p.xmlDeclVersion = string(vRunes)
+			if p.xmlDeclVersion != "1.0" {
 				err = OnlyVersion1_0
 			}
 		}
@@ -137,7 +141,7 @@ func (p *Parser) parseXmlDecl() (xmlDeclVersion, xmlDeclEncoding string,
 					}
 				}
 				if err == nil {
-					xmlDeclEncoding = string(eRunes)
+					p.xmlDeclEncoding = string(eRunes)
 				}
 			}
 		}
@@ -159,9 +163,9 @@ func (p *Parser) parseXmlDecl() (xmlDeclVersion, xmlDeclEncoding string,
 				}
 				if err == nil {
 					if foundYes {
-						xmlDeclStandalone = true
+						p.xmlDeclStandalone = true
 					} else if foundNo {
-						xmlDeclStandalone = false
+						p.xmlDeclStandalone = false
 					} else {
 						err = MustBeYesOrNo
 					}

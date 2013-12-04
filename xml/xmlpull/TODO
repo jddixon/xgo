@@ -1,27 +1,39 @@
 xgo/xml/xmlpull/TODO
 
+2013-12-03 
+    * XmlPullParserException in the specs can become XmlPullError,      * DONE
+        which must return line and column numbers and must              * DONE
+        implement the error interface                                   * DONE
+    * Next() returns the event type, which is PullToken, defined
+        in const.go
+    * ParseXmlDecl should write version, encoding, standalone to        * DONE
+        Parser struct rather than returning                             * DONE
+
+2013-12-03 
+    from the syntax diagrams:
+    * ParseXmlDecl                                                      * DONE
+    * ParseProcessingInstruction
+    * ParseProlog
+    
+    * ParseEpilog
+    * ParseAttribute
+    * ParseCdata
+    * ParseComment
+    * ParseEntityRef
+    * ParseDocdecl
+    * ParseStartTag
+    * ParseEndTag
+
 2013-12-02
-    * parseXmlDecl() should return the values collected or put them
-        in p
+    * parseXmlDecl() should return the values collected or put them in p* DONE
 
 2013-11-21 (11-20, edited)
     * build skeletal parser as parser.go                                * DONE
         - be able to read and parse first line
             * parseXmlDecl()
 
-    * write basic parser functions (in gl "xgo/lexutil")
-        - IsS()                                                         * SKIP
-        - ExpectS()                                                     * DONE
-        - SkipS()                                                       * DONE
-            // needs a max parameter                                    * SKIP
-
     * write parser_test.go, initially testing that reset() works 
         as expected
-
-    * SWAP NAMES parser.go <--> xpp.go                                  * DONE
-    * move strIntern stuff into parser.go                               * DONE
-    * xpp.go becomes the command line program, and so should move to    * DONE
-        xgo/cmd/xpp or xgo/cmd/xgoXPP                                   * DONE
 
 2013-11-08
     * For string interning see eg stackoverflow 13017499                * DONE

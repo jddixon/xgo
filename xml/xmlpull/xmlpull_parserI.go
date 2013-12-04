@@ -1,5 +1,7 @@
 package xmlpull
 
+// xgo/xml/xmlpull/xmlpull_parserI.go
+
 import (
 	"io"
 )
