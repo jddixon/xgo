@@ -77,6 +77,9 @@ func (lx *LexInput) NextCh() (r rune, err error) {
 			lx.colNo++         // character offset
 		}
 	}
+	if r == '\n' {
+		lx.stepLineNo()
+	}
 	return
 }
 
