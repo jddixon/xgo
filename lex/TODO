@@ -2,6 +2,8 @@ xgo/lex/TODO
 
 2013-12-03
     * need LexError(msg) which prepends line and column numbers         * DONE
+    * rename NewError to NewLexError                                    * DONE
+    * this must return an error (not *LexError)                         * DONE
 
 2013-11-26 (11-24, edited)
     * to handle newlines, pushback needs a slice of lastColNo
@@ -12,15 +14,5 @@ xgo/lex/TODO
             actually seen
 
 2013-11-24
-    * drop IsS(), use unicode IsSpace() instead                         * DONE
-    * handle newlines within NextCh, automatically correcting           * DONE
-        lineNo, colNo                                                   * DONE
     * need to test with file Reader as well
-
-2013-11-23
-    * need a lex.SyntaxError that adds line and column number           * DONE
-        - this must satisfy the error interface and so have an          * DONE
-            Error()string method                                        * DONE
-    * convert lex_input.go to use runes instead of ASCII characters     * DONE
-
 

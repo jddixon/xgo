@@ -15,7 +15,7 @@ func (lxErr *LexError) Error() string {
 }
 
 //
-func (lx *LexInput) NewError(msg string) (lxErr *LexError) {
+func (lx *LexInput) NewLexError(msg string) (lxErr error) {
 	lxMsg := fmt.Sprintf("line %d col %d: %s", lx.lineNo, lx.colNo, msg)
 	lxErr = &LexError{lxMsg}
 	return

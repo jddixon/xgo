@@ -29,7 +29,7 @@ func (s *XLSuite) TestLexError(c *C) {
 	c.Assert(lx.LineNo(), Equals, 1)
 	c.Assert(lx.ColNo(), Equals, 3)
 
-	e1 := lx.NewError(ERR_MSG_1)
+	e1 := lx.NewLexError(ERR_MSG_1)
 	expected := fmt.Sprintf("line %d col %d: %s",
 		lx.LineNo(), lx.ColNo(), ERR_MSG_1)
 	c.Assert(e1.Error(), Equals, expected)
@@ -40,7 +40,7 @@ func (s *XLSuite) TestLexError(c *C) {
 	c.Assert(lx.LineNo(), Equals, 2)
 	c.Assert(lx.ColNo(), Equals, 0)
 
-	e2 := lx.NewError(ERR_MSG_2)
+	e2 := lx.NewLexError(ERR_MSG_2)
 	expected = fmt.Sprintf("line %d col %d: %s",
 		lx.LineNo(), lx.ColNo(), ERR_MSG_2)
 	c.Assert(e2.Error(), Equals, expected)
@@ -60,7 +60,7 @@ func (s *XLSuite) TestLexError(c *C) {
 	c.Assert(lx.LineNo(), Equals, 3)
 	c.Assert(lx.ColNo(), Equals, 13)
 
-	e3 := lx.NewError(ERR_MSG_3)
+	e3 := lx.NewLexError(ERR_MSG_3)
 	expected = fmt.Sprintf("line %d col %d: %s",
 		lx.LineNo(), lx.ColNo(), ERR_MSG_3)
 	c.Assert(e3.Error(), Equals, expected)
