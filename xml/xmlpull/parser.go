@@ -12,13 +12,13 @@ type Parser struct {
 	xmlDeclVersion, xmlDeclEncoding string
 	xmlDeclStandalone               bool
 
-	tokenizing bool
+	tokenizing         bool
 	roundtripSupported bool
 
-	startLine, startCol	int		// where a syntactic element begins
+	startLine, startCol int // where a syntactic element begins
 
 	// accumulated characters for various tokens
-	commentChars	string		// a kludge ;-)
+	commentChars string // a kludge ;-)
 
 	// parser state
 	curEvent PullToken // aka eventType; PullToken defined in const.go
