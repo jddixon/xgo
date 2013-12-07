@@ -2,6 +2,7 @@ package xmlpull
 
 import (
 	e "errors"
+	"fmt"
 )
 
 // The last is of course a Java name, and will be changed or will be replaced
@@ -19,5 +20,12 @@ var (
 	OnlyVersion1_0           = e.New("Only XML version 1.0 supported")
 	PosOutOfRange            = e.New("XmlPullParser pos out of range")
 	UnsupportedFeature       = e.New("XmlPullParser unsupported feature")
-	XmlPullParserException   = e.New("XmlPullParser exception")
+	XmlDeclMustBeAtStart	= e.New("XmlDecl must be at start of file")
+	XmlInDeclMustBeLowerCase = e.New("xml in XmlDecl must be lower case")
 )
+
+func (p *Parser) NotClosedErr(what string) error {
+	msg := fmt.Sprintf("%s started line %d column %d not closed", 
+		what, p.startLine, p.startCol)
+	return e.New(msg)
+}
