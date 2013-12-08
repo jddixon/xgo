@@ -49,6 +49,10 @@ func (p *Parser) parseCDSect() (err error) {
 					if haveBracket {
 						cDataChars = append(cDataChars, ']')
 						haveBracket = false
+					} else if haveTwoBrackets {
+						cDataChars = append(cDataChars, ']')
+						cDataChars = append(cDataChars, ']')
+						haveTwoBrackets = false
 					}
 					cDataChars = append(cDataChars, ch)
 				}
