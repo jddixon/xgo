@@ -1,5 +1,10 @@
 xgo/xml/xmlpull/TODO
 
+2013-12-07
+    * edit all parser files to invoke xgo/lex/ functions through
+        lexer.go wrapper functions, to  improve error handling
+        - so ch, err = lx.NextChr() becomes ch, err = p.NextChr(), etc
+
 2013-12-03 
     * XmlPullParserException in the specs can become XmlPullError,      * DONE
         which must return line and column numbers and must              * DONE
@@ -17,8 +22,8 @@ xgo/xml/xmlpull/TODO
     
     * ParseEpilog
     * ParseAttribute
-    * ParseCdata
-    * ParseComment
+    * ParseCDSect                                                       * DONE
+    * ParseComment                                                      * DONE
     * ParseEntityRef
     * ParseDocdecl
     * ParseStartTag

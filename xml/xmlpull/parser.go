@@ -17,8 +17,9 @@ type Parser struct {
 
 	startLine, startCol int // where a syntactic element begins
 
-	// accumulated characters for various tokens
-	commentChars string // a kludge ;-)
+	// accumulated characters for various tokens -- a bit kludgey
+	cDataChars   string
+	commentChars string
 
 	// parser state
 	curEvent PullToken // aka eventType; PullToken defined in const.go
@@ -42,6 +43,11 @@ type Parser struct {
 	colNo  int // column number		// redundant
 
 	gl.LexInput
+}
+
+func (p *Parser) start() {
+	p.startLine = p.LineNo()
+	p.startCol = p.ColNo()
 }
 
 // Return an XmlPullParser with the default encoding
