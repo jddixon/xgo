@@ -17,8 +17,7 @@ func (lxErr *XmlPullError) Error() string {
 
 //
 func (p *Parser) NewXmlPullError(msg string) (xppErr error) {
-	lx := &p.LexInput
-	fullMsg := fmt.Sprintf("line %d col %d: %s", lx.LineNo(), lx.ColNo(), msg)
+	fullMsg := fmt.Sprintf("line %d col %d: %s", p.LineNo(), p.ColNo(), msg)
 	xppErr = &XmlPullError{fullMsg}
 	return
 }

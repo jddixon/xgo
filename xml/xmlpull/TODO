@@ -1,9 +1,13 @@
 xgo/xml/xmlpull/TODO
 
 2013-12-07
-    * edit all parser files to invoke xgo/lex/ functions through
-        lexer.go wrapper functions, to  improve error handling
-        - so ch, err = lx.NextChr() becomes ch, err = p.NextChr(), etc
+    * edit all parser files to invoke xgo/lex/ functions through        * DONE
+        lexer.go wrapper functions, to  improve error handling          * DONE
+        - so ch, err = lx.NextChr() becomes ch, err = p.NextChr(), etc  * DONE
+
+    * verify lexer.go has all functions in xgo/lex/lex_input.go
+        - and rearrange the latter into alphabetical order
+    * parseXmlDecl must collect its runes, add to Parser struct
 
 2013-12-03 
     * XmlPullParserException in the specs can become XmlPullError,      * DONE
@@ -28,9 +32,6 @@ xgo/xml/xmlpull/TODO
     * ParseDocdecl
     * ParseStartTag
     * ParseEndTag
-
-2013-12-02
-    * parseXmlDecl() should return the values collected or put them in p* DONE
 
 2013-11-21 (11-20, edited)
     * build skeletal parser as parser.go                                * DONE

@@ -23,49 +23,46 @@ func (s *XLSuite) TestXmlPullError(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(xpp, NotNil)
 
-	lx := xpp.GetLexer()
-	c.Assert(lx, NotNil)
-
-	err = lx.ExpectStr("abc")
+	err = xpp.ExpectStr("abc")
 	c.Assert(err, IsNil)
 
-	c.Assert(lx.LineNo(), Equals, 1)
-	c.Assert(lx.ColNo(), Equals, 3)
+	c.Assert(xpp.LineNo(), Equals, 1)
+	c.Assert(xpp.ColNo(), Equals, 3)
 
 	e1 := xpp.NewXmlPullError(ERR_MSG_1)
 	expected := fmt.Sprintf("line %d col %d: %s",
-		lx.LineNo(), lx.ColNo(), ERR_MSG_1)
+		xpp.LineNo(), xpp.ColNo(), ERR_MSG_1)
 	c.Assert(e1.Error(), Equals, expected)
 
-	nl, err := lx.NextCh()
+	nl, err := xpp.NextCh()
 	c.Assert(err, IsNil)
 	c.Assert(nl, Equals, '\n')
-	c.Assert(lx.LineNo(), Equals, 2)
-	c.Assert(lx.ColNo(), Equals, 0)
+	c.Assert(xpp.LineNo(), Equals, 2)
+	c.Assert(xpp.ColNo(), Equals, 0)
 
 	e2 := xpp.NewXmlPullError(ERR_MSG_2)
 	expected = fmt.Sprintf("line %d col %d: %s",
-		lx.LineNo(), lx.ColNo(), ERR_MSG_2)
+		xpp.LineNo(), xpp.ColNo(), ERR_MSG_2)
 	c.Assert(e2.Error(), Equals, expected)
 
-	err = lx.ExpectStr("def")
+	err = xpp.ExpectStr("def")
 	c.Assert(err, IsNil)
-	c.Assert(lx.LineNo(), Equals, 2)
-	c.Assert(lx.ColNo(), Equals, 3)
+	c.Assert(xpp.LineNo(), Equals, 2)
+	c.Assert(xpp.ColNo(), Equals, 3)
 
-	err = lx.ExpectCh('\n')
+	err = xpp.ExpectCh('\n')
 	c.Assert(err, IsNil)
-	c.Assert(lx.LineNo(), Equals, 3)
-	c.Assert(lx.ColNo(), Equals, 0)
+	c.Assert(xpp.LineNo(), Equals, 3)
+	c.Assert(xpp.ColNo(), Equals, 0)
 
-	err = lx.ExpectStr("version 97.1 ")
+	err = xpp.ExpectStr("version 97.1 ")
 	c.Assert(err, IsNil)
-	c.Assert(lx.LineNo(), Equals, 3)
-	c.Assert(lx.ColNo(), Equals, 13)
+	c.Assert(xpp.LineNo(), Equals, 3)
+	c.Assert(xpp.ColNo(), Equals, 13)
 
 	e3 := xpp.NewXmlPullError(ERR_MSG_3)
 	expected = fmt.Sprintf("line %d col %d: %s",
-		lx.LineNo(), lx.ColNo(), ERR_MSG_3)
+		xpp.LineNo(), xpp.ColNo(), ERR_MSG_3)
 	c.Assert(e3.Error(), Equals, expected)
 
 }

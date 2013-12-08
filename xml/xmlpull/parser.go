@@ -17,9 +17,11 @@ type Parser struct {
 
 	startLine, startCol int // where a syntactic element begins
 
-	// accumulated characters for various tokens -- a bit kludgey
+	// accumulated characters for various tokens -- yes, kludgey
 	cDataChars   string
 	commentChars string
+	piChars      string
+	piTarget     string
 
 	// parser state
 	curEvent PullToken // aka eventType; PullToken defined in const.go

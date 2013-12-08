@@ -11,23 +11,22 @@ import (
 // ------------------------------------------------------------------
 
 // [25] Eq ::= S? '=' S?
+
 func (p *Parser) expectEq() (err error) {
-	lx := p.GetLexer()
-	lx.SkipS()
-	ch, err := lx.NextCh()
+	p.SkipS()
+	ch, err := p.NextCh()
 	if err == nil && ch != '=' {
 		msg := fmt.Sprintf(
 			"parseXmlDecl.expectEq: expected = , found %c\n", ch)
 		err = e.New(msg)
 	}
 	if err == nil {
-		lx.SkipS() // closes Eq
+		p.SkipS() // closes Eq
 	}
 	return
 }
 func (p *Parser) expectQuoteCh() (quoteCh rune, err error) {
-	lx := p.GetLexer()
-	quoteCh, err = lx.NextCh()
+	quoteCh, err = p.NextCh()
 	if err == nil && quoteCh != '\'' && quoteCh != '"' {
 		msg := fmt.Sprintf("expected quotation mark, found '%c'", quoteCh)
 		err = e.New(msg)
@@ -37,8 +36,7 @@ func (p *Parser) expectQuoteCh() (quoteCh rune, err error) {
 
 // [81] EncName ::= [A-Za-z] ([A-Za-z0-9._] | '-')*
 func (p *Parser) getEncodingStartCh() (ch rune, err error) {
-	lx := p.GetLexer()
-	ch, err = lx.NextCh()
+	ch, err = p.NextCh()
 	if err == nil {
 		if !('a' <= ch && ch <= 'z') && !('A' <= ch && ch <= 'Z') {
 			msg := fmt.Sprintf("cannot start encoding name: '%c'\n", ch)
@@ -49,8 +47,7 @@ func (p *Parser) getEncodingStartCh() (ch rune, err error) {
 }
 
 func (p *Parser) getEncodingNameCh(quoteCh rune) (ch rune, err error) {
-	lx := p.GetLexer()
-	ch, err = lx.NextCh()
+	ch, err = p.NextCh()
 	if err == nil && ch != quoteCh {
 		if !('a' <= ch && ch <= 'z') && !('A' <= ch && ch <= 'Z') &&
 			!('0' <= ch && ch <= '9') && (ch != '.') && (ch != '_') &&
@@ -71,13 +68,12 @@ func (p *Parser) parseXmlDecl() (err error) {
 		found       bool
 		ch, quoteCh rune
 	)
-	lx := p.GetLexer()
 
 	// [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
 	// [24] VersionInfo ::= S 'version' Eq ("'" VersionNum "'" | '"' VersionNum '"')
 	// We are on first S past <?xml
-	lx.SkipS()
-	err = lx.ExpectStr("version")
+	p.SkipS()
+	err = p.ExpectStr("version")
 
 	if err == nil {
 		err = p.expectEq()
@@ -89,7 +85,7 @@ func (p *Parser) parseXmlDecl() (err error) {
 	// [26] VersionNum ::= ([a-zA-Z0-9_.:] | '-')+
 	if err == nil {
 		var vRunes []rune
-		ch, err = lx.NextCh()
+		ch, err = p.NextCh()
 		for err == nil && ch != quoteCh {
 			if ('a' <= ch && ch <= 'z') ||
 				('A' <= ch && ch <= 'Z') ||
@@ -102,7 +98,7 @@ func (p *Parser) parseXmlDecl() (err error) {
 				err = e.New(msg)
 				break
 			}
-			ch, err = lx.NextCh()
+			ch, err = p.NextCh()
 		}
 		if err == nil {
 			// ch is guaranteed to be quoteCh
@@ -115,8 +111,8 @@ func (p *Parser) parseXmlDecl() (err error) {
 
 	// [80] EncodingDecl ::= S 'encoding' Eq ('"' EncName '"' | "'" EncName "'" )
 	if err == nil {
-		lx.SkipS()
-		found, err = lx.AcceptStr("encoding")
+		p.SkipS()
+		found, err = p.AcceptStr("encoding")
 		if err == nil {
 			if found {
 				var eRunes []rune
@@ -148,8 +144,8 @@ func (p *Parser) parseXmlDecl() (err error) {
 	}
 	// [32] SDDecl ::= S 'standalone' Eq (("'" ('yes' | 'no') "'") | ('"' ('yes' | 'no') '"'))
 	if err == nil {
-		lx.SkipS()
-		found, err = lx.AcceptStr("standalone")
+		p.SkipS()
+		found, err = p.AcceptStr("standalone")
 		if err == nil && found {
 			var foundYes, foundNo bool
 			err = p.expectEq()
@@ -170,7 +166,7 @@ func (p *Parser) parseXmlDecl() (err error) {
 						err = MustBeYesOrNo
 					}
 				}
-				ch, err = lx.NextCh()
+				ch, err = p.NextCh()
 				if err == nil && ch != quoteCh {
 					err = MissingDeclClosingQuote
 				}
@@ -179,8 +175,8 @@ func (p *Parser) parseXmlDecl() (err error) {
 	}
 	// expecting ?>
 	if err == nil {
-		lx.SkipS()
-		err = lx.ExpectStr("?>")
+		p.SkipS()
+		err = p.ExpectStr("?>")
 	}
 	return
 }
