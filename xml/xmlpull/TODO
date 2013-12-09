@@ -20,16 +20,18 @@ xgo/xml/xmlpull/TODO
 
 2013-12-03 
     from the syntax diagrams:
-    * ParseXmlDecl                                                      * DONE
-    * ParseProcessingInstruction
+
     * ParseProlog
-    
     * ParseEpilog
+
     * ParseAttribute
     * ParseCDSect                                                       * DONE
     * ParseComment                                                      * DONE
-    * ParseEntityRef
     * ParseDocdecl
+    * ParseEntityRef
+    * ParseProcessingInstruction                                        * DONE
+    * ParseXmlDecl                                                      * DONE
+    
     * ParseStartTag
     * ParseEndTag
 

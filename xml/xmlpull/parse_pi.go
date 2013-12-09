@@ -75,12 +75,6 @@ func (p *Parser) parseProcessingInstruction() (isPI bool, err error) {
 		if isPI && err == nil {
 			var haveQMark bool
 			ch, err = p.NextCh()
-			// DEBUG
-			fmt.Printf("pre-body: %c ", ch)
-			if err != nil {
-				fmt.Printf("err = %s\n", err.Error())
-			}
-			// END
 			for err == nil {
 				if ch == '?' {
 					haveQMark = true
@@ -94,16 +88,13 @@ func (p *Parser) parseProcessingInstruction() (isPI bool, err error) {
 					haveQMark = false
 
 				} else {
-					haveQMark = false
+					if haveQMark {
+						piChars = append(piChars, '?')
+						haveQMark = false
+					}
 					piChars = append(piChars, ch)
 				}
 				ch, err = p.NextCh()
-				// DEBUG
-				fmt.Printf("  body: %c ", ch)
-				if err != nil {
-					fmt.Printf("err = %s\n", err.Error())
-				}
-				// END
 			}
 		}
 	}
