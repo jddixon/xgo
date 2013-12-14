@@ -42,7 +42,7 @@ const (
 	FEATURE_VALIDATION = "http://xmlpull.org/v1/doc/features.html#validation"
 )
 
-type PullToken int
+type PullEvent int
 
 const (
 	// ==============================================================
@@ -56,7 +56,7 @@ const (
 	// @see #next
 	// @see #nextToken
 	//
-	START_DOCUMENT PullToken = iota
+	START_DOCUMENT PullEvent = iota
 
 	// EVENT TYPE and TOKEN: logical end of xml document
 	// (available from <a href="#next()">next()</a> and <a href="#nextToken()">nextToken()</a>).

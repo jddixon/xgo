@@ -1,5 +1,7 @@
 package xmlpull
 
+// xgo/xml/xmlpull/parse_xml_decl.go
+
 import (
 	e "errors"
 	"fmt"

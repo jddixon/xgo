@@ -13,13 +13,15 @@ xgo/xml/xmlpull/TODO
     * XmlPullParserException in the specs can become XmlPullError,      * DONE
         which must return line and column numbers and must              * DONE
         implement the error interface                                   * DONE
-    * Next() returns the event type, which is PullToken, defined
-        in const.go
+    * Next() returns the event type, which is PullEvent, defined        * DONE
+        in const.go                                                     * DONE
     * ParseXmlDecl should write version, encoding, standalone to        * DONE
         Parser struct rather than returning                             * DONE
 
 2013-12-03 
     from the syntax diagrams:
+
+    * Next()
 
     * ParseProlog
     * ParseEpilog

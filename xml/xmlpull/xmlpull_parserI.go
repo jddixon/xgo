@@ -63,7 +63,7 @@ import (
 //         XmlPullParser xpp = factory.newPullParser();
 //
 //         xpp.setInput ( new StringReader ( "&lt;foo>Hello World!&lt;/foo>" ) );
-//         int eventType = xpp.getEventType();
+//         PullEvent eventType = xpp.getEventType();
 //         while (eventType != xpp.END_DOCUMENT) {
 //          if(eventType == xpp.START_DOCUMENT) {
 //              System.out.println("Start document");
@@ -213,7 +213,7 @@ type XmlPullParserI interface {
 	//
 	// May return XmlPullParserException
 	//
-	GetNamespaceCount(depth int) (int, error)
+	GetNamespaceCount(elmDepth int) (int, error)
 
 	// -- GetNamespacePrefix ----------------------------------------
 
@@ -477,7 +477,7 @@ type XmlPullParserI interface {
 	// @see #nextToken()
 	// May throw XmlPullParserException
 	//
-	GetEventType() (PullToken, error)
+	GetEventType() (PullEvent, error)
 
 	// -- Next ------------------------------------------------------
 
@@ -500,7 +500,7 @@ type XmlPullParserI interface {
 	// @see #END_DOCUMENT
 
 	// May throw XmlPullParserException or IOError
-	Next() (int, error)
+	Next() (PullEvent, error)
 
 	// -- NextToken -------------------------------------------------
 
@@ -557,7 +557,7 @@ type XmlPullParserI interface {
 	// @see #IGNORABLE_WHITESPACE
 	//
 	// May throw XmlPullParserException or IOError
-	NextToken() (int, error)
+	NextToken() (PullEvent, error)
 
 	// UTILITY METHODS //////////////////////////////////////////////
 
@@ -585,7 +585,7 @@ type XmlPullParserI interface {
 	//
 	// May throw XmlPullParserException or IOError
 	//
-	Require(type_ int, namespace, name string)
+	Require(type_ PullEvent, namespace, name string)
 
 	// -- ReadText --------------------------------------------------
 

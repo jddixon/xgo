@@ -11,20 +11,22 @@ import (
 type Parser struct {
 	xmlDeclVersion, xmlDeclEncoding string
 	xmlDeclStandalone               bool
+	docTypeDecl                     string
 
 	tokenizing         bool
 	roundtripSupported bool
 
 	startLine, startCol int // where a syntactic element begins
 
-	// accumulated characters for various tokens -- yes, kludgey
+	// accumulated characters of various types -- yes, kludgey
+	text         []rune
 	cDataChars   string
 	commentChars string
 	piChars      string
 	piTarget     string
 
 	// parser state
-	curEvent PullToken // aka eventType; PullToken defined in const.go
+	curEvent PullEvent // aka eventType; PullEvent defined in const.go
 
 	afterLT bool // have encountered a left angle bracket (<)
 
@@ -223,7 +225,7 @@ func (xpp *Parser) GetAttributeValueNS(namespace, name string) (
 // Return the type of the current parser event.  The spec requires the
 // error return.
 //
-func (xpp *Parser) GetEventType() (PullToken, error) {
+func (xpp *Parser) GetEventType() (PullEvent, error) {
 	return xpp.curEvent, nil
 }
 
