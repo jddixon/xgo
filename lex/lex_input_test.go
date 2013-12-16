@@ -255,3 +255,27 @@ func (s *XLSuite) TestPushBackAndPeek(c *C) {
 	c.Assert(ch, Equals, 'i')
 
 }
+
+func (s *XLSuite) TestPushBackChars(c *C) {
+
+	var rd1 io.Reader = strings.NewReader("version 97.1 ")
+	lx, err := NewLexInput(rd1, "") // accept default encoding
+	c.Assert(err, IsNil)
+	c.Assert(lx, NotNil)
+
+	err = lx.ExpectStr("version 97")
+	c.Assert(err, IsNil)
+
+	lx.PushBackStr(" 97")
+	err = lx.ExpectStr(" 97.1") // FAILS, sees '7'
+	c.Assert(err, IsNil)
+
+	allButSpace := []rune{'v', 'e', 'r', 's', 'i', 'o', 'n', ' ',
+		'9', '7', '.', '1'}
+
+	lx.PushBackChars(allButSpace)
+	err = lx.ExpectStr("version ")
+	c.Assert(err, IsNil)
+	err = lx.ExpectStr("97.1 ")
+	c.Assert(err, IsNil)
+}

@@ -1,10 +1,12 @@
 xgo/lex/TODO
 
+2013-12-16
+    * PushBackChars() and PushBackStr() need testing                    * DONE
+
 2013-12-03
     * need LexError(msg) which prepends line and column numbers         * DONE
     * rename NewError to NewLexError                                    * DONE
     * this must return an error (not *LexError)                         * DONE
-
 2013-11-26 (11-24, edited)
     * to handle newlines, pushback needs a slice of lastColNo
         to enable it to properly restore state where newlines are
@@ -12,7 +14,6 @@ xgo/lex/TODO
         - if a pushBack() is exposed, this will be inevitably error-
             prone, as users can push back characters that they haven't
             actually seen
-
 2013-11-24
     * need to test with file Reader as well
 

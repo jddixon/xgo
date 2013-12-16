@@ -66,7 +66,7 @@ func (lx *LexInput) GetOffset() int {
 func (lx *LexInput) NextCh() (r rune, err error) {
 	depth := len(lx.pushedBack)
 	if depth > 0 {
-		depth--
+		depth-- // note !
 		r = lx.pushedBack[depth]
 		lx.pushedBack = lx.pushedBack[:depth]
 	} else {
@@ -141,6 +141,39 @@ func (lx *LexInput) PushBack(r rune) {
 		// XXX Need to be able to push back newlines - which affect
 		//     colNo, lineNo, and offset.
 	}
+}
+
+// Push back the character slice r onto the input.  If this exceeds
+// the maximum number of chars we can push back, the excess is silenltly
+// discarded.
+//
+// XXX This treatment may not be acceptable.
+//
+func (lx *LexInput) PushBackChars(runes []rune) {
+	roomLeft := MAX_PUSH_BACK - len(lx.pushedBack)
+	if roomLeft > 0 {
+		if roomLeft < len(runes) {
+			runes = runes[:roomLeft]
+		}
+		j := len(runes) - 1
+		for i := 0; i < len(runes); i++ {
+			lx.PushBack(runes[j])
+			j--
+		}
+
+		lx.offset -= len(runes)
+		// XXX Column numbers are not handled!
+		// XXX Need to be able to push back newlines - which affect
+		//     colNo, lineNo, and offset.
+	}
+}
+
+func (lx *LexInput) PushBackStr(s string) {
+	var runes []rune
+	for _, r := range s {
+		runes = append(runes, r)
+	}
+	lx.PushBackChars(runes)
 }
 
 // Skip spaces on the input.  If an error is encountered on reading the
