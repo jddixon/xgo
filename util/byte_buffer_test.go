@@ -23,7 +23,7 @@ func (s *XLSuite) TestByteBuffer(c *C) {
 		size := 16 + rng.Intn(16)
 		sizes[i] = size
 		p[i] = make([]byte, size)
-		rng.NextBytes(&p[i]) // fill the slice with random values
+		rng.NextBytes(p[i]) // fill the slice with random values
 		totalSize = totalSize + size
 	}
 	capacity := 2 * totalSize

@@ -1,5 +1,14 @@
 xgo/CHANGES
 
+2013-12-30
+    v0.1.1
+        * changes to reflect changed rnglib API
+        * context usable
+        * lex used in md, xmlpull
+        * md 67/102 standard tests succeed (66%)
+        * template, xgoT in use in xlattice_go/reg
+        * xml/om cleaned up a bit                                   SLOC  1134
+        * xml/xmlpull a work in progress                            SLOC  1096
 2013-11-18
     v0.1.0
         * util StrIntern coded, tested

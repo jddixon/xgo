@@ -1,5 +1,9 @@
 xgo/lex/TODO
 
+2013-12-17
+    * Where we have a function *Str() we should have a corresponding
+        *Runes() and vice versa (eg PushBackStr, PushBackChars)
+
 2013-12-16
     * PushBackChars() and PushBackStr() need testing                    * DONE
 
