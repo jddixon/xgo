@@ -90,12 +90,16 @@ func main() {
 	)
 	for i := 0; i < len(fileNames); i++ {
 		inFile := filepath.Join(*inDir, fileNames[i]+".md")
-		outFile := filepath.Join(*inDir, fileNames[i]+".html")
+		outFile := filepath.Join(*outDir, fileNames[i]+".html")
 		in, err = os.Open(inFile)
+		options := gm.NewOptions(in, inFile, outFile, *testing, *verbose)
 		if err == nil {
-			p, err = gm.NewParser(in)
+			p, err = gm.NewParser(options)
 			if err == nil {
 				doc, err = p.Parse()
+				if err == io.EOF {
+					err = nil
+				}
 				if err == nil {
 					html := []byte(string(doc.Get()))
 					err = ioutil.WriteFile(outFile, html, 0666)
