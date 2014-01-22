@@ -1,7 +1,10 @@
 xgo/CHANGES
 
-2013-12-30
-    v0.1.1
+v0.1.2
+    2014-01-20
+        * markdown working but not nested blockquotes               SLOC  6365
+v0.1.1
+    2013-12-30
         * changes to reflect changed rnglib API
         * context usable
         * lex used in md, xmlpull
@@ -9,8 +12,8 @@ xgo/CHANGES
         * template, xgoT in use in xlattice_go/reg
         * xml/om cleaned up a bit                                   SLOC  1134
         * xml/xmlpull a work in progress                            SLOC  1096
-2013-11-18
-    v0.1.0
+v0.1.0
+    2013-11-18
         * util StrIntern coded, tested
         * skeletal xml/xmlpull parser, xml_pull_parserI.go 
         * xml/om node types complete, also attr,attr_list,cdata,    SLOC  1231
