@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func Usage() {
@@ -36,6 +37,7 @@ var (
 func main() {
 	var (
 		err error
+		nameWithExt []string		// input file names with extensions
 	)
 
 	flag.Usage = Usage
@@ -51,16 +53,15 @@ func main() {
 	// SANITY CHECKS ////////////////////////////////////////////////
 	if len(fileNames) == 0 {
 		err = NothingToDo
-	} else if !*justShow {
+	} else {
 		for i := 0; i < len(fileNames); i++ {
-			f := filepath.Join(*inDir, fileNames[i]+".md")
-			if _, err = os.Stat(f); os.IsNotExist(err) {
-				err = SrcFileDoesNotExist
-				break
+			name := fileNames[i]
+			if !strings.HasSuffix(name, ".md") {
+				name = name + ".md"
 			}
+			nameWithExt = append(nameWithExt, name)
 		}
 	}
-
 	// DISPLAY STUFF ////////////////////////////////////////////////
 	if *verbose || *justShow {
 		fmt.Printf("inDir        = %v\n", *inDir)
@@ -68,14 +69,21 @@ func main() {
 		fmt.Printf("outDir       = %s\n", *outDir)
 		fmt.Printf("testing      = %v\n", *testing)
 		fmt.Printf("verbose      = %v\n", *verbose)
-		if len(fileNames) > 0 {
+		if len(nameWithExt) > 0 {
 			fmt.Println("INFILES:")
-			for i := 0; i < len(fileNames); i++ {
-				fmt.Printf("%3d: %s.md\n", i, fileNames[i])
+			for i := 0; i < len(nameWithExt); i++ {
+				fmt.Printf("%3d: %s\n", i, nameWithExt[i])
 			}
 		}
 	}
-
+	// VERIFY INPUT FILES EXIST /////////////////////////////////////
+	for i := 0; i < len(nameWithExt); i++ {
+		f := filepath.Join(*inDir, nameWithExt[i])
+		if _, err = os.Stat(f); os.IsNotExist(err) {
+			err = SrcFileDoesNotExist
+			break
+		}
+	}
 	if err != nil {
 		fmt.Printf("\nerror = %s\n", err.Error())
 	}
@@ -88,9 +96,10 @@ func main() {
 		in  io.Reader
 		p   *gm.Parser
 	)
-	for i := 0; i < len(fileNames); i++ {
-		inFile := filepath.Join(*inDir, fileNames[i]+".md")
-		outFile := filepath.Join(*outDir, fileNames[i]+".html")
+	for i := 0; i < len(nameWithExt); i++ {
+		inFile := filepath.Join(*inDir, nameWithExt[i])
+		base := inFile[:len(inFile) - 3]
+		outFile := filepath.Join(*outDir, base+".html")
 		in, err = os.Open(inFile)
 		options := gm.NewOptions(in, inFile, outFile, *testing, *verbose)
 		if err == nil {
