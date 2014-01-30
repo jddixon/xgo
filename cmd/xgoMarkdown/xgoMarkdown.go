@@ -98,7 +98,7 @@ func main() {
 	)
 	for i := 0; i < len(nameWithExt); i++ {
 		inFile := filepath.Join(*inDir, nameWithExt[i])
-		base := inFile[:len(inFile) - 3]
+		base := fileNames[i]
 		outFile := filepath.Join(*outDir, base+".html")
 		in, err = os.Open(inFile)
 		options := gm.NewOptions(in, inFile, outFile, *testing, *verbose)
