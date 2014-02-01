@@ -1,5 +1,9 @@
 xgo/template/TODO
 
+2014-01-29
+    * FIX: xgoT is incorrectly appending / to prefix specified          * DONE
+        by -p, breaking upax_go                                         * DONE
+
 2013-11-29
     * HANDLE: apply.go about line 73 Lookup returns nil
 
