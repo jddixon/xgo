@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>xgoT</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+  <link rel="stylesheet" type="text/css" href="css/ghp.css" />
+</head>
+<body>
+<div class="content">
+<h1 class="appTop">xgoT</h1>
+
+<h2>What It Does</h2>
+
+<p>xgoT is a tool for generating documents from <a href="template.html">xgo templates</a>.</p>
+
+<p>As the term is used here, a template is a UTF8 document in which the
+character sequence <code>${</code> (dollar - left bracket) begins a symbol name
+and the right bracket <code>}</code> ends the symbol name.  Whatever is between
+the brackets is first <strong>trimmed</strong> (leading and trailing spaces are removed)
+and then used to extract the value of the symbol from the
+<a href="context.html">context</a>.</p>
+
+<h2>What It&rsquo;s Used For</h2>
+
+<h2>Command Line</h2>
+
+<p>xgoT is a utility for generating documents from templates given a
+particular context.  For example,</p>
+
+<pre><code>xgoT -c x.ctx  -b buildDir a b c
+</code></pre>
+
+<p>will look for template files a.t, b.t, and c.t in the curent directory,
+process them in the context defined by x.ctx, and write the resultant
+output files buildDir/a.md, buildDir/b.md, and buildDir/c.m, with
+all of the symbolic references, the</p>
+
+<pre><code>${variable}
+</code></pre>
+
+<p>replaced by their definitions.</p>
+
+<p>It is possible to specify</p>
+
+<ul>
+<li>the output file extension using <strong>-E ext</strong>*, which defaults to <code>.go</code></li>
+<li>the path to source files using <strong>-t</strong>, which defaults to <code>./</code></li>
+<li>an output file prefix using <strong>-p</strong></li>
+</ul>
+
+<p>Explanations for these and other options can be found by typing</p>
+
+<pre><code>xgoT -h
+</code></pre>
+
+<p>and the command line.  Alternatively</p>
+
+<pre><code>xgoT -j
+</code></pre>
+
+<p>will display the current values of command line options and then half.</p>
+
+<h2>Installation</h2>
+  <div class="f">
+    <hr />
+    <div class="license">
+      <p><a href="LICENSE.html">LICENSE</a></p>
+    </div>
+    <div class="project">
+      <p><a href="https://github.com/jddixon/xgoT">github project</a></p>
+    </div>
+    <div class="logo" >
+      <a href="http://www.xlattice.org">
+      <img src="img/xlattice-2014.jpg" alt="the XLattice Project" style="float: right;" >
+      </a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
