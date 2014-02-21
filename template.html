@@ -9,8 +9,7 @@
 </head>
 <body>
 <div class="content">
-  <hr />
-<h1>Templates</h1>
+<h1 class="libTop">Templates</h1>
 
 <p>As the term is used here, a template is a UTF8 document in which the
 character sequence <code>${</code> (dollar - left bracket) begins a symbol name
@@ -19,51 +18,19 @@ the brackets is first <strong>trimmed</strong> (leading and trailing spaces are 
 and then used to extract the value of the symbol from the
 <a href="context.html">context</a>.</p>
 
-<h2>xgoT</h2>
-
-<p>xgoT is a utility for generating documents from templates given a
-particular context.  For example,</p>
-
-<pre><code>xgoT -c x.ctx  -b buildDir a b c
-</code></pre>
-
-<p>will look for template files a.t, b.t, and c.t in the curent directory,
-process them in the context defined by x.ctx, and write the resultant
-output files buildDir/a.md, buildDir/b.md, and buildDir/c.m, with
-all of the symbolic references, the</p>
-
-<pre><code>${variable}
-</code></pre>
-
-<p>replaced by their definitions.</p>
-
-<p>It is possible to specify</p>
-
-<ul>
-<li>the output file extension using <strong>-E ext</strong>*, which defaults to <code>.go</code></li>
-<li>the path to source files using <strong>-t</strong>, which defaults to <code>./</code></li>
-<li>an output file prefix using <strong>-p</strong></li>
-</ul>
-
-<p>Explanations for these and other options can be found by typing</p>
-
-<pre><code>xgoT -h
-</code></pre>
-
-<p>and the command line.  Alternatively</p>
-
-<pre><code>xgoT -j
-</code></pre>
-
-<p>will display the current values of command line options and then half.</p>
-
 <h2>Limitations</h2>
 
 <p>In the current implementation there is no provision for escaping
 characters between the brackets.  The trimmed, unescaped text between
 the brackets must be a valid symbol name.</p>
-  <hr />
+
+<h2>Command Line Tools</h2>
+
+<ul>
+<li><a href="xgoT.html">xgoT</a></li>
+</ul>
   <div class="f">
+    <hr />
     <div class="license">
       <p><a href="LICENSE.html">LICENSE</a></p>
     </div>
