@@ -10,29 +10,23 @@ div.content {
 div.f { width: 100%; }
 div.f div.license { float: left; width:33%; }
 div.f div.project { 
-    display: inline-block; 
-    margin:0 auto; 
-    text-align: center;
     width:33%;
+    display:inline-block;
 }
 div.f div.logo { float: right; width:33%;}
 
-/* possible conflicts here*/
-
-h1 { background-color: seagreen;
-    color: white;
+h1 { 
+    background-color: orange; 
     text-align: center;
     width: 100%;
 }
-.libTop { background-color: teal;
+.libTop { 
     color: white;
-    text-align: center;
-    width: 100%;
+    background-color: teal; 
 }
-.appTop { background-color: teal;
+.appTop { 
     color: white;
-    text-align: center;
-    width: 100%;
+    background-color: seagreen; 
 }
 
 h2 { border-bottom: solid 10px  #e5e4d9; }
