@@ -1,4 +1,4 @@
-# Contexts
+<h1 class="libTop>Contexts</h1>
 
 An xgo context is a dictionary which maps **symbols** to their **definitions**.
 A symbol is a string; a definition may be anything.

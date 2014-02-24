@@ -1,5 +1,9 @@
 xgo/template/TODO
 
+2014-02-20
+    * need an include facility, specifically for the various files
+        including stockton.regCred.dat
+
 2014-01-29
     * FIX: xgoT is incorrectly appending / to prefix specified          * DONE
         by -p, breaking upax_go                                         * DONE
