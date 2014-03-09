@@ -15,7 +15,7 @@ var _ = fmt.Print
 //
 // Return true if PI seen, false if an XmlDecl seen, error otherwise
 //
-func (p *Parser) parseProcessingInstruction() (isPI bool, err error) {
+func (p *Parser) parsePI() (isPI bool, err error) {
 
 	// Enter having seen  '<?'
 

@@ -1,5 +1,10 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-08
+    * test printable*()
+    * test charTests.go
+    * get parseStartTag.ZZZ to compile (needed for parseProlog)
+
 2013-12-07
     * edit all parser files to invoke xgo/lex/ functions through        * DONE
         lexer.go wrapper functions, to  improve error handling          * DONE

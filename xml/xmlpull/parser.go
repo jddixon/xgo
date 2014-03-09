@@ -6,6 +6,10 @@ import (
 	"io"
 )
 
+const (
+	READ_CHUNK_SIZE = 4096 // or multiple
+)
+
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
@@ -13,10 +17,15 @@ type Parser struct {
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
 
-	tokenizing         bool
-	roundtripSupported bool
+	// parser behavior
+	normalizeIgnorableWS bool
+	roundtripSupported   bool
+	tokenizing           bool
 
 	startLine, startCol int // where a syntactic element begins
+
+	haveRootTag bool
+	seenDocdecl bool
 
 	// accumulated characters of various types -- yes, kludgey
 	text         []rune

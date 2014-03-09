@@ -31,7 +31,7 @@ func (s *XLSuite) TestSimplePI(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(found, Equals, true)
 
-	isPI, err := p.parseProcessingInstruction()
+	isPI, err := p.parsePI()
 	c.Assert(err, IsNil)
 	c.Assert(isPI, Equals, true)
 	c.Assert(p.piTarget, Equals, "foo")
@@ -50,7 +50,7 @@ func (s *XLSuite) TestMidQmarkPI(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(found, Equals, true)
 
-	isPI, err := p.parseProcessingInstruction()
+	isPI, err := p.parsePI()
 	c.Assert(err, IsNil)
 	c.Assert(isPI, Equals, true)
 	c.Assert(p.piTarget, Equals, "fo")
@@ -70,7 +70,7 @@ func (s *XLSuite) TestDashQMarkAtEnd(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(found, Equals, true)
 
-	isPI, err := p.parseProcessingInstruction()
+	isPI, err := p.parsePI()
 	c.Assert(err, IsNil)
 	c.Assert(isPI, Equals, true)
 	c.Assert(p.piTarget, Equals, "f")
@@ -88,7 +88,7 @@ func (s *XLSuite) TestEndlessPI(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(found, Equals, true)
 
-	_, err = p.parseProcessingInstruction()
+	_, err = p.parsePI()
 	c.Assert(err, NotNil)
 	c.Assert(err.Error(), Equals,
 		"processing instruction started line 1 column 3 not closed")
