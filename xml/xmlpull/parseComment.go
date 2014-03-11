@@ -1,5 +1,7 @@
 package xmlpull
 
+// xgo/xml/xmlpull/parseComment.go
+
 import (
 	"fmt"
 	"strings"

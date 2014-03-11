@@ -13,12 +13,14 @@ const (
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
+	allStringsInterned              bool // NEVER SET XXX
 	xmlDeclVersion, xmlDeclEncoding string
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
 
 	// parser behavior
 	normalizeIgnorableWS bool
+	processNamespaces    bool
 	roundtripSupported   bool
 	tokenizing           bool
 
@@ -35,19 +37,35 @@ type Parser struct {
 	piTarget     string
 
 	// parser state
-	curEvent PullEvent // aka eventType; PullEvent defined in const.go
-
-	afterLT bool // have encountered a left angle bracket (<)
+	afterLT        bool      // have encountered a left angle bracket (<)
+	curEvent       PullEvent // aka eventType; PullEvent defined in const.go
+	isEmptyElement bool
 
 	// element stack
-	elmDepth int
+	elmDepth      int
+	elRawName     [][]rune
+	elRawNameEnd  []int
+	elRawNameLine []int
+
+	elName           []string
+	elPrefix         []string
+	elUri            []string
+	elValue          []string
+	elNamespaceCount []int
 
 	// attribute stack
+	attributeCount    int
+	attributeName     []string
+	attributeNameHash []int
+	attributePrefix   []string
+	attributeUri      []string
+	attributeValue    []string
 
-	// namespaces
-	nsCount  int
-	nsPrefix []string
-	nsUri    []string
+	// namespace stack
+	namespaceEnd int
+	nsCount      int
+	nsPrefix     []string
+	nsUri        []string
 
 	si gu.StrIntern
 

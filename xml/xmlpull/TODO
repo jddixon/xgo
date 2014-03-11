@@ -1,9 +1,12 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-09
+    * all functions returning PullEvent should also return error
+
 2014-03-08
     * test printable*()
     * test charTests.go
-    * get parseStartTag.ZZZ to compile (needed for parseProlog)
+    * get parseStartTag.go to compile (needed for parseProlog)          * DONE
 
 2013-12-07
     * edit all parser files to invoke xgo/lex/ functions through        * DONE
