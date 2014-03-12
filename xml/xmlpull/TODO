@@ -1,5 +1,9 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-10
+    * parseStartTag needs parseAttribute()
+    * and getNamespace()
+
 2014-03-09
     * all functions returning PullEvent should also return error
 

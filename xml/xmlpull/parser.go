@@ -42,9 +42,9 @@ type Parser struct {
 	isEmptyElement bool
 
 	// element stack
-	elmDepth      int
-	elRawName     [][]rune
-	elRawNameEnd  []int
+	elmDepth  int
+	elRawName [][]rune
+	// elRawNameEnd  []int		// XXX DROP ME
 	elRawNameLine []int
 
 	elName           []string
