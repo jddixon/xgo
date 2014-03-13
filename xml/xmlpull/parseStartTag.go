@@ -15,8 +15,8 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 	// The first character of Name is the parameter, so we have seen the
 	// opening <
 	var (
-		name  []rune
-		elLen int // XXX DROP ASAP
+		name, prefix []rune
+		elLen        int // XXX DROP ASAP
 	)
 	name = append(name, ch)
 
@@ -28,6 +28,7 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 	if ch == ':' && p.processNamespaces {
 		err = p.NewXmlPullError(
 			"ns processing enabled: colon cannot start element name")
+		// DIJKSTRA
 	}
 	for err == nil {
 		ch, err = p.NextCh()
@@ -45,30 +46,34 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 			}
 			colonFound = true
 		}
-		name = append(name, ch)
+		if ch == ':' {
+			prefix = make([]rune, len(name))
+			copy(prefix, name)
+			name = name[:0]
+		} else {
+			name = append(name, ch)
+		}
 	}
+	// we have a name and may have a prefix
 	if err == nil {
 		// ensureElementsCapacity()			// XXX MUST IMPLEMENT
-		elLen = len(name)
+		elLen = len(name) // XXX useless
 		p.elRawName[p.elmDepth] = name
 		p.elRawNameLine[p.elmDepth] = p.lineNo
 
-		name := "" // XXX WRONG
-
 		// work on prefixes and namespace URI
-		prefix := ""
 		if p.processNamespaces {
 			if colonFound {
 				// XXX FIX ME FIX ME FIX ME
 				// p.elPrefix[ p.elmDepth ] = newString(buf, nameStart - bufAbsoluteStart, colonPos - nameStart)
-				prefix = p.elPrefix[p.elmDepth]
+				prefix = p.elPrefix[p.elmDepth] // XXX WRONG
 
 				// XXX FIX ME FIX ME FIX ME
 				// p.elName[ p.elmDepth ] = newString(buf, colonPos + 1 - bufAbsoluteStart, pos - 2 - (colonPos - bufAbsoluteStart))
 
 				name = p.elName[p.elmDepth]
 			} else {
-				prefix = ""
+				// prefix is empty
 				p.elPrefix[p.elmDepth] = ""
 				// XXX FIX ME
 				// p.elName[ p.elmDepth ] = newString(buf, nameStart - bufAbsoluteStart, elLen)
