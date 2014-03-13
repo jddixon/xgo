@@ -2,10 +2,12 @@ package xmlpull
 
 // xgo/xml/xmlpull/const.go
 
-const (
-
+var (
 	// The default namespace.
-	NO_NAMESPACE = ""
+	NO_NAMESPACE = make([]rune, 0)
+)
+
+const (
 
 	// Namespace-related features
 

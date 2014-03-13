@@ -16,7 +16,7 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 	// opening <
 	var (
 		name, prefix []rune
-		elLen        int // XXX DROP ASAP
+		// elLen        int // XXX DROP ME
 	)
 	name = append(name, ch)
 
@@ -56,8 +56,7 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 	}
 	// we have a name and may have a prefix
 	if err == nil {
-		// ensureElementsCapacity()			// XXX MUST IMPLEMENT
-		elLen = len(name) // XXX useless
+		// ensureElementsCapacity()			// XXX MPLEMENT ???
 		p.elRawName[p.elmDepth] = name
 		p.elRawNameLine[p.elmDepth] = p.lineNo
 
@@ -74,7 +73,7 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 				name = p.elName[p.elmDepth]
 			} else {
 				// prefix is empty
-				p.elPrefix[p.elmDepth] = ""
+				p.elPrefix[p.elmDepth] = make([]rune, 0)
 				// XXX FIX ME
 				// p.elName[ p.elmDepth ] = newString(buf, nameStart - bufAbsoluteStart, elLen)
 				name = p.elName[p.elmDepth]
@@ -115,19 +114,21 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 			//ch, err = p.NextCh(); // skip space
 		}
 
-		// now when namespaces were declared we can resolve them
+		// If any namespaces were declared we can now resolve them
 		if p.processNamespaces {
 			// uri := getNamespace(prefix)		// XXX NOT YET
-			uri := ""
-			if uri == "" {
-				if prefix == "" { // no prefix and no uri => use default namespace
+			var uri []rune // XXX KLUDGE
+			if len(uri) == 0 {
+				if len(prefix) == 0 { // no prefix and no uri => use default namespace
 					uri = NO_NAMESPACE
 				} else {
 					err = p.NewXmlPullError(
-						"could not determine namespace bound to element prefix " + prefix)
+						"can' determine namespace bound to element prefix " +
+							string(prefix))
 				}
 			}
-			p.elUri[p.elmDepth] = uri
+			p.elUri[p.elmDepth] = make([]rune, len(uri))
+			copy(p.elUri[p.elmDepth], uri)
 
 			//String uri = getNamespace(prefix)
 			//if uri == nil && prefix == nil) { // no prefix and no uri => use default namespace
@@ -136,13 +137,16 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 			// resolve attribute namespaces
 			for i := 0; i < attributeCount; i++ {
 				attrPrefix := p.attributePrefix[i]
-				if attrPrefix != "" {
-					attrUri := "" // getNamespace(attrPrefix)	// XXX NOT YET
-					if attrUri == "" {
+				if len(attrPrefix) > 0 {
+					// attrUri := getNamespace(attrPrefix)	// XXX NOT YET
+					var attrUri []rune
+					if len(attrUri) == 0 {
 						err = p.NewXmlPullError(
-							"could not determine namespace bound to attribute prefix " + attrPrefix)
+							"can't determine ns bound to attribute prefix " +
+								string(attrPrefix))
 					}
-					p.attributeUri[i] = attrUri
+					p.attributeUri[i] = make([]rune, len(attrUri))
+					copy(p.attributeUri[i], attrUri)
 				} else {
 					p.attributeUri[i] = NO_NAMESPACE
 				}
@@ -152,21 +156,21 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 
 			for i := 1; i < attributeCount; i++ {
 				for j := 0; j < i; j++ {
-					if (p.attributeUri[j] == p.attributeUri[i]) &&
+					if SameRunes(p.attributeUri[j], p.attributeUri[i]) &&
 						(p.allStringsInterned &&
-							(p.attributeName[j] == p.attributeName[i]) ||
+							SameRunes(p.attributeName[j], p.attributeName[i]) ||
 							(!p.allStringsInterned &&
 								(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
-								(p.attributeName[j] == p.attributeName[i]))) {
+								SameRunes(p.attributeName[j], p.attributeName[i]))) {
 
-						// prepare data for nice error message?
-						attr1 := p.attributeName[j]
-						if p.attributeUri[j] != "" {
-							attr1 = p.attributeUri[j] + ":" + attr1
+						// a pretty but rather silly error message
+						attr1 := string(p.attributeName[j])
+						if len(p.attributeUri[j]) > 0 {
+							attr1 = string(p.attributeUri[j]) + ":" + attr1
 						}
-						attr2 := p.attributeName[i]
-						if p.attributeUri[i] != "" {
-							attr2 = p.attributeUri[i] + ":" + attr2
+						attr2 := string(p.attributeName[i])
+						if len(p.attributeUri[i]) > 0 {
+							attr2 = string(p.attributeUri[i]) + ":" + attr2
 						}
 						err = p.NewXmlPullError(
 							"duplicated attributes " + attr1 + " and " + attr2)
@@ -180,14 +184,14 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 			for i := 1; i < attributeCount; i++ {
 				for j := 0; j < i; j++ {
 					if p.allStringsInterned &&
-						(p.attributeName[j] == p.attributeName[i]) ||
+						SameRunes(p.attributeName[j], p.attributeName[i]) ||
 						(!p.allStringsInterned &&
 							(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
-							(p.attributeName[j] == p.attributeName[i])) {
+							SameRunes(p.attributeName[j], p.attributeName[i])) {
 
 						// prepare data for nice error message?
-						attr1 := p.attributeName[j]
-						attr2 := p.attributeName[i]
+						attr1 := string(p.attributeName[j])
+						attr2 := string(p.attributeName[i])
 						err = p.NewXmlPullError(
 							"duplicated attributes " + attr1 + " and " + attr2)
 					}
@@ -198,8 +202,8 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 		p.elNamespaceCount[p.elmDepth] = p.namespaceEnd
 		// posEnd = pos
 
-		_ = name // DEBUG
-		_ = prefix
+		// _ = name // DEBUG
+		// _ = prefix
 
 		curEvent = START_TAG
 		p.curEvent = curEvent

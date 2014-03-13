@@ -105,8 +105,10 @@ func (p *Parser) parsePI() (isPI bool, err error) {
 	}
 	if err == nil {
 		if isPI {
-			p.piChars = string(piChars)
-			p.piTarget = string(piTarget)
+			p.piChars = make([]rune, len(piChars))
+			copy(p.piChars, piChars)
+			p.piTarget = make([]rune, len(piTarget))
+			copy(p.piTarget, piTarget)
 		}
 		// XXX If XmlDecl, that routine responsible for collecting its runes.
 	}

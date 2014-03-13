@@ -65,7 +65,8 @@ func (p *Parser) parseCDSect() (err error) {
 		err = p.NotClosedErr("cData")
 	}
 	if err == nil {
-		p.cDataChars = string(cDataChars)
+		p.cDataChars = make([]rune, len(cDataChars))
+		copy(p.cDataChars, cDataChars)
 	}
 	return
 }

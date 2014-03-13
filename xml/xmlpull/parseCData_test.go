@@ -32,7 +32,7 @@ func (s *XLSuite) TestSimpleCDSect(c *C) {
 
 	err = p.parseCDSect()
 	c.Assert(err, IsNil)
-	c.Assert(p.cDataChars, Equals, " foo foo foody foo ")
+	c.Assert(SameRunes(p.cDataChars, []rune(" foo foo foody foo ")), Equals, true)
 }
 
 func (s *XLSuite) TestTwoBracketCDSect(c *C) {
@@ -49,7 +49,7 @@ func (s *XLSuite) TestTwoBracketCDSect(c *C) {
 
 	err = p.parseCDSect()
 	c.Assert(err, IsNil)
-	c.Assert(p.cDataChars, Equals, " foo foo ]] foody foo ")
+	c.Assert(SameRunes(p.cDataChars, []rune(" foo foo ]] foody foo ")), Equals, true)
 }
 
 func (s *XLSuite) TestEndlessCDSect(c *C) {

@@ -31,10 +31,10 @@ type Parser struct {
 
 	// accumulated characters of various types -- yes, kludgey
 	text         []rune
-	cDataChars   string
-	commentChars string
-	piChars      string
-	piTarget     string
+	cDataChars   []rune
+	commentChars []rune
+	piChars      []rune
+	piTarget     []rune
 
 	// parser state
 	afterLT        bool      // have encountered a left angle bracket (<)
@@ -42,30 +42,29 @@ type Parser struct {
 	isEmptyElement bool
 
 	// element stack
-	elmDepth  int
-	elRawName [][]rune
-	// elRawNameEnd  []int		// XXX DROP ME
+	elmDepth      int
+	elRawName     [][]rune
 	elRawNameLine []int
 
-	elName           []string
-	elPrefix         []string
-	elUri            []string
-	elValue          []string
+	elName           [][]rune
+	elPrefix         [][]rune
+	elUri            [][]rune
+	elValue          [][]rune
 	elNamespaceCount []int
 
 	// attribute stack
 	attributeCount    int
-	attributeName     []string
+	attributeName     [][]rune
 	attributeNameHash []int
-	attributePrefix   []string
-	attributeUri      []string
-	attributeValue    []string
+	attributePrefix   [][]rune
+	attributeUri      [][]rune
+	attributeValue    [][]rune
 
 	// namespace stack
 	namespaceEnd int
 	nsCount      int
-	nsPrefix     []string
-	nsUri        []string
+	nsPrefix     [][]rune
+	nsUri        [][]rune
 
 	si gu.StrIntern
 

@@ -33,7 +33,7 @@ func (s *XLSuite) TestSimpleComment(c *C) {
 
 	err = p.parseComment()
 	c.Assert(err, IsNil)
-	c.Assert(p.commentChars, Equals, " foo foo foody foo ")
+	c.Assert(SameRunes(p.commentChars, []rune(" foo foo foody foo ")), Equals, true)
 }
 
 func (s *XLSuite) TestTwoDashComment(c *C) {

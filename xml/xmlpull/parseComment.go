@@ -70,7 +70,8 @@ func (p *Parser) parseComment() (err error) {
 		err = p.NotClosedErr("comment")
 	}
 	if err == nil {
-		p.commentChars = string(commentChars)
+		p.commentChars = make([]rune, len(commentChars))
+		copy(p.commentChars, commentChars)
 	}
 	return
 }

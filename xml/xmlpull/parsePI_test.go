@@ -34,8 +34,8 @@ func (s *XLSuite) TestSimplePI(c *C) {
 	isPI, err := p.parsePI()
 	c.Assert(err, IsNil)
 	c.Assert(isPI, Equals, true)
-	c.Assert(p.piTarget, Equals, "foo")
-	c.Assert(p.piChars, Equals, "bar bar bardy bar ")
+	c.Assert(SameRunes(p.piTarget, []rune("foo")), Equals, true)
+	c.Assert(SameRunes(p.piChars, []rune("bar bar bardy bar ")), Equals, true)
 }
 
 func (s *XLSuite) TestMidQmarkPI(c *C) {
@@ -53,9 +53,8 @@ func (s *XLSuite) TestMidQmarkPI(c *C) {
 	isPI, err := p.parsePI()
 	c.Assert(err, IsNil)
 	c.Assert(isPI, Equals, true)
-	c.Assert(p.piTarget, Equals, "fo")
-	c.Assert(p.piChars, Equals, "bar ?bar ")
-
+	c.Assert(SameRunes(p.piTarget, []rune("fo")), Equals, true)
+	c.Assert(SameRunes(p.piChars, []rune("bar ?bar ")), Equals, true)
 }
 
 func (s *XLSuite) TestDashQMarkAtEnd(c *C) {
@@ -73,7 +72,7 @@ func (s *XLSuite) TestDashQMarkAtEnd(c *C) {
 	isPI, err := p.parsePI()
 	c.Assert(err, IsNil)
 	c.Assert(isPI, Equals, true)
-	c.Assert(p.piTarget, Equals, "f")
+	c.Assert(SameRunes(p.piTarget, []rune("f")), Equals, true)
 }
 
 func (s *XLSuite) TestEndlessPI(c *C) {
