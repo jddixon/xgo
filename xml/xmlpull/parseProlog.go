@@ -1,5 +1,7 @@
 package xmlpull
 
+// xgo/xml/xmlpull/parseProlog.go
+
 import (
 	// e "errors"
 	"fmt"

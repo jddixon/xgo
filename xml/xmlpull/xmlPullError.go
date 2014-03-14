@@ -1,6 +1,6 @@
 package xmlpull
 
-// xgo/xml/xmlpull/xmlpull_error.go
+// xgo/xml/xmlPull/xmlpullError.go
 
 import (
 	"fmt"

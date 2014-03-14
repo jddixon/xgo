@@ -22,22 +22,30 @@ type Parser struct {
 	normalizeIgnorableWS bool
 	processNamespaces    bool
 	roundtripSupported   bool
-	tokenizing           bool
 
 	startLine, startCol int // where a syntactic element begins
 
 	haveRootTag bool
-	seenDocdecl bool
 
 	// accumulated characters of various types -- yes, kludgey
-	text         []rune
 	cDataChars   []rune
 	commentChars []rune
 	piChars      []rune
 	piTarget     []rune
 
-	// parser state
-	afterLT        bool      // have encountered a left angle bracket (<)
+	// transient variables for NextToken()
+	tokenizing    bool
+	text          []rune
+	entityRefName []rune
+
+	// global parser state
+	seenStartTag  bool
+	seenEndTag    bool
+	pastEndTag    bool
+	seenAmpersand bool
+	afterLT       bool // have encountered a left angle bracket (<)
+	seenDocdecl   bool
+
 	curEvent       PullEvent // aka eventType; PullEvent defined in const.go
 	isEmptyElement bool
 
@@ -255,14 +263,6 @@ func (xpp *Parser) GetEventType() (PullEvent, error) {
 	return xpp.curEvent, nil
 }
 
-func (xpp *Parser) Next() (ret int, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) NextToken() (ret int, err error) {
-	// XXX STUB XXX
-	return
-}
 func (xpp *Parser) Require(type_ int, namespace, name string) {
 	// XXX STUB XXX
 	return

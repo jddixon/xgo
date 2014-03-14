@@ -11,7 +11,7 @@ import (
 // [20] CData ::= (Char* - (Char* ']]>' Char*))
 // [21] CDEnd ::= ']]>'
 //
-func (p *Parser) parseCDSect() (err error) {
+func (p *Parser) parseCDSect() (hasContent bool, err error) {
 
 	// Enter having seen <![
 
@@ -65,6 +65,7 @@ func (p *Parser) parseCDSect() (err error) {
 		err = p.NotClosedErr("cData")
 	}
 	if err == nil {
+		hasContent = len(cDataChars) > 0
 		p.cDataChars = make([]rune, len(cDataChars))
 		copy(p.cDataChars, cDataChars)
 	}

@@ -22,7 +22,7 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 
 	p.elmDepth++
 	p.isEmptyElement = false
-	attributeCount := 0 // so far
+	attrCount := 0 // so far
 
 	var colonFound bool
 	if ch == ':' && p.processNamespaces {
@@ -135,7 +135,7 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 			//  uri = ""
 			//}
 			// resolve attribute namespaces
-			for i := 0; i < attributeCount; i++ {
+			for i := 0; i < attrCount; i++ {
 				attrPrefix := p.attributePrefix[i]
 				if len(attrPrefix) > 0 {
 					// attrUri := getNamespace(attrPrefix)	// XXX NOT YET
@@ -152,9 +152,9 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 				}
 			}
 			//[ WFC: Unique Att Spec ]
-			// check attribute uniqueness constraint for attributes that has namespace!!!
+			// check attr uniqueness constraint for attrs that have namespace
 
-			for i := 1; i < attributeCount; i++ {
+			for i := 1; i < attrCount; i++ {
 				for j := 0; j < i; j++ {
 					if SameRunes(p.attributeUri[j], p.attributeUri[i]) &&
 						(p.allStringsInterned &&
@@ -181,7 +181,7 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 
 			//[ WFC: Unique Att Spec ]
 			// check raw attribute uniqueness constraint!!!
-			for i := 1; i < attributeCount; i++ {
+			for i := 1; i < attrCount; i++ {
 				for j := 0; j < i; j++ {
 					if p.allStringsInterned &&
 						SameRunes(p.attributeName[j], p.attributeName[i]) ||
@@ -200,14 +200,10 @@ func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
 		}
 
 		p.elNamespaceCount[p.elmDepth] = p.namespaceEnd
-		// posEnd = pos
-
-		// _ = name // DEBUG
-		// _ = prefix
 
 		curEvent = START_TAG
 		p.curEvent = curEvent
 
-	} // FOO
+	}
 	return
 }
