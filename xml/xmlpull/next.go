@@ -110,7 +110,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 						//    //completely ignore comment
 						//}
 					} else if ch == '[' {
-						p.cDataSeen, err = p.parseCDSect(charDataSeen)
+						err = p.parseCDSect(charDataSeen)
 						if err != nil {
 							break
 						}
@@ -127,21 +127,24 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 
 					} else {
 						err = p.NewXmlPullError(
-							"unexpected character in markup " + printable(ch))
+							"unexpected character in markup " +
+								printableChar(ch))
 					}
 				} else if ch == '?' {
-					err = p.parseProcessingInstruction()
+					var isPI bool
+					isPI, err = p.parsePI()
+					_ = isPI // XXX
 					// XXX HANDLE ERROR
 					if p.tokenizing {
 						curEvent = PROCESSING_INSTRUCTION
 						p.curEvent = curEvent
 						return
 					}
-					if !usePC && charDataSeen {
-						needsMerging = true
-					} else {
-						//completely ignore PI
-					}
+					// if !usePC && charDataSeen {
+					//	needsMerging = true
+					//} else {
+					//	//completely ignore PI
+					//}
 
 				} else if isNameStartChar(ch) {
 					if !p.tokenizing && charDataSeen {
@@ -150,16 +153,17 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 						p.curEvent = curEvent
 						return
 					}
-					curEvent, err = p.parseStartTag() // XXX MISSING ch
+					curEvent, err = p.parseStartTag()
 					if err == nil {
 						p.curEvent = curEvent
 					}
 					return
 				} else {
-					err = NewXmlPullError(
-						"unexpected character in markup " + printable(ch))
+					err = p.NewXmlPullError(
+						"unexpected character in markup " +
+							printableChar(ch))
 				}
-				// do content compaction if it makes sense!!!!
+				// do content compaction if it makes sense
 
 			} else if ch == '&' {
 				// work on ENTITTY
@@ -169,8 +173,8 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 					p.curEvent = curEvent
 					return
 				}
-				var resolvedEntiy []rune
-				resolvedEntity, err = parseEntityRef()
+				var resolvedEntity []rune
+				resolvedEntity, err = p.parseEntityRef()
 				if err != nil {
 					break
 				}
@@ -184,8 +188,9 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 					if len(p.entityRefName) == 0 {
 						p.entityRefName = []rune("unknown") // XXX
 					}
-					err = NewXmlPullError(
-						"could not resolve entity named '" + printable(p.entityRefName) + "'")
+					err = p.NewXmlPullError(
+						"could not resolve entity named '" +
+							printableStr(string(p.entityRefName)) + "'")
 				}
 				//if !usePC {
 				//    if(charDataSeen) {
@@ -235,7 +240,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 							seenBracket = true
 						}
 					} else if seenBracketBracket && ch == '>' {
-						err = NewXmlPullError(
+						err = p.NewXmlPullError(
 							"characters ]]> are not allowed in content")
 					} else {
 						if seenBracket {
@@ -261,15 +266,18 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 					}
 
 				}
-				continue // ie, continue outer loop using this ch
+				_ = needsMerging // XXX
+				_ = normalizedCR // XXX
+				continue         // ie, continue outer loop using this ch
 			}
 			ch, err = p.NextCh()
 		} // endless for err == nil
 	} else {
 		if p.haveRootTag {
-			return parseEpilog()
+			err = p.parseEpilog()
 		} else {
-			return parseRestOfProlog()
+			err = p.parseRestOfProlog()
 		}
 	}
+	return
 }

@@ -109,7 +109,8 @@ func (p *Parser) parseRestOfProlog() (err error) {
 					break
 				} else if isNameStartChar(ch) {
 					p.haveRootTag = true
-					p.parseStartTag(ch)
+					p.PushBack(ch)
+					p.parseStartTag()
 					break
 				} else {
 					err = p.NewXmlPullError(

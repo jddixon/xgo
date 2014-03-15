@@ -30,7 +30,8 @@ func (s *XLSuite) TestSimpleCDSect(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(found, Equals, true)
 
-	err = p.parseCDSect()
+	// XXX bool arg set arbitrarily
+	err = p.parseCDSect(false)
 	c.Assert(err, IsNil)
 	c.Assert(SameRunes(p.cDataChars, []rune(" foo foo foody foo ")), Equals, true)
 }
@@ -47,7 +48,8 @@ func (s *XLSuite) TestTwoBracketCDSect(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(found, Equals, true)
 
-	err = p.parseCDSect()
+	// XXX bool arg set arbitrarily
+	err = p.parseCDSect(false)
 	c.Assert(err, IsNil)
 	c.Assert(SameRunes(p.cDataChars, []rune(" foo foo ]] foody foo ")), Equals, true)
 }
@@ -64,7 +66,8 @@ func (s *XLSuite) TestEndlessCDSect(c *C) {
 	c.Assert(err, IsNil)
 	c.Assert(found, Equals, true)
 
-	err = p.parseCDSect()
+	// XXX bool arg set arbitrarily
+	err = p.parseCDSect(false)
 	c.Assert(err, NotNil)
 	c.Assert(err.Error(), Equals, "cData started line 1 column 9 not closed")
 }

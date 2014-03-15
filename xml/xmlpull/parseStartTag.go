@@ -10,15 +10,20 @@ var _ = fmt.Print
 // [40] STag ::=  '<' Name (S Attribute)* S? '>'
 // [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
 
-func (p *Parser) parseStartTag(ch rune) (curEvent PullEvent, err error) {
+func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 
-	// The first character of Name is the parameter, so we have seen the
+	// The first character of Name is the next char;  we have seen the
 	// opening <
+	ch, err := p.NextCh()
+	if err != nil {
+		return
+	}
+
 	var (
 		name, prefix []rune
 		// elLen        int // XXX DROP ME
 	)
-	name = append(name, ch)
+	// name = append(name, ch)
 
 	p.elmDepth++
 	p.isEmptyElement = false
