@@ -1,5 +1,8 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-17
+    * need gu.Intern() for runes
+
 2014-03-10
     * parseStartTag needs parseAttribute()
     * and getNamespace()
@@ -31,23 +34,23 @@ xgo/xml/xmlpull/TODO
         Parser struct rather than returning                             * DONE
 
 2013-12-03 
-    from the syntax diagrams:
+    from the syntax diagrams; here DONE means that it compiles, not
+    necessarily that tests exist and succeed
 
-    * Next()
 
-    * ParseProlog
-    * ParseEpilog
-
+    * Next()                                                            * DONE
     * ParseAttribute
     * ParseCDSect                                                       * DONE
     * ParseComment                                                      * DONE
-    * ParseDocdecl
+    * ParseDocdecl                                                      * DONE
+    * ParseEndTag                                                       * DONE
     * ParseEntityRef
+    * ParseEpilog                                                       * DONE
     * ParseProcessingInstruction                                        * DONE
+    * ParseProlog                                                       * DONE
+    * ParseStartTag                                                     * DONE
     * ParseXmlDecl                                                      * DONE
     
-    * ParseStartTag
-    * ParseEndTag
 
 2013-11-21 (11-20, edited)
     * build skeletal parser as parser.go                                * DONE

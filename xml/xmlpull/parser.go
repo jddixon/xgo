@@ -74,9 +74,18 @@ type Parser struct {
 	nsPrefix     [][]rune
 	nsUri        [][]rune
 
+	// entity replacement stack ---------------------------
+	entityEnd            int
+	entityName           [][]rune
+	entityNameBuf        [][]rune
+	entityReplacement    [][]rune
+	entityReplacementBuf [][]rune
+	entityNameHash       []uint32
+
+	// string interning stuff -----------------------------
 	si gu.StrIntern
 
-	// buffer management
+	// buffer management ----------------------------------
 	lineNo int // line number		// redundant
 	colNo  int // column number		// redundant
 
