@@ -2,7 +2,6 @@ package xmlpull
 
 import (
 	gl "github.com/jddixon/xgo/lex"
-	gu "github.com/jddixon/xgo/util"
 	"io"
 )
 
@@ -13,7 +12,6 @@ const (
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
-	allStringsInterned              bool // NEVER SET XXX
 	xmlDeclVersion, xmlDeclEncoding string
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
@@ -82,9 +80,6 @@ type Parser struct {
 	entityReplacementBuf [][]rune
 	entityNameHash       []uint32
 
-	// string interning stuff -----------------------------
-	si gu.StrIntern
-
 	// buffer management ----------------------------------
 	lineNo int // line number		// redundant
 	colNo  int // column number		// redundant
@@ -112,9 +107,7 @@ func NewParser(reader io.Reader, encoding string) (p *Parser, err error) {
 	}
 
 	if err == nil {
-		si := gu.NewStrIntern()
 		p = &Parser{
-			si:       si,
 			LexInput: *lx,
 		}
 		p.reset()

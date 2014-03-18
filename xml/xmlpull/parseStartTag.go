@@ -162,11 +162,8 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 			for i := 1; i < attrCount; i++ {
 				for j := 0; j < i; j++ {
 					if SameRunes(p.attributeUri[j], p.attributeUri[i]) &&
-						(p.allStringsInterned &&
-							SameRunes(p.attributeName[j], p.attributeName[i]) ||
-							(!p.allStringsInterned &&
-								(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
-								SameRunes(p.attributeName[j], p.attributeName[i]))) {
+						(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
+						SameRunes(p.attributeName[j], p.attributeName[i]) {
 
 						// a pretty but rather silly error message
 						attr1 := string(p.attributeName[j])
@@ -188,15 +185,13 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 			// check raw attribute uniqueness constraint!!!
 			for i := 1; i < attrCount; i++ {
 				for j := 0; j < i; j++ {
-					if p.allStringsInterned &&
-						SameRunes(p.attributeName[j], p.attributeName[i]) ||
-						(!p.allStringsInterned &&
-							(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
-							SameRunes(p.attributeName[j], p.attributeName[i])) {
+					if SameRunes(p.attributeName[j], p.attributeName[i]) ||
+						(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
+							SameRunes(p.attributeName[j], p.attributeName[i]) {
 
-						// prepare data for nice error message?
-						attr1 := string(p.attributeName[j])
-						attr2 := string(p.attributeName[i])
+						// data for error message
+						attr1 := string(p.attributeName[i])
+						attr2 := string(p.attributeName[j])
 						err = p.NewXmlPullError(
 							"duplicated attributes " + attr1 + " and " + attr2)
 					}

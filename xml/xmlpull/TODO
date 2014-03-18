@@ -1,10 +1,14 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-18
+    * desperately need parseEntityRef_test.go
+
 2014-03-17
-    * start new 'pull' branch, all xmlpull work to be done on that 
-        branch
-    * drop string interning code; rune slices can't be interned
-        (at least not at reasonable cost in dev man-hours)
+    * start new 'pull' branch, all xmlpull work to be done on that      * DONE
+        branch                                                          * DONE
+    * drop string interning code; rune slices can't be interned			* DONE
+        (at least not at reasonable cost in dev man-hours)			    * DONE
+    * any ifs on allStringsInterned: drop the true branch			    * DONE
 
 2014-03-17
     * need gu.Intern() for runes                                        * SKIP

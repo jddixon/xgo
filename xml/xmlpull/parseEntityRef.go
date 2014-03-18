@@ -2,7 +2,6 @@ package xmlpull
 
 import (
 	"fmt"
-	gu "github.com/jddixon/xgo/util"
 )
 
 var _ = fmt.Print
@@ -61,9 +60,8 @@ func (p *Parser) parseEntityRef() (runes []rune, err error) {
 				}
 			}
 		}
-		runes := []rune{charRef}
 		if p.tokenizing {
-			p.text = gu.Intern(runes, 0, 1)
+			p.text = []rune{charRef} // a copy, of course
 		}
 	} else {
 		// ENTITY REF -----------------------------------------------
@@ -148,37 +146,23 @@ func (p *Parser) parseEntityRef() (runes []rune, err error) {
 } // GEEP
 
 func (p *Parser) lookupEntityReplacement(name []rune) (
+
 	replacement []rune, err error) {
-
 	entityNameLen := uint(len(name))
+	hash := FastHash(name)
+	for i := p.entityEnd - 1; i >= 0; i-- {
+		notAMatch := false
+		if hash == p.entityNameHash[i] &&
+			entityNameLen == uint(len(p.entityNameBuf[i])) {
 
-	if !p.allStringsInterned {
-		hash := FastHash(name)
-		nameLen := uint(len(name))
-	DIJKSTRA:
-		for i := p.entityEnd - 1; i >= 0; i-- {
-			if hash == p.entityNameHash[i] &&
-				entityNameLen == uint(len(p.entityNameBuf[i])) {
-
-				entityBuf := p.entityNameBuf[i]
-				for j := uint(0); j < entityNameLen; j++ {
-					if name[j] != entityBuf[j] {
-						goto DIJKSTRA // no match
-					}
+			entityBuf := p.entityNameBuf[i]
+			for j := uint(0); j < entityNameLen; j++ {
+				if name[j] != entityBuf[j] {
+					notAMatch = true
+					break
 				}
-				if p.tokenizing {
-					p.text = make([]rune, len(p.entityReplacement[i]))
-					copy(p.text, p.entityReplacement[i])
-				}
-				replacement = make([]rune, len(p.entityReplacement[i]))
-				copy(replacement, p.entityReplacement[i])
-				return
 			}
-		}
-	} else {
-		p.entityRefName = gu.Intern(name)
-		for i := p.entityEnd - 1; i >= 0; i-- {
-			if SameRunes(p.entityRefName, p.entityName[i]) {
+			if !notAMatch {
 				if p.tokenizing {
 					p.text = make([]rune, len(p.entityReplacement[i]))
 					copy(p.text, p.entityReplacement[i])
