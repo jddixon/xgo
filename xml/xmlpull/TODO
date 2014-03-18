@@ -2,6 +2,10 @@ xgo/xml/xmlpull/TODO
 
 2014-03-17
     * need gu.Intern() for runes
+    * misconception: we need an si=StrIntern instance and then 
+        we call si.Intern()
+    * so for runes we need ri=RunesIntern instance and then call
+        ri.Intern()
 
 2014-03-10
     * parseStartTag needs parseAttribute()
