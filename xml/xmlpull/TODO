@@ -1,11 +1,17 @@
 xgo/xml/xmlpull/TODO
 
 2014-03-17
-    * need gu.Intern() for runes
-    * misconception: we need an si=StrIntern instance and then 
-        we call si.Intern()
-    * so for runes we need ri=RunesIntern instance and then call
-        ri.Intern()
+    * start new 'pull' branch, all xmlpull work to be done on that 
+        branch
+    * drop string interning code; rune slices can't be interned
+        (at least not at reasonable cost in dev man-hours)
+
+2014-03-17
+    * need gu.Intern() for runes                                        * SKIP
+    * misconception: we need an si=StrIntern instance and then          * SKIP
+        we call si.Intern()                                             * SKIP
+    * so for runes we need ri=RunesIntern instance and then call        * SKIP
+        ri.Intern()                                                     * SKIP
 
 2014-03-10
     * parseStartTag needs parseAttribute()
