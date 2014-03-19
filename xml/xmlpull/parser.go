@@ -61,16 +61,18 @@ type Parser struct {
 	// attribute stack
 	attributeCount    int
 	attributeName     [][]rune
-	attributeNameHash []int
+	attributeNameHash []uint32 // stores FastHash output
 	attributePrefix   [][]rune
 	attributeUri      [][]rune
 	attributeValue    [][]rune
 
 	// namespace stack
+	namespaceCount      int
+	namespacePrefix     [][]rune
+	namespacePrefixHash []uint32 // more FastHash output
+	namespaceUri        [][]rune
+
 	namespaceEnd int
-	nsCount      int
-	nsPrefix     [][]rune
-	nsUri        [][]rune
 
 	// entity replacement stack ---------------------------
 	entityEnd            int
@@ -120,13 +122,17 @@ func (xpp *Parser) GetLexer() *gl.LexInput {
 	return &xpp.LexInput
 }
 
+// Reset all global variables; also used to set initial values at
+// program start.
+//
 // All fields in the Parser struct should be reinitialized here.
+
 func (xpp *Parser) reset() {
 	xpp.afterLT = false
 	xpp.colNo = 0
 	xpp.elmDepth = 0
 	xpp.lineNo = 1
-	xpp.nsCount = 0
+	xpp.namespaceCount = 0
 
 	// XXX STUB XXX
 

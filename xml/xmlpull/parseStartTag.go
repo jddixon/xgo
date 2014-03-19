@@ -109,14 +109,20 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				}
 				break // XXX inside if ?
 			} else if isNameStartChar(ch) {
-				// ch = parseAttribute()		// XXX NOT YET !!
+				// we think we have an attribute
+				p.PushBack(ch)
+				ch, err = p.parseAttribute()
+				// XXX HANDLE ANY ERROR
+				// XXX WE SHOULD NOT IGNORE ch
+
 				ch, err = p.NextCh()
+				// XXX HANDLE ANY ERROR
+				// XXX WE SHOULD NOT IGNORE ch
 				continue
 			} else {
 				err = p.NewXmlPullError(
 					"start tag unexpected character " + printableChar(ch))
 			}
-			//ch, err = p.NextCh(); // skip space
 		}
 
 		// If any namespaces were declared we can now resolve them
