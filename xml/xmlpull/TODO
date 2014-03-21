@@ -1,7 +1,8 @@
 xgo/xml/xmlpull/TODO
 
-2014-03-19
-
+2014-03-21
+    * need test of getName() -- should be in properties_test.go
+    * need test of getNamespace() -- properties_test.go
 2014-03-18
     * desperately need parseEntityRef_test.go
 
@@ -13,8 +14,8 @@ xgo/xml/xmlpull/TODO
     * any ifs on allStringsInterned: drop the true branch			    * DONE
 
 2014-03-10
-    * parseStartTag needs parseAttribute()
-    * and getNamespace()
+    * parseStartTag needs parseAttribute()                              * DONE
+    * and getNamespace()                                                * DONE
 
 2014-03-09
     * all functions returning PullEvent should also return error
@@ -33,7 +34,7 @@ xgo/xml/xmlpull/TODO
     necessarily that tests exist and succeed
 
     * Next()                                                            * DONE
-    * ParseAttribute
+    * ParseAttribute                                                    * DONE
     * ParseCDSect                                                       * DONE
     * ParseComment                                                      * DONE
     * ParseDocdecl                                                      * DONE
