@@ -1,5 +1,9 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-23
+    * get rudimentary parser working (decl + single line)
+2014-03-22
+    * move stuff from properties.ZZZ to properties.go
 2014-03-21
     * need test of getName() -- should be in properties_test.go
     * need test of getNamespace() -- properties_test.go
