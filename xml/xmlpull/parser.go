@@ -53,24 +53,24 @@ type Parser struct {
 	elRawNameLine []int
 
 	elName           [][]rune
-	elPrefix         [][]rune
-	elUri            [][]rune
+	elPrefix         []string // []rune
+	elUri            []string // [][]rune
 	elValue          [][]rune
 	elNamespaceCount []int
 
 	// attribute stack
 	attributeCount    int
-	attributeName     [][]rune
+	attributeName     []string //[]rune
 	attributeNameHash []uint32 // stores FastHash output
-	attributePrefix   [][]rune
-	attributeUri      [][]rune
-	attributeValue    [][]rune
+	attributePrefix   []string // []rune
+	attributeUri      []string // [][]rune
+	attributeValue    []string // []rune
 
 	// namespace stack
 	namespaceCount      int
-	namespacePrefix     [][]rune
+	namespacePrefix     []string //[]rune
 	namespacePrefixHash []uint32 // more FastHash output
-	namespaceUri        [][]rune
+	namespaceUri        []string // []rune
 
 	namespaceEnd int
 

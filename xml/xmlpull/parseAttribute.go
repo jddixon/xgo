@@ -79,9 +79,11 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 	// XXX Kukemal !
 	// ensureAttributesCapacity(p.attributeCount)
 
-	var prefix []rune
-	var prefixLen uint
-	var name []rune
+	// var prefixRunes []rune
+	var prefix string
+	// var prefixLen uint
+	var name string
+	var nameRunes []rune
 	var nameLen uint
 	cNameLen := uint(len(cName))
 
@@ -98,42 +100,38 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 						"namespace prefix is required after xmlns: when namespaces are enabled")
 					return // DIJKSTRA
 				}
-				name = cName[colonPos+1:]
+				name = string(cName[colonPos+1:])
 			}
 		} else {
 			if colonPos > 0 {
-				prefixLen = colonPos - 1
-				prefix = cName[:colonPos]
-				p.attributePrefix[p.attributeCount] = make([]rune, prefixLen)
-				copy(p.attributePrefix[p.attributeCount], prefix)
+				// prefixLen = colonPos - 1
+				prefix = string(cName[:colonPos])
+				p.attributePrefix[p.attributeCount] = prefix
 
 				// XXX THIS IS STUPID: assert calculated len = real len
 				nameLen = cNameLen - colonPos
-				name = cName[colonPos+1:]
-				p.attributeName[p.attributeCount] = make([]rune, nameLen)
-				copy(p.attributeName[p.attributeCount], name)
+				name = string(cName[colonPos+1:])
 			} else {
-				prefix = make([]rune, 0)
-				p.attributePrefix[p.attributeCount] = make([]rune, 0)
+				prefix = ""
+				p.attributePrefix[p.attributeCount] = ""
 
 				nameLen = cNameLen
-				name = cName
-				p.attributeName[p.attributeCount] = make([]rune, nameLen)
-				copy(p.attributeName[p.attributeCount], name)
+				name = string(cName)
+				p.attributeName[p.attributeCount] = name
 			}
 
 			// FashHash replaces Java String.hashCode
-			p.attributeNameHash[p.attributeCount] = FastHash(name)
+			p.attributeNameHash[p.attributeCount] = FastHash(nameRunes)
 		}
 
 	} else {
 		nameLen = cNameLen
-		name = cName
-		p.attributeName[p.attributeCount] = make([]rune, nameLen)
-		copy(p.attributeName[p.attributeCount], name)
+		nameRunes = cName
+		name = string(nameRunes)
+		p.attributeName[p.attributeCount] = name
 
 		// FashHash replaces Java String.hashCode
-		p.attributeNameHash[p.attributeCount] = FastHash(name)
+		p.attributeNameHash[p.attributeCount] = FastHash(nameRunes)
 	}
 
 	// XXX WORKING HERE XXX
@@ -172,7 +170,8 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 
 	normalizedCR := false // NOT USED
 
-	var value []rune
+	var valueRunes []rune
+	var value string
 	p.entityRefName = p.entityRefName[:0]
 
 	for err == nil {
@@ -196,34 +195,35 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 			// check if replacement text can be resolved !!!
 			if resolvedEntity == nil {
 				if p.entityRefName == nil {
-					p.entityRefName = value
+					// XXX SHOULD BE A STRING OR IT SHD BE COPIED
+					p.entityRefName = valueRunes
 				}
 				msg := fmt.Sprintf("Could not resolve entity '%s'",
 					string(p.entityRefName))
 				err = p.NewXmlPullError(msg)
 				return
 			}
-			value = append(value, resolvedEntity...)
+			valueRunes = append(valueRunes, resolvedEntity...)
 
 		} else if ch == '\t' || ch == '\n' || ch == '\r' {
 			// XXX DESPERATELY NEEDS TESTING
 			// do attribute value normalization
 			// as described in http://www.w3.org/TR/REC-xml#AVNormalize
 			// handle EOL normalization ...
-			value = append(value, ' ')
+			valueRunes = append(valueRunes, ' ')
 		} else {
-			value = append(value, ch)
+			valueRunes = append(valueRunes, ch)
 		}
 		normalizedCR = ch == '\r'
 	}
 	_ = normalizedCR // NOT USED
+	value = string(valueRunes)
 
 	if p.processNamespaces && startsWithXmlns {
 
 		// XXX WE ARE NOT CAPTURING THIS CORRECTLY
-		ns := make([]rune, cNameLen)
+		ns := string(cName)
 		nsLen := cNameLen
-		copy(ns, cName)
 
 		// ensureNamespacesCapacity(namespaceEnd)
 
@@ -236,12 +236,12 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 				return
 			}
 			// declare new namespace
-			p.namespacePrefix[p.namespaceEnd] = name
-			prefixHash = FastHash(name)
+			p.namespacePrefix[p.namespaceEnd] = string(name)
+			prefixHash = FastHash(nameRunes)
 			p.namespacePrefixHash[p.namespaceEnd] = prefixHash
 		} else {
 			// declare  new default namespace ...
-			p.namespacePrefix[p.namespaceEnd] = nil
+			p.namespacePrefix[p.namespaceEnd] = ""
 			prefixHash = 0 // XXX MAJOR PROBLEM
 			p.namespacePrefixHash[p.namespaceEnd] = prefixHash
 		}
@@ -252,10 +252,10 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 		for i := p.namespaceEnd - 1; i >= startNs; i-- {
 			if nameLen > 0 &&
 				p.namespacePrefixHash[i] == prefixHash &&
-				SameRunes(name, p.namespacePrefix[i]) {
+				ns == p.namespacePrefix[i] {
 
 				msg := fmt.Sprintf(
-					"duplicated namespace declaration for '%s' prefix", name)
+					"duplicated namespace declaration for '%s' prefix", ns)
 				err = p.NewXmlPullError(msg)
 				return
 			}

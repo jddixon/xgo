@@ -4,7 +4,7 @@ package xmlpull
 
 var (
 	// The default namespace.
-	NO_NAMESPACE = make([]rune, 0)
+	NO_NAMESPACE = "" //  make([]rune, 0)
 )
 
 const (
