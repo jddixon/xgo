@@ -1,5 +1,7 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-25
+    * sort properties                                                   * DONE
 2014-03-23
     * get rudimentary parser working (decl + single line)
 2014-03-22

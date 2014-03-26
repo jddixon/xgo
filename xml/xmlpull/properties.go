@@ -6,6 +6,15 @@ import (
 
 // UTILITIES --------------------------------------------------------
 
+func (p *Parser) checkAttrIndex(index uint) (err error) {
+	if index < 0 || index >= p.attributeCount {
+		msg := fmt.Sprintf("attribute index must be in 0..%d and not %d",
+			p.attributeCount-1, index)
+		err = p.NewXmlPullError(msg)
+	}
+	return
+}
+
 // Return a copy of the rune slice.
 
 func MakeCopyRunes(src []rune) (dest []rune, err error) {
@@ -18,13 +27,115 @@ func MakeCopyRunes(src []rune) (dest []rune, err error) {
 	return
 }
 
-// PROPERTIES -------------------------------------------------------
-
-func (p *Parser) getAttributeCount() int {
+func (p *Parser) mustBeStartTag() (err error) {
 	if p.curEvent != START_TAG {
-		return -1
+		err = p.NewXmlPullError("only START_TAG can have attributes")
 	}
-	return p.attributeCount
+	return
+} // FOO
+
+// PROPERTIES -------------------------------------------------------
+// Sort by the property name, what follows 'get' or 'set'
+// ------------------------------------------------------------------
+
+func (p *Parser) getAttributeCount() (n uint) {
+	if p.curEvent == START_TAG {
+		n = p.attributeCount
+	}
+	return
+}
+
+func (p *Parser) getAttributeName(index uint) (ns string, err error) {
+	err = p.mustBeStartTag()
+	if err == nil {
+		err = p.checkAttrIndex(index)
+	}
+	if err == nil {
+		ns = p.attributeName[index]
+	}
+	return
+}
+func (p *Parser) getAttributeNamespace(index uint) (ns string, err error) {
+	err = p.mustBeStartTag()
+	if err == nil {
+		if !p.processNamespaces {
+			ns = NO_NAMESPACE
+			return // XXX
+		} else {
+			err = p.checkAttrIndex(index)
+		}
+	}
+	if err == nil {
+		ns = p.attributeUri[index]
+	}
+	return
+}
+func (p *Parser) getAttributePrefix(index uint) (ns string, err error) {
+	err = p.mustBeStartTag()
+	if err == nil {
+		if p.processNamespaces {
+			err = p.checkAttrIndex(index)
+		}
+		if err == nil {
+			ns = p.attributePrefix[index]
+		}
+	}
+	return
+}
+
+// XXX NOTICE THAT THE ATTR TYPE RETURNED IS A STRING
+func (p *Parser) getAttributeType(index uint) (t string, err error) {
+	err = p.mustBeStartTag()
+	if err == nil {
+		err = p.checkAttrIndex(index)
+		if err == nil {
+			t = "CDATA"
+		}
+	}
+	return
+}
+
+func (p *Parser) getAttributeValue(index uint) (value string, err error) {
+	err = p.mustBeStartTag()
+	if err == nil {
+		err = p.checkAttrIndex(index)
+		if err == nil {
+			value = p.attributeValue[index]
+		}
+	}
+	return
+}
+
+func (p *Parser) getAttributeValueNS(namespace, name string) (
+	value string, err error) {
+
+	err = p.mustBeStartTag()
+	if err == nil && name == "" {
+		err = p.NewXmlPullError("attribute name can not be nil")
+	}
+	if err == nil {
+		if p.processNamespaces {
+			for i := uint(0); i < p.attributeCount; i++ {
+				if (namespace == p.attributeUri[i] ||
+					namespace == p.attributeUri[i]) &&
+					name == p.attributeName[i] {
+					value = p.attributeValue[i]
+				}
+			}
+		} else {
+			if namespace != "" {
+				err = p.NewXmlPullError(
+					"namespaces processing disabled, attr namespace must be nil")
+			} else {
+				for i := uint(0); i < p.attributeCount; i++ {
+					if name == p.attributeName[i] {
+						value = p.attributeValue[i]
+					}
+				}
+			}
+		}
+	}
+	return
 }
 
 // Return a copy of the tag name (in which case the argument is nil
@@ -60,148 +171,26 @@ func (p *Parser) getNamespace() (s string, err error) {
 	return
 }
 
-func (p *Parser) getPrefix() (s string) {
-
-	if p.curEvent == START_TAG {
-		s = p.elPrefix[p.elmDepth]
-	} else if p.curEvent == END_TAG {
-		s = p.elPrefix[p.elmDepth]
+func (p *Parser) getNamespaceCount(elmDepth uint) (n uint, err error) {
+	if p.processNamespaces && elmDepth != 0 {
+		if elmDepth < 0 || elmDepth > p.elmDepth {
+			msg := fmt.Sprintf("elmDepth must be in range 0..%d, but is %d\n",
+				p.elmDepth, elmDepth)
+			err = p.NewXmlPullError(msg)
+		} else {
+			n = p.elNamespaceCount[elmDepth]
+		}
 	}
 	return
 }
 
-func (p *Parser) isEmptyElementTag() (found bool, err error) {
+func (p *Parser) getNamespacePrefix(pos uint) (nsP string, err error) {
 
-	if p.curEvent != START_TAG {
-		err = p.NewXmlPullError(
-			"parser must be on START_TAG to check for empty element")
+	if pos < p.namespaceEnd {
+		nsP = p.namespacePrefix[pos]
 	} else {
-		found = p.isEmptyElement
-	}
-	return
-}
-
-// WORKING HERE; CLEAN UP, SORT, MERGE
-
-// UTILITY
-func (p *Parser) checkAttrIndex(index int) (err error) {
-	if index < 0 || index >= p.attributeCount {
-		msg := fmt.Sprintf("attribute index must be in 0..%d and not %d",
-			p.attributeCount-1, index)
+		msg := fmt.Sprintf("namespace index %d higher than max", pos)
 		err = p.NewXmlPullError(msg)
-	}
-	return
-}
-func (p *Parser) mustBeStartTag() (err error) {
-	if p.curEvent != START_TAG {
-		err = p.NewXmlPullError("only START_TAG can have attributes")
-	}
-	return
-}
-
-// PROPERTIES
-
-func (p *Parser) getAttributeNamespace(index int) (ns string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		if !p.processNamespaces {
-			ns = NO_NAMESPACE
-			return // XXX
-		} else {
-			err = p.checkAttrIndex(index)
-		}
-	}
-	if err == nil {
-		ns = p.attributeUri[index]
-	}
-	return
-}
-func (p *Parser) getAttributeName(index int) (ns string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		err = p.checkAttrIndex(index)
-	}
-	if err == nil {
-		ns = p.attributeName[index]
-	}
-	return
-}
-func (p *Parser) getAttributePrefix(index int) (ns string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		if p.processNamespaces {
-			err = p.checkAttrIndex(index)
-		}
-		if err == nil {
-			ns = p.attributePrefix[index]
-		}
-	}
-	return
-}
-
-// XXX NOTICE THAT THE ATTR TYPE RETURNED IS A STRING
-func (p *Parser) getAttributeType(index int) (t string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		err = p.checkAttrIndex(index)
-		if err == nil {
-			t = "CDATA"
-		}
-	}
-	return
-}
-
-// XXX MEANINGLESS
-func (p *Parser) isAttributeDefault(index int) (found bool, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		err = p.checkAttrIndex(index)
-		if err == nil {
-			found = false
-		}
-	}
-	return
-}
-
-func (p *Parser) getAttributeValue(index int) (value string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		err = p.checkAttrIndex(index)
-		if err == nil {
-			value = p.attributeValue[index]
-		}
-	}
-	return
-}
-
-func (p *Parser) getAttributeValueNS(namespace, name string) (
-	value string, err error) {
-
-	err = p.mustBeStartTag()
-	if err == nil && name == "" {
-		err = p.NewXmlPullError("attribute name can not be nil")
-	}
-	if err == nil {
-		if p.processNamespaces {
-			for i := 0; i < p.attributeCount; i++ {
-				if (namespace == p.attributeUri[i] ||
-					namespace == p.attributeUri[i]) &&
-					name == p.attributeName[i] {
-					value = p.attributeValue[i]
-				}
-			}
-		} else {
-			if namespace != "" {
-				err = p.NewXmlPullError(
-					"namespaces processing disabled, attr namespace must be nil")
-			} else {
-				for i := 0; i < p.attributeCount; i++ {
-					if name == p.attributeName[i] {
-						value = p.attributeValue[i]
-					}
-				}
-			}
-		}
 	}
 	return
 }
@@ -227,4 +216,50 @@ func (p *Parser) getNamespaceFromPrefix(prefix string) (ns string, err error) {
 		}
 	}
 	return
+} // FOO
+
+func (p *Parser) getNamespaceUri(pos uint) (uri string, err error) {
+	if pos < p.namespaceEnd {
+		uri = p.namespaceUri[pos]
+	} else {
+		msg := fmt.Sprintf("namespace index %d higher than max", pos)
+		err = p.NewXmlPullError(msg)
+	}
+	return
 }
+func (p *Parser) getPrefix() (s string) {
+
+	if p.curEvent == START_TAG {
+		s = p.elPrefix[p.elmDepth]
+	} else if p.curEvent == END_TAG {
+		s = p.elPrefix[p.elmDepth]
+	}
+	return
+}
+
+// XXX MEANINGLESS
+func (p *Parser) isAttributeDefault(index uint) (found bool, err error) {
+	err = p.mustBeStartTag()
+	if err == nil {
+		err = p.checkAttrIndex(index)
+		if err == nil {
+			found = false
+		}
+	}
+	return
+}
+
+func (p *Parser) isEmptyElementTag() (found bool, err error) {
+
+	if p.curEvent != START_TAG {
+		err = p.NewXmlPullError(
+			"parser must be on START_TAG to check for empty element")
+	} else {
+		found = p.isEmptyElement
+	}
+	return
+}
+
+// WORKING HERE; CLEAN UP, SORT, MERGE
+
+// PROPERTIES

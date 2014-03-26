@@ -48,7 +48,7 @@ type Parser struct {
 	isEmptyElement bool
 
 	// element stack
-	elmDepth      int
+	elmDepth      uint
 	elRawName     [][]rune
 	elRawNameLine []int
 
@@ -56,10 +56,10 @@ type Parser struct {
 	elPrefix         []string // []rune
 	elUri            []string // [][]rune
 	elValue          [][]rune
-	elNamespaceCount []int
+	elNamespaceCount []uint
 
 	// attribute stack
-	attributeCount    int
+	attributeCount    uint
 	attributeName     []string //[]rune
 	attributeNameHash []uint32 // stores FastHash output
 	attributePrefix   []string // []rune
@@ -67,12 +67,12 @@ type Parser struct {
 	attributeValue    []string // []rune
 
 	// namespace stack
-	namespaceCount      int
+	namespaceCount      uint
 	namespacePrefix     []string //[]rune
 	namespacePrefixHash []uint32 // more FastHash output
 	namespaceUri        []string // []rune
 
-	namespaceEnd int
+	namespaceEnd uint
 
 	// entity replacement stack ---------------------------
 	entityEnd            int
@@ -190,7 +190,7 @@ func (xpp *Parser) GetNamespaceForPrefix(prefix string) (ns string, err error) {
 
 //
 //
-func (xpp *Parser) GetDepth() int {
+func (xpp *Parser) GetDepth() uint {
 	return xpp.elmDepth
 }
 func (xpp *Parser) GetPositionDescription() (desc string) {
