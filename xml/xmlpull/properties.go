@@ -2,6 +2,7 @@ package xmlpull
 
 import (
 	"fmt"
+	u "unicode"
 )
 
 // UTILITIES --------------------------------------------------------
@@ -138,6 +139,14 @@ func (p *Parser) getAttributeValueNS(namespace, name string) (
 	return
 }
 
+func (p *Parser) getColumnNumber() int {
+	return p.colNo
+}
+
+func (p *Parser) getLineNumber() int {
+	return p.lineNo
+}
+
 // Return a copy of the tag name (in which case the argument is nil
 // or empty, or copy the parameter as an entity ref name.
 
@@ -227,6 +236,17 @@ func (p *Parser) getNamespaceUri(pos uint) (uri string, err error) {
 	}
 	return
 }
+
+// Return string describing current position of parser:
+//   'STATE @line:column'.
+//
+func (p *Parser) getPositionDescription() (s string) {
+
+	s = fmt.Sprintf("%s @%d:%d",
+		PULL_EVENT_NAMES[p.curEvent], p.getLineNumber(), p.getColumnNumber())
+	return
+}
+
 func (p *Parser) getPrefix() (s string) {
 
 	if p.curEvent == START_TAG {
@@ -234,6 +254,29 @@ func (p *Parser) getPrefix() (s string) {
 	} else if p.curEvent == END_TAG {
 		s = p.elPrefix[p.elmDepth]
 	}
+	return
+}
+
+// XXX NEED TO CHECK ACTUAL USE TO DETERMINE WHETHER THIS MAKES SENSE
+//
+func (p *Parser) getText() (runes []rune, err error) {
+	if p.curEvent != START_DOCUMENT && p.curEvent != END_DOCUMENT {
+		if p.curEvent == ENTITY_REF {
+			// XXX Why isn't this p.entityRef ???
+			runes, err = MakeCopyRunes(p.text)
+		} else {
+			runes, err = MakeCopyRunes(p.text)
+		}
+	}
+	return
+}
+
+func (p *Parser) getTextCharacters(holderForStartAndLength []uint) (
+	runes []rune, err error) {
+
+	fmt.Println("getTextCharacters() should never be called")
+
+	// XXX STUB XX
 	return
 }
 
@@ -256,6 +299,26 @@ func (p *Parser) isEmptyElementTag() (found bool, err error) {
 			"parser must be on START_TAG to check for empty element")
 	} else {
 		found = p.isEmptyElement
+	}
+	return
+}
+
+// XXX NEED TO CHECK ACTUAL USE TO DETERMINE WHETHER THIS MAKES SENSE
+//
+func (p *Parser) isWhitespace() (whether bool, err error) {
+
+	if p.curEvent == TEXT || p.curEvent == CDSECT {
+		whether = true
+		for i := 0; i < len(p.text); i++ {
+			if !u.IsSpace(p.text[i]) {
+				whether = false
+				break
+			}
+		}
+	} else if p.curEvent == IGNORABLE_WHITESPACE {
+		whether = true
+	} else {
+		err = p.NewXmlPullError("no content to check for white spaces")
 	}
 	return
 }

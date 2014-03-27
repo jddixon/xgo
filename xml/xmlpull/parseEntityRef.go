@@ -2,6 +2,7 @@ package xmlpull
 
 import (
 	"fmt"
+	// gu "github.com/jddixon/xgo/util"		// for INTERNING
 )
 
 var _ = fmt.Print
@@ -60,8 +61,10 @@ func (p *Parser) parseEntityRef() (runes []rune, err error) {
 				}
 			}
 		}
+		runes := []rune{charRef}
 		if p.tokenizing {
-			p.text = []rune{charRef} // a copy, of course
+			// p.text = gu.Intern(runes, 0, 1)
+			p.text = runes
 		}
 	} else {
 		// ENTITY REF -----------------------------------------------
@@ -72,7 +75,7 @@ func (p *Parser) parseEntityRef() (runes []rune, err error) {
 			err = p.NewXmlPullError(
 				"entity reference names can not start with character '" + printableChar(ch) + "'")
 		}
-		var name []rune
+		var rName []rune
 		for err == nil {
 			ch, err = p.NextCh()
 			// XXX
@@ -83,15 +86,15 @@ func (p *Parser) parseEntityRef() (runes []rune, err error) {
 				err = p.NewXmlPullError(
 					"entity reference name can not contain character " + printableChar(ch) + "'")
 			}
-			name = append(name, ch)
+			rName = append(rName, ch)
 		}
 
 		// XXX HANDLE ANY ERROR
 
-		// determine what name maps to
-		length := len(name)
+		// determine what rName maps to
+		length := len(rName)
 
-		if length == 2 && name[0] == 'l' && name[1] == 't' {
+		if length == 2 && rName[0] == 'l' && rName[1] == 't' {
 			if p.tokenizing {
 				p.text = []rune{'<'}
 			}
@@ -99,42 +102,42 @@ func (p *Parser) parseEntityRef() (runes []rune, err error) {
 			// return charRefOneCharBuf
 			runes = []rune{'<'}
 
-		} else if length == 3 && name[0] == 'a' &&
-			name[1] == 'm' &&
-			name[2] == 'p' {
+		} else if length == 3 && rName[0] == 'a' &&
+			rName[1] == 'm' &&
+			rName[2] == 'p' {
 
 			if p.tokenizing {
 				p.text = []rune{'&'}
 			}
 			runes = []rune{'&'}
 		} else if length == 2 &&
-			name[0] == 'g' &&
-			name[1] == 't' {
+			rName[0] == 'g' &&
+			rName[1] == 't' {
 
 			if p.tokenizing {
 				p.text = []rune{'>'}
 			}
 			runes = []rune{'>'}
-		} else if length == 4 && name[0] == 'a' &&
-			name[1] == 'p' &&
-			name[2] == 'o' &&
-			name[3] == 's' {
+		} else if length == 4 && rName[0] == 'a' &&
+			rName[1] == 'p' &&
+			rName[2] == 'o' &&
+			rName[3] == 's' {
 
 			if p.tokenizing {
 				p.text = []rune{'\''}
 			}
 			runes = []rune{'\''}
-		} else if length == 4 && name[0] == 'q' &&
-			name[1] == 'u' &&
-			name[2] == 'o' &&
-			name[3] == 't' {
+		} else if length == 4 && rName[0] == 'q' &&
+			rName[1] == 'u' &&
+			rName[2] == 'o' &&
+			rName[3] == 't' {
 
 			if p.tokenizing {
 				p.text = []rune{'"'}
 			}
 			runes = []rune{'"'}
 		} else {
-			runes, err = p.lookupEntityReplacement(name)
+			runes, err = p.lookupEntityReplacement(rName)
 		}
 		if err != nil || runes == nil || len(runes) == 0 {
 			if p.tokenizing {
@@ -145,24 +148,40 @@ func (p *Parser) parseEntityRef() (runes []rune, err error) {
 	return
 } // GEEP
 
-func (p *Parser) lookupEntityReplacement(name []rune) (
-
+func (p *Parser) lookupEntityReplacement(rName []rune) (
 	replacement []rune, err error) {
-	entityNameLen := uint(len(name))
-	hash := FastHash(name)
-	for i := p.entityEnd - 1; i >= 0; i-- {
-		notAMatch := false
-		if hash == p.entityNameHash[i] &&
-			entityNameLen == uint(len(p.entityNameBuf[i])) {
 
-			entityBuf := p.entityNameBuf[i]
-			for j := uint(0); j < entityNameLen; j++ {
-				if name[j] != entityBuf[j] {
-					notAMatch = true
-					break
+	entityNameLen := uint(len(rName))
+
+	// XXX KUKEMAL
+	if false { // !p.allStringsInterned {
+		hash := FastHash(rName)
+		// rNameLen := uint(len(rName))
+	DIJKSTRA:
+		for i := p.entityEnd - 1; i >= 0; i-- {
+			if hash == p.entityNameHash[i] &&
+				entityNameLen == uint(len(p.entityNameBuf[i])) {
+
+				entityBuf := p.entityNameBuf[i]
+				for j := uint(0); j < entityNameLen; j++ {
+					if rName[j] != entityBuf[j] {
+						goto DIJKSTRA // no match
+					}
 				}
+				if p.tokenizing {
+					p.text = make([]rune, len(p.entityReplacement[i]))
+					copy(p.text, p.entityReplacement[i])
+				}
+				replacement = make([]rune, len(p.entityReplacement[i]))
+				copy(replacement, p.entityReplacement[i])
+				return
 			}
-			if !notAMatch {
+		}
+	} else {
+		//p.entityRefName = gu.Intern(rName)
+		p.entityRefName = rName
+		for i := p.entityEnd - 1; i >= 0; i-- {
+			if SameRunes(p.entityRefName, p.entityName[i]) {
 				if p.tokenizing {
 					p.text = make([]rune, len(p.entityReplacement[i]))
 					copy(p.text, p.entityReplacement[i])
