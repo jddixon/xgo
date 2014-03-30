@@ -156,7 +156,6 @@ func (p *Parser) lookupEntityReplacement(rName []rune) (
 	// XXX KUKEMAL
 	if false { // !p.allStringsInterned {
 		hash := FastHash(rName)
-		// rNameLen := uint(len(rName))
 	DIJKSTRA:
 		for i := p.entityEnd - 1; i >= 0; i-- {
 			if hash == p.entityNameHash[i] &&
@@ -169,26 +168,22 @@ func (p *Parser) lookupEntityReplacement(rName []rune) (
 					}
 				}
 				if p.tokenizing {
-					p.text = make([]rune, len(p.entityReplacement[i]))
-					copy(p.text, p.entityReplacement[i])
+					p.text = []rune(p.entityReplacement[i])
 				}
-				replacement = make([]rune, len(p.entityReplacement[i]))
-				copy(replacement, p.entityReplacement[i])
-				return
+				replacement = []rune(p.entityReplacement[i])
+				break
 			}
 		}
 	} else {
 		//p.entityRefName = gu.Intern(rName)
-		p.entityRefName = rName
+		p.entityRefName = string(rName)
 		for i := p.entityEnd - 1; i >= 0; i-- {
-			if SameRunes(p.entityRefName, p.entityName[i]) {
+			if p.entityRefName == p.entityName[i] {
 				if p.tokenizing {
-					p.text = make([]rune, len(p.entityReplacement[i]))
-					copy(p.text, p.entityReplacement[i])
+					p.text = []rune(p.entityReplacement[i])
 				}
-				replacement = make([]rune, len(p.entityReplacement[i]))
-				copy(replacement, p.entityReplacement[i])
-				return
+				replacement = []rune(p.entityReplacement[i])
+				break
 			}
 		}
 	}

@@ -12,8 +12,10 @@ func (p *Parser) parseEndTag() (curEvent PullEvent, err error) {
 
 	// [42] ETag ::=  '</' Name S? '>'
 
-	var startName, endName []rune
-
+	var (
+		endRunes           []rune
+		startName, endName string
+	)
 	ch, err := p.NextCh()
 	if err == nil && isNameStartChar(ch) {
 		err = p.NewXmlPullError(
@@ -23,13 +25,14 @@ func (p *Parser) parseEndTag() (curEvent PullEvent, err error) {
 			if !isNameChar(ch) {
 				break
 			}
-			endName = append(endName, ch)
+			endRunes = append(endRunes, ch)
 		}
 	}
 	if err == nil {
+		endName = string(endRunes)
 		// we have endName; ch must be positioned at either S or >
 		startName = p.elName[p.elmDepth]
-		if !SameRunes(endName, startName) {
+		if endName != startName {
 			msg := fmt.Sprintf(
 				"line %d: start tag %s differs from end tag %s\n",
 				p.elRawNameLine[p.elmDepth], startName, endName)

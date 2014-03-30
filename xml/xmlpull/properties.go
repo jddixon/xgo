@@ -149,28 +149,27 @@ func (p *Parser) getLineNumber() int {
 
 // Return a copy of the tag name (in which case the argument is nil
 // or empty, or copy the parameter as an entity ref name.
+//
+// XXX THIS MAKES NO SENSE !
 
-func (p *Parser) getName(candidate []rune) (runes []rune, err error) {
+func (p *Parser) getName(candidate string) (s string) {
 
 	if p.curEvent == START_TAG {
-		runes, err = MakeCopyRunes(p.elName[p.elmDepth])
+		s = p.elName[p.elmDepth]
 	} else if p.curEvent == END_TAG {
-		runes, err = MakeCopyRunes(p.elName[p.elmDepth])
+		s = p.elName[p.elmDepth]
 	} else if p.curEvent == ENTITY_REF {
-		if p.entityRefName == nil {
-			runes, err = MakeCopyRunes(candidate)
-			if err == nil {
-				p.entityRefName, err = MakeCopyRunes(runes)
-			}
+		if p.entityRefName == "" {
+			p.entityRefName = candidate
+			// XXX ???
+			s = candidate
 		}
-	}
-	if err != nil {
-		runes = nil
 	}
 	return
 }
 
-func (p *Parser) getNamespace() (s string, err error) {
+// Could/should return error as well
+func (p *Parser) getNamespace() (s string) {
 
 	if p.curEvent == START_TAG || p.curEvent == END_TAG {
 		if p.processNamespaces {
@@ -326,3 +325,47 @@ func (p *Parser) isWhitespace() (whether bool, err error) {
 // WORKING HERE; CLEAN UP, SORT, MERGE
 
 // PROPERTIES
+
+func (p *Parser) getEventType() PullEvent {
+	return p.curEvent
+}
+
+func (p *Parser) require(_type PullEvent, namespace, name string) (err error) {
+
+	if !p.processNamespaces && namespace != "" {
+
+		err = p.NewXmlPullError(
+			"processing namespaces must be enabled to have possible namespaces declared on elements")
+
+	} else if (_type != p.getEventType()) ||
+		(namespace != "" && namespace != p.getNamespace()) ||
+		(name != "" && (name != p.getName(""))) {
+
+		expectedEvent := PULL_EVENT_NAMES[_type]
+		var expectedName, expectedNS string
+		if name != "" {
+			expectedName = fmt.Sprintf(" with name '%s'", name)
+		}
+		if namespace != "" {
+			expectedNS = fmt.Sprintf(" and namespace '%s'", namespace)
+		}
+		actualEvent := PULL_EVENT_NAMES[p.getEventType()]
+		var actualName, actualNS string
+		aName := p.getName("")
+		if aName != "" {
+			actualName = ", name was '%s'"
+		}
+		aNS := p.getNamespace()
+		if aNS != "" {
+			actualNS = ", and namespace was '%s'"
+		}
+
+		msg := fmt.Sprintf("expected %s %s %s but actual event was %s %s %s",
+			expectedEvent,
+			expectedName,
+			expectedNS,
+			actualEvent, actualName, actualNS)
+		err = p.NewXmlPullError(msg)
+	}
+	return
+}

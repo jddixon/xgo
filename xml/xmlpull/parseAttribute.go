@@ -194,12 +194,12 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 			resolvedEntity, err = p.parseEntityRef()
 			// check if replacement text can be resolved !!!
 			if resolvedEntity == nil {
-				if p.entityRefName == nil {
+				if p.entityRefName == "" {
 					// XXX SHOULD BE A STRING OR IT SHD BE COPIED
-					p.entityRefName = valueRunes
+					p.entityRefName = string(valueRunes)
 				}
 				msg := fmt.Sprintf("Could not resolve entity '%s'",
-					string(p.entityRefName))
+					p.entityRefName)
 				err = p.NewXmlPullError(msg)
 				return
 			}

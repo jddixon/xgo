@@ -20,10 +20,9 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 	}
 
 	var (
-		name, prefixRunes []rune
-		prefix            string
+		nameRunes, prefixRunes []rune
+		name, prefix           string
 	)
-	// name = append(name, ch)
 
 	p.elmDepth++
 	p.isEmptyElement = false
@@ -52,17 +51,17 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 			colonFound = true
 		}
 		if ch == ':' {
-			prefixRunes = make([]rune, len(name))
-			copy(prefixRunes, name)
-			name = name[:0]
+			prefixRunes = make([]rune, len(nameRunes))
+			copy(prefixRunes, nameRunes)
+			nameRunes = nameRunes[:0]
 		} else {
-			name = append(name, ch)
+			nameRunes = append(nameRunes, ch)
 		}
 	}
 	// we have a name and may have a prefix
 	if err == nil {
 		// ensureElementsCapacity()			// XXX MPLEMENT ???
-		p.elRawName[p.elmDepth] = name
+		p.elRawName[p.elmDepth] = nameRunes
 		p.elRawNameLine[p.elmDepth] = p.lineNo
 
 		// work on prefixes and namespace URI
@@ -204,6 +203,8 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				}
 			}
 		}
+
+		_ = name // XXX MAJOR ERROR THAT THIS IS NOT USED
 
 		p.elNamespaceCount[p.elmDepth] = p.namespaceEnd
 

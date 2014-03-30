@@ -34,7 +34,7 @@ type Parser struct {
 	// transient variables for NextToken()
 	tokenizing    bool
 	text          []rune
-	entityRefName []rune
+	entityRefName string // []rune
 
 	// global parser state
 	seenStartTag  bool
@@ -52,7 +52,7 @@ type Parser struct {
 	elRawName     [][]rune
 	elRawNameLine []int
 
-	elName           [][]rune
+	elName           []string // []rune
 	elPrefix         []string // []rune
 	elUri            []string // [][]rune
 	elValue          [][]rune
@@ -76,9 +76,9 @@ type Parser struct {
 
 	// entity replacement stack ---------------------------
 	entityEnd            int
-	entityName           [][]rune
+	entityName           []string // [][]rune
 	entityNameBuf        [][]rune
-	entityReplacement    [][]rune
+	entityReplacement    []string // ][]rune
 	entityReplacementBuf [][]rune
 	entityNameHash       []uint32
 
