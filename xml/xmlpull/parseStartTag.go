@@ -20,10 +20,9 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 	}
 
 	var (
-		name, prefix []rune
-		// elLen        int // XXX DROP ME
+		nameRunes, prefixRunes []rune
+		name, prefix           string
 	)
-	// name = append(name, ch)
 
 	p.elmDepth++
 	p.isEmptyElement = false
@@ -52,17 +51,17 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 			colonFound = true
 		}
 		if ch == ':' {
-			prefix = make([]rune, len(name))
-			copy(prefix, name)
-			name = name[:0]
+			prefixRunes = make([]rune, len(nameRunes))
+			copy(prefixRunes, nameRunes)
+			nameRunes = nameRunes[:0]
 		} else {
-			name = append(name, ch)
+			nameRunes = append(nameRunes, ch)
 		}
 	}
 	// we have a name and may have a prefix
 	if err == nil {
 		// ensureElementsCapacity()			// XXX MPLEMENT ???
-		p.elRawName[p.elmDepth] = name
+		p.elRawName[p.elmDepth] = nameRunes
 		p.elRawNameLine[p.elmDepth] = p.lineNo
 
 		// work on prefixes and namespace URI
@@ -78,7 +77,7 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				name = p.elName[p.elmDepth]
 			} else {
 				// prefix is empty
-				p.elPrefix[p.elmDepth] = make([]rune, 0)
+				p.elPrefix[p.elmDepth] = ""
 				// XXX FIX ME
 				// p.elName[ p.elmDepth ] = newString(buf, nameStart - bufAbsoluteStart, elLen)
 				name = p.elName[p.elmDepth]
@@ -109,20 +108,29 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				}
 				break // XXX inside if ?
 			} else if isNameStartChar(ch) {
-				// ch = parseAttribute()		// XXX NOT YET !!
+				// we think we have an attribute
+				p.PushBack(ch)
+				ch, err = p.parseAttribute()
+				// XXX HANDLE ANY ERROR
+				// XXX WE SHOULD NOT IGNORE ch
+
 				ch, err = p.NextCh()
+				// XXX HANDLE ANY ERROR
+				// XXX WE SHOULD NOT IGNORE ch
 				continue
 			} else {
 				err = p.NewXmlPullError(
 					"start tag unexpected character " + printableChar(ch))
 			}
-			//ch, err = p.NextCh(); // skip space
 		}
-
+		// VERY MUCH A HACK
+		if len(prefixRunes) > 0 {
+			prefix = string(prefixRunes)
+		}
 		// If any namespaces were declared we can now resolve them
 		if p.processNamespaces {
-			// uri := getNamespace(prefix)		// XXX NOT YET
-			var uri []rune // XXX KLUDGE
+			var uri string
+			uri, err = p.getNamespaceFromPrefix(prefix)
 			if len(uri) == 0 {
 				if len(prefix) == 0 { // no prefix and no uri => use default namespace
 					uri = NO_NAMESPACE
@@ -132,38 +140,35 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 							string(prefix))
 				}
 			}
-			p.elUri[p.elmDepth] = make([]rune, len(uri))
-			copy(p.elUri[p.elmDepth], uri)
+			p.elUri[p.elmDepth] = uri
 
-			//String uri = getNamespace(prefix)
-			//if uri == nil && prefix == nil) { // no prefix and no uri => use default namespace
-			//  uri = ""
-			//}
 			// resolve attribute namespaces
 			for i := 0; i < attrCount; i++ {
 				attrPrefix := p.attributePrefix[i]
 				if len(attrPrefix) > 0 {
-					// attrUri := getNamespace(attrPrefix)	// XXX NOT YET
-					var attrUri []rune
+					var attrUri string
+					attrUri, err = p.getNamespaceFromPrefix(attrPrefix)
+					// XXX HANDLE ERROR
 					if len(attrUri) == 0 {
 						err = p.NewXmlPullError(
 							"can't determine ns bound to attribute prefix " +
-								string(attrPrefix))
+								attrPrefix)
 					}
-					p.attributeUri[i] = make([]rune, len(attrUri))
-					copy(p.attributeUri[i], attrUri)
+					p.attributeUri[i] = attrUri
 				} else {
 					p.attributeUri[i] = NO_NAMESPACE
 				}
 			}
+			// XXX POSSIBLE ERROR
+
 			//[ WFC: Unique Att Spec ]
 			// check attr uniqueness constraint for attrs that have namespace
 
 			for i := 1; i < attrCount; i++ {
 				for j := 0; j < i; j++ {
-					if SameRunes(p.attributeUri[j], p.attributeUri[i]) &&
+					if (p.attributeUri[j] == p.attributeUri[i]) &&
 						(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
-						SameRunes(p.attributeName[j], p.attributeName[i]) {
+						(p.attributeName[j] == p.attributeName[i]) {
 
 						// a pretty but rather silly error message
 						attr1 := string(p.attributeName[j])
@@ -185,9 +190,9 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 			// check raw attribute uniqueness constraint!!!
 			for i := 1; i < attrCount; i++ {
 				for j := 0; j < i; j++ {
-					if SameRunes(p.attributeName[j], p.attributeName[i]) ||
+					if (p.attributeName[j] == p.attributeName[i]) ||
 						(p.attributeNameHash[j] == p.attributeNameHash[i]) &&
-							SameRunes(p.attributeName[j], p.attributeName[i]) {
+							(p.attributeName[j] == p.attributeName[i]) {
 
 						// data for error message
 						attr1 := string(p.attributeName[i])
@@ -198,6 +203,8 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				}
 			}
 		}
+
+		_ = name // XXX MAJOR ERROR THAT THIS IS NOT USED
 
 		p.elNamespaceCount[p.elmDepth] = p.namespaceEnd
 

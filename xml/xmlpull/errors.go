@@ -9,6 +9,7 @@ import (
 // by a more specific error such as UnsupportedFeature.
 var (
 	EmptyFeatureString       = e.New("XmlPullParser empty feature string")
+	EmptyRuneSlice           = e.New("empty slice of runes")
 	IllegalArgument          = e.New("XmlPullParser illegal argument")
 	IndexOutOfBounds         = e.New("XmlPullParser index out of bounds")
 	IOError                  = e.New("XmlPullParser io error")

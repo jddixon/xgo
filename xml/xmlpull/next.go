@@ -186,7 +186,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 				// check if replacement text can be resolved !!!
 				if len(resolvedEntity) == 0 {
 					if len(p.entityRefName) == 0 {
-						p.entityRefName = []rune("unknown") // XXX
+						p.entityRefName = "UNKNOWN" // XXX
 					}
 					err = p.NewXmlPullError(
 						"could not resolve entity named '" +

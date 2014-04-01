@@ -13,6 +13,7 @@ const (
 //
 type Parser struct {
 	xmlDeclVersion, xmlDeclEncoding string
+	xmlDeclContent                  string
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
 
@@ -34,9 +35,12 @@ type Parser struct {
 	// transient variables for NextToken()
 	tokenizing    bool
 	text          []rune
-	entityRefName []rune
+	entityRefName string // []rune
 
 	// global parser state
+	location      string
+	lineNo        int // line number		// redundant
+	colNo         int // column number		// redundant
 	seenStartTag  bool
 	seenEndTag    bool
 	pastEndTag    bool
@@ -48,41 +52,39 @@ type Parser struct {
 	isEmptyElement bool
 
 	// element stack
-	elmDepth      int
+	elmDepth      uint
 	elRawName     [][]rune
 	elRawNameLine []int
 
-	elName           [][]rune
-	elPrefix         [][]rune
-	elUri            [][]rune
+	elName           []string // []rune
+	elPrefix         []string // []rune
+	elUri            []string // [][]rune
 	elValue          [][]rune
-	elNamespaceCount []int
+	elNamespaceCount []uint
 
 	// attribute stack
-	attributeCount    int
-	attributeName     [][]rune
-	attributeNameHash []int
-	attributePrefix   [][]rune
-	attributeUri      [][]rune
-	attributeValue    [][]rune
+	attributeCount    uint
+	attributeName     []string //[]rune
+	attributeNameHash []uint32 // stores FastHash output
+	attributePrefix   []string // []rune
+	attributeUri      []string // [][]rune
+	attributeValue    []string // []rune
 
 	// namespace stack
-	namespaceEnd int
-	nsCount      int
-	nsPrefix     [][]rune
-	nsUri        [][]rune
+	namespaceCount      uint
+	namespacePrefix     []string //[]rune
+	namespacePrefixHash []uint32 // more FastHash output
+	namespaceUri        []string // []rune
+
+	namespaceEnd uint
 
 	// entity replacement stack ---------------------------
 	entityEnd            int
-	entityName           [][]rune
+	entityName           []string // [][]rune
 	entityNameBuf        [][]rune
-	entityReplacement    [][]rune
+	entityReplacement    []string // ][]rune
 	entityReplacementBuf [][]rune
 	entityNameHash       []uint32
-
-	// buffer management ----------------------------------
-	lineNo int // line number		// redundant
-	colNo  int // column number		// redundant
 
 	gl.LexInput
 }
@@ -120,13 +122,17 @@ func (xpp *Parser) GetLexer() *gl.LexInput {
 	return &xpp.LexInput
 }
 
+// Reset all global variables; also used to set initial values at
+// program start.
+//
 // All fields in the Parser struct should be reinitialized here.
+
 func (xpp *Parser) reset() {
 	xpp.afterLT = false
 	xpp.colNo = 0
 	xpp.elmDepth = 0
 	xpp.lineNo = 1
-	xpp.nsCount = 0
+	xpp.namespaceCount = 0
 
 	// XXX STUB XXX
 
@@ -184,7 +190,7 @@ func (xpp *Parser) GetNamespaceForPrefix(prefix string) (ns string, err error) {
 
 //
 //
-func (xpp *Parser) GetDepth() int {
+func (xpp *Parser) GetDepth() uint {
 	return xpp.elmDepth
 }
 func (xpp *Parser) GetPositionDescription() (desc string) {

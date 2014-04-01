@@ -21,8 +21,8 @@ func (p *Parser) parseDocdecl() (err error) {
 	// do simple and crude scanning for end of doctype
 
 	bracketLevel := 0
-	normalizeIgnorableWS := p.tokenizing && !p.roundtripSupported
-	normalizedCR := false
+	// normalizeIgnorableWS := p.tokenizing && !p.roundtripSupported
+	// normalizedCR := false
 
 	for err == nil {
 		var ch rune
@@ -38,23 +38,10 @@ func (p *Parser) parseDocdecl() (err error) {
 		if ch == '>' && bracketLevel == 0 {
 			break
 		}
-		if normalizeIgnorableWS {
-			if ch == '\r' {
-				normalizedCR = true
-				//if !usePC {
-				//    usePC = true
-				//}
-				//if pcEnd >= pc.length {
-				//	ensurePC(pcEnd)
-				// }
-				// XXX NEED TO REPLACE WITH \n
-				// pc[pcEnd++] = '\n'
-			} else {
-				normalizedCR = false
-			}
-		}
+		//if normalizeIgnorableWS {
+		//	...
+		// }
 
 	}
-	_ = normalizedCR // XXX not used
 	return
 }

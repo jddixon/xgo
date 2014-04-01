@@ -1,5 +1,14 @@
 xgo/xml/xmlpull/TODO
 
+2014-03-25
+    * sort properties                                                   * DONE
+2014-03-23
+    * get rudimentary parser working (decl + single line) ISSUE#5
+2014-03-22
+    * move stuff from properties.ZZZ to properties.go
+2014-03-21
+    * need test of getName() -- should be in properties_test.go
+    * need test of getNamespace() -- properties_test.go
 2014-03-18
     * desperately need parseEntityRef_test.go
 
@@ -10,16 +19,9 @@ xgo/xml/xmlpull/TODO
         (at least not at reasonable cost in dev man-hours)			    * DONE
     * any ifs on allStringsInterned: drop the true branch			    * DONE
 
-2014-03-17
-    * need gu.Intern() for runes                                        * SKIP
-    * misconception: we need an si=StrIntern instance and then          * SKIP
-        we call si.Intern()                                             * SKIP
-    * so for runes we need ri=RunesIntern instance and then call        * SKIP
-        ri.Intern()                                                     * SKIP
-
 2014-03-10
-    * parseStartTag needs parseAttribute()
-    * and getNamespace()
+    * parseStartTag needs parseAttribute()                              * DONE
+    * and getNamespace()                                                * DONE
 
 2014-03-09
     * all functions returning PullEvent should also return error
@@ -27,38 +29,23 @@ xgo/xml/xmlpull/TODO
 2014-03-08
     * test printable*()
     * test charTests.go
-    * get parseStartTag.go to compile (needed for parseProlog)          * DONE
 
 2013-12-07
-    * edit all parser files to invoke xgo/lex/ functions through        * DONE
-        lexer.go wrapper functions, to  improve error handling          * DONE
-        - so ch, err = lx.NextChr() becomes ch, err = p.NextChr(), etc  * DONE
-
     * verify lexer.go has all functions in xgo/lex/lex_input.go
         - and rearrange the latter into alphabetical order
     * parseXmlDecl must collect its runes, add to Parser struct
 
 2013-12-03 
-    * XmlPullParserException in the specs can become XmlPullError,      * DONE
-        which must return line and column numbers and must              * DONE
-        implement the error interface                                   * DONE
-    * Next() returns the event type, which is PullEvent, defined        * DONE
-        in const.go                                                     * DONE
-    * ParseXmlDecl should write version, encoding, standalone to        * DONE
-        Parser struct rather than returning                             * DONE
-
-2013-12-03 
     from the syntax diagrams; here DONE means that it compiles, not
     necessarily that tests exist and succeed
 
-
     * Next()                                                            * DONE
-    * ParseAttribute
+    * ParseAttribute                                                    * DONE
     * ParseCDSect                                                       * DONE
     * ParseComment                                                      * DONE
     * ParseDocdecl                                                      * DONE
     * ParseEndTag                                                       * DONE
-    * ParseEntityRef
+    * ParseEntityRef                                                    * DONE
     * ParseEpilog                                                       * DONE
     * ParseProcessingInstruction                                        * DONE
     * ParseProlog                                                       * DONE
@@ -78,5 +65,5 @@ xgo/xml/xmlpull/TODO
     * For string interning see eg stackoverflow 13017499                * DONE
         is-there-an-equivalent-to-javas-string-intern-function-in-go    * DONE
 
-    * but We should be interning []byte instead!
+    * but We should be interning []byte instead!                        * SKIP
 

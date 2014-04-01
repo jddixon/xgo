@@ -4,7 +4,7 @@ package xmlpull
 
 var (
 	// The default namespace.
-	NO_NAMESPACE = make([]rune, 0)
+	NO_NAMESPACE = "" //  make([]rune, 0)
 )
 
 const (
@@ -193,7 +193,7 @@ const (
 // Use this array to convert evebt type number (such as START_TAG) to
 // to string giving event name, ex: "START_TAG" == TYPES[START_TAG]
 //
-var TOKEN_NAMES = []string{
+var PULL_EVENT_NAMES = []string{
 	"START_DOCUMENT",
 	"END_DOCUMENT",
 	"START_TAG",

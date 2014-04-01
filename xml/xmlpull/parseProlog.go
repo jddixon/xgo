@@ -42,11 +42,10 @@ func (p *Parser) parseRestOfProlog() (err error) {
 		}
 	}
 	// END DOES NOT BELONG ------------------------------------------
+
 	if err == nil {
-		var normalizedCR bool // should this be here ?? XXX
 		p.afterLT = false
 		gotS := false
-
 		for err == nil {
 			// deal with Misc
 			// deal with docdecl --> mark it!
@@ -105,7 +104,7 @@ func (p *Parser) parseRestOfProlog() (err error) {
 					}
 				} else if ch == '/' {
 					err = p.NewXmlPullError(
-						"expected start tag name and not " + printableChar(ch))
+						"start tag name cannot begin with '/'\n")
 					break
 				} else if isNameStartChar(ch) {
 					p.haveRootTag = true
@@ -113,62 +112,23 @@ func (p *Parser) parseRestOfProlog() (err error) {
 					p.parseStartTag()
 					break
 				} else {
-					err = p.NewXmlPullError(
-						"expected start tag name and not " + printableChar(ch))
+					msg := fmt.Sprintf(
+						"expected start tag name, but cannot begin with '%c'\n",
+						ch)
+					err = p.NewXmlPullError(msg)
 					break
 				}
 			} else if u.IsSpace(ch) {
 				gotS = true
-				if p.normalizeIgnorableWS {
-					if ch == '\r' {
-						normalizedCR = true
-						//posEnd = pos -1
-						//joinPC()
-						// posEnd is already is set
-						//if !usePC {
-						//	posEnd = pos - 1
-						//	if posEnd > posStart {
-						//		joinPC()
-						//	} else {
-						//		usePC = true
-						//		pcStart = 0
-						//		pcEnd = 0
-						//	}
-						//}
-						//assert usePC == true
-						//if pcEnd >= pc.length {
-						//		ensurePC(pcEnd)
-						//
-						//pc[pcEnd] = '\n'
-						//pcEnd++
-					} else if ch == '\n' {
-						//if !normalizedCR && usePC {
-						//	if pcEnd >= pc.length {
-						//		ensurePC(pcEnd)
-						//	}
-						//	pc[pcEnd] = '\n'
-						//	pcEnd++
-						//}
-						normalizedCR = false
-					} else {
-						//if usePC {
-						//	if pcEnd >= pc.length {
-						//		ensurePC(pcEnd)
-						//	}
-						//	pc[pcEnd] = ch
-						//	pcEnd++
-						//}
-						normalizedCR = false
-					}
-				}
 			} else {
-				err = p.NewXmlPullError(
-					"only whitespace content allowed before start tag and not " + printableChar(ch))
+				msg := fmt.Sprintf(
+					"only whitespace allowed before start tag, not '%c'\n",
+					ch)
+				err = p.NewXmlPullError(msg)
 				break
 			}
 			ch, err = p.NextCh()
 		} // end for
-		_ = normalizedCR // XXx NEVER USED
 	}
 
 	return
