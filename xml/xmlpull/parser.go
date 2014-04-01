@@ -13,6 +13,7 @@ const (
 //
 type Parser struct {
 	xmlDeclVersion, xmlDeclEncoding string
+	xmlDeclContent                  string
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
 
@@ -37,6 +38,9 @@ type Parser struct {
 	entityRefName string // []rune
 
 	// global parser state
+	location      string
+	lineNo        int // line number		// redundant
+	colNo         int // column number		// redundant
 	seenStartTag  bool
 	seenEndTag    bool
 	pastEndTag    bool
@@ -81,10 +85,6 @@ type Parser struct {
 	entityReplacement    []string // ][]rune
 	entityReplacementBuf [][]rune
 	entityNameHash       []uint32
-
-	// buffer management ----------------------------------
-	lineNo int // line number		// redundant
-	colNo  int // column number		// redundant
 
 	gl.LexInput
 }

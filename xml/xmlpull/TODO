@@ -3,7 +3,7 @@ xgo/xml/xmlpull/TODO
 2014-03-25
     * sort properties                                                   * DONE
 2014-03-23
-    * get rudimentary parser working (decl + single line)
+    * get rudimentary parser working (decl + single line) ISSUE#5
 2014-03-22
     * move stuff from properties.ZZZ to properties.go
 2014-03-21

@@ -143,6 +143,65 @@ func (p *Parser) getColumnNumber() int {
 	return p.colNo
 }
 
+func (p *Parser) getDepth() uint {
+	return p.elmDepth
+}
+
+func (p *Parser) getEventType() PullEvent {
+	return p.curEvent
+}
+
+// XXX  Unknown properties are always returned as false
+func (p *Parser) getFeature(name string) (found bool, err error) {
+	if name == "" {
+		err = p.NewXmlPullError("feature name may not be empty")
+	} else {
+		if FEATURE_PROCESS_NAMESPACES == name {
+			found = p.processNamespaces
+		} else if FEATURE_NAMES_INTERNED == name {
+			found = false
+		} else if FEATURE_PROCESS_DOCDECL == name {
+			found = false
+		} else if FEATURE_XML_ROUNDTRIP == name {
+			found = p.roundtripSupported
+		}
+	}
+	return
+}
+
+func (p *Parser) setFeature(name string, whether bool) (err error) {
+
+	if name == "" {
+		err = p.NewXmlPullError("feature name may not be empty")
+	} else {
+		if FEATURE_PROCESS_NAMESPACES == name {
+			if p.curEvent != START_DOCUMENT {
+				err = p.NewXmlPullError(
+					"namespace processing feature can only be changed before parsing")
+			} else {
+				p.processNamespaces = whether
+			}
+		} else if FEATURE_NAMES_INTERNED == name {
+			if whether {
+				err = p.NewXmlPullError(
+					"interning names in this implementation is not supported")
+			}
+		} else if FEATURE_PROCESS_DOCDECL == name {
+			if whether {
+				err = p.NewXmlPullError(
+					"processing DOCDECL is not supported")
+			}
+		} else if FEATURE_XML_ROUNDTRIP == name {
+			p.roundtripSupported = whether
+		} else {
+			msg := fmt.Sprintf("unsupported feature '%s'", name)
+
+			err = p.NewXmlPullError(msg)
+		}
+	}
+	return
+}
+
 func (p *Parser) getLineNumber() int {
 	return p.lineNo
 }
@@ -256,6 +315,32 @@ func (p *Parser) getPrefix() (s string) {
 	return
 }
 
+func (p *Parser) getProperty(name string) (object interface{}, err error) {
+	if name == "" {
+		err = p.NewXmlPullError("property name must not be empty")
+	} else {
+		if PROPERTY_XMLDECL_VERSION == name {
+			object = p.xmlDeclVersion
+		} else if PROPERTY_XMLDECL_STANDALONE == name {
+			object = p.xmlDeclStandalone
+		} else if PROPERTY_XMLDECL_CONTENT == name {
+			object = p.xmlDeclContent
+		} else if PROPERTY_LOCATION == name {
+			object = p.location
+		}
+	}
+	return
+}
+func (p *Parser) setProperty(name string, value interface{}) (err error) {
+	if PROPERTY_LOCATION == name {
+		p.location = value.(string)
+	} else {
+		msg := fmt.Sprintf("unsupported property: '%s'", name)
+		err = p.NewXmlPullError(msg)
+	}
+	return
+}
+
 // XXX NEED TO CHECK ACTUAL USE TO DETERMINE WHETHER THIS MAKES SENSE
 //
 func (p *Parser) getText() (runes []rune, err error) {
@@ -322,13 +407,7 @@ func (p *Parser) isWhitespace() (whether bool, err error) {
 	return
 }
 
-// WORKING HERE; CLEAN UP, SORT, MERGE
-
-// PROPERTIES
-
-func (p *Parser) getEventType() PullEvent {
-	return p.curEvent
-}
+// PROPERTY-RELATED METHODS /////////////////////////////////////////
 
 func (p *Parser) require(_type PullEvent, namespace, name string) (err error) {
 
@@ -369,3 +448,7 @@ func (p *Parser) require(_type PullEvent, namespace, name string) (err error) {
 	}
 	return
 }
+
+// WORKING HERE; CLEAN UP, SORT, MERGE //////////////////////////////
+
+// PROPERTIES
