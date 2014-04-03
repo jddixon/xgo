@@ -202,6 +202,10 @@ func (p *Parser) setFeature(name string, whether bool) (err error) {
 	return
 }
 
+func (p *Parser) getInputEncoding() string {
+	return p.inputEncoding
+}
+
 func (p *Parser) getLineNumber() int {
 	return p.lineNo
 }
@@ -407,7 +411,22 @@ func (p *Parser) isWhitespace() (whether bool, err error) {
 	return
 }
 
-// PROPERTY-RELATED METHODS /////////////////////////////////////////
+// OTHER PROPERTY-RELATED METHODS ///////////////////////////////////
+
+func (p *Parser) defineEntityReplacementText(
+	entityName, replacementText string) (err error) {
+
+	// p.ensureEntityCapacity()
+
+	// make sure that if interning works we take advantage of it
+
+	runes := []rune(entityName)
+	p.entityName[p.entityEnd] = entityName
+	p.entityReplacement[p.entityEnd] = replacementText
+	p.entityNameHash[p.entityEnd] = FastHash(runes)
+	p.entityEnd++
+	return
+}
 
 func (p *Parser) require(_type PullEvent, namespace, name string) (err error) {
 
@@ -450,5 +469,3 @@ func (p *Parser) require(_type PullEvent, namespace, name string) (err error) {
 }
 
 // WORKING HERE; CLEAN UP, SORT, MERGE //////////////////////////////
-
-// PROPERTIES

@@ -86,6 +86,8 @@ type Parser struct {
 	entityReplacementBuf [][]rune
 	entityNameHash       []uint32
 
+	// XXX hmmm
+	inputEncoding string
 	gl.LexInput
 }
 
