@@ -1,6 +1,6 @@
 package xmlpull
 
-// xgo/xml/xmlpull/parse_doc_decl_test.go
+// xgo/xml/xmlpull/parseDocTypeDecl_test.go
 
 import (
 	"fmt"
