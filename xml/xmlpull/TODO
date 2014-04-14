@@ -1,5 +1,10 @@
 xgo/xml/xmlpull/TODO
 
+2014-04-13
+    * move 'implementation of XmlPullParser' from parser.go
+        into implementation.go
+    * then move code from properties.go into that file
+
 2014-03-25
     * sort properties                                                   * DONE
 2014-03-23
@@ -24,7 +29,7 @@ xgo/xml/xmlpull/TODO
     * and getNamespace()                                                * DONE
 
 2014-03-09
-    * all functions returning PullEvent should also return error
+    * all functions returning PullEvent should also return error        * DONE
 
 2014-03-08
     * test printable*()
@@ -34,24 +39,6 @@ xgo/xml/xmlpull/TODO
     * verify lexer.go has all functions in xgo/lex/lex_input.go
         - and rearrange the latter into alphabetical order
     * parseXmlDecl must collect its runes, add to Parser struct
-
-2013-12-03 
-    from the syntax diagrams; here DONE means that it compiles, not
-    necessarily that tests exist and succeed
-
-    * Next()                                                            * DONE
-    * ParseAttribute                                                    * DONE
-    * ParseCDSect                                                       * DONE
-    * ParseComment                                                      * DONE
-    * ParseDocdecl                                                      * DONE
-    * ParseEndTag                                                       * DONE
-    * ParseEntityRef                                                    * DONE
-    * ParseEpilog                                                       * DONE
-    * ParseProcessingInstruction                                        * DONE
-    * ParseProlog                                                       * DONE
-    * ParseStartTag                                                     * DONE
-    * ParseXmlDecl                                                      * DONE
-    
 
 2013-11-21 (11-20, edited)
     * build skeletal parser as parser.go                                * DONE
@@ -64,6 +51,3 @@ xgo/xml/xmlpull/TODO
 2013-11-08
     * For string interning see eg stackoverflow 13017499                * DONE
         is-there-an-equivalent-to-javas-string-intern-function-in-go    * DONE
-
-    * but We should be interning []byte instead!                        * SKIP
-

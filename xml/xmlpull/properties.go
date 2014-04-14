@@ -5,209 +5,75 @@ import (
 	u "unicode"
 )
 
-// UTILITIES --------------------------------------------------------
-
-func (p *Parser) checkAttrIndex(index uint) (err error) {
-	if index < 0 || index >= p.attributeCount {
-		msg := fmt.Sprintf("attribute index must be in 0..%d and not %d",
-			p.attributeCount-1, index)
-		err = p.NewXmlPullError(msg)
-	}
-	return
-}
-
-// Return a copy of the rune slice.
-
-func MakeCopyRunes(src []rune) (dest []rune, err error) {
-	if src == nil || len(src) == 0 {
-		err = EmptyRuneSlice
-	} else {
-		dest = make([]rune, len(src))
-		copy(dest, src)
-	}
-	return
-}
-
-func (p *Parser) mustBeStartTag() (err error) {
-	if p.curEvent != START_TAG {
-		err = p.NewXmlPullError("only START_TAG can have attributes")
-	}
-	return
-} // FOO
-
 // PROPERTIES -------------------------------------------------------
 // Sort by the property name, what follows 'get' or 'set'
 // ------------------------------------------------------------------
 
-func (p *Parser) getAttributeCount() (n uint) {
-	if p.curEvent == START_TAG {
-		n = p.attributeCount
-	}
-	return
+func (xpp *Parser) getColumnNumber() int {
+	return xpp.colNo
 }
 
-func (p *Parser) getAttributeName(index uint) (ns string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		err = p.checkAttrIndex(index)
-	}
-	if err == nil {
-		ns = p.attributeName[index]
-	}
-	return
-}
-func (p *Parser) getAttributeNamespace(index uint) (ns string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		if !p.processNamespaces {
-			ns = NO_NAMESPACE
-			return // XXX
-		} else {
-			err = p.checkAttrIndex(index)
-		}
-	}
-	if err == nil {
-		ns = p.attributeUri[index]
-	}
-	return
-}
-func (p *Parser) getAttributePrefix(index uint) (ns string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		if p.processNamespaces {
-			err = p.checkAttrIndex(index)
-		}
-		if err == nil {
-			ns = p.attributePrefix[index]
-		}
-	}
-	return
-}
-
-// XXX NOTICE THAT THE ATTR TYPE RETURNED IS A STRING
-func (p *Parser) getAttributeType(index uint) (t string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		err = p.checkAttrIndex(index)
-		if err == nil {
-			t = "CDATA"
-		}
-	}
-	return
-}
-
-func (p *Parser) getAttributeValue(index uint) (value string, err error) {
-	err = p.mustBeStartTag()
-	if err == nil {
-		err = p.checkAttrIndex(index)
-		if err == nil {
-			value = p.attributeValue[index]
-		}
-	}
-	return
-}
-
-func (p *Parser) getAttributeValueNS(namespace, name string) (
-	value string, err error) {
-
-	err = p.mustBeStartTag()
-	if err == nil && name == "" {
-		err = p.NewXmlPullError("attribute name can not be nil")
-	}
-	if err == nil {
-		if p.processNamespaces {
-			for i := uint(0); i < p.attributeCount; i++ {
-				if (namespace == p.attributeUri[i] ||
-					namespace == p.attributeUri[i]) &&
-					name == p.attributeName[i] {
-					value = p.attributeValue[i]
-				}
-			}
-		} else {
-			if namespace != "" {
-				err = p.NewXmlPullError(
-					"namespaces processing disabled, attr namespace must be nil")
-			} else {
-				for i := uint(0); i < p.attributeCount; i++ {
-					if name == p.attributeName[i] {
-						value = p.attributeValue[i]
-					}
-				}
-			}
-		}
-	}
-	return
-}
-
-func (p *Parser) getColumnNumber() int {
-	return p.colNo
-}
-
-func (p *Parser) getDepth() uint {
-	return p.elmDepth
-}
-
-func (p *Parser) getEventType() PullEvent {
-	return p.curEvent
+func (xpp *Parser) getDepth() uint {
+	return xpp.elmDepth
 }
 
 // XXX  Unknown properties are always returned as false
-func (p *Parser) getFeature(name string) (found bool, err error) {
+func (xpp *Parser) getFeature(name string) (found bool, err error) {
 	if name == "" {
-		err = p.NewXmlPullError("feature name may not be empty")
+		err = xpp.NewXmlPullError("feature name may not be empty")
 	} else {
 		if FEATURE_PROCESS_NAMESPACES == name {
-			found = p.processNamespaces
+			found = xpp.processNamespaces
 		} else if FEATURE_NAMES_INTERNED == name {
 			found = false
 		} else if FEATURE_PROCESS_DOCDECL == name {
 			found = false
 		} else if FEATURE_XML_ROUNDTRIP == name {
-			found = p.roundtripSupported
+			found = xpp.roundtripSupported
 		}
 	}
 	return
 }
 
-func (p *Parser) setFeature(name string, whether bool) (err error) {
+func (xpp *Parser) setFeature(name string, whether bool) (err error) {
 
 	if name == "" {
-		err = p.NewXmlPullError("feature name may not be empty")
+		err = xpp.NewXmlPullError("feature name may not be empty")
 	} else {
 		if FEATURE_PROCESS_NAMESPACES == name {
-			if p.curEvent != START_DOCUMENT {
-				err = p.NewXmlPullError(
+			if xpp.curEvent != START_DOCUMENT {
+				err = xpp.NewXmlPullError(
 					"namespace processing feature can only be changed before parsing")
 			} else {
-				p.processNamespaces = whether
+				xpp.processNamespaces = whether
 			}
 		} else if FEATURE_NAMES_INTERNED == name {
 			if whether {
-				err = p.NewXmlPullError(
+				err = xpp.NewXmlPullError(
 					"interning names in this implementation is not supported")
 			}
 		} else if FEATURE_PROCESS_DOCDECL == name {
 			if whether {
-				err = p.NewXmlPullError(
+				err = xpp.NewXmlPullError(
 					"processing DOCDECL is not supported")
 			}
 		} else if FEATURE_XML_ROUNDTRIP == name {
-			p.roundtripSupported = whether
+			xpp.roundtripSupported = whether
 		} else {
 			msg := fmt.Sprintf("unsupported feature '%s'", name)
 
-			err = p.NewXmlPullError(msg)
+			err = xpp.NewXmlPullError(msg)
 		}
 	}
 	return
 }
 
-func (p *Parser) getInputEncoding() string {
-	return p.inputEncoding
+func (xpp *Parser) getInputEncoding() string {
+	return xpp.inputEncoding
 }
 
-func (p *Parser) getLineNumber() int {
-	return p.lineNo
+func (xpp *Parser) getLineNumber() int {
+	return xpp.lineNo
 }
 
 // Return a copy of the tag name (in which case the argument is nil
@@ -215,15 +81,15 @@ func (p *Parser) getLineNumber() int {
 //
 // XXX THIS MAKES NO SENSE !
 
-func (p *Parser) getName(candidate string) (s string) {
+func (xpp *Parser) getName(candidate string) (s string) {
 
-	if p.curEvent == START_TAG {
-		s = p.elName[p.elmDepth]
-	} else if p.curEvent == END_TAG {
-		s = p.elName[p.elmDepth]
-	} else if p.curEvent == ENTITY_REF {
-		if p.entityRefName == "" {
-			p.entityRefName = candidate
+	if xpp.curEvent == START_TAG {
+		s = xpp.elName[xpp.elmDepth]
+	} else if xpp.curEvent == END_TAG {
+		s = xpp.elName[xpp.elmDepth]
+	} else if xpp.curEvent == ENTITY_REF {
+		if xpp.entityRefName == "" {
+			xpp.entityRefName = candidate
 			// XXX ???
 			s = candidate
 		}
@@ -232,46 +98,46 @@ func (p *Parser) getName(candidate string) (s string) {
 }
 
 // Could/should return error as well
-func (p *Parser) getNamespace() (s string) {
+func (xpp *Parser) getNamespace() (s string) {
 
-	if p.curEvent == START_TAG || p.curEvent == END_TAG {
-		if p.processNamespaces {
-			s = p.elUri[p.elmDepth]
+	if xpp.curEvent == START_TAG || xpp.curEvent == END_TAG {
+		if xpp.processNamespaces {
+			s = xpp.elUri[xpp.elmDepth]
 		}
 	}
 	return
 }
 
-func (p *Parser) getNamespaceCount(elmDepth uint) (n uint, err error) {
-	if p.processNamespaces && elmDepth != 0 {
-		if elmDepth < 0 || elmDepth > p.elmDepth {
+func (xpp *Parser) getNamespaceCount(elmDepth uint) (n uint, err error) {
+	if xpp.processNamespaces && elmDepth != 0 {
+		if elmDepth < 0 || elmDepth > xpp.elmDepth {
 			msg := fmt.Sprintf("elmDepth must be in range 0..%d, but is %d\n",
-				p.elmDepth, elmDepth)
-			err = p.NewXmlPullError(msg)
+				xpp.elmDepth, elmDepth)
+			err = xpp.NewXmlPullError(msg)
 		} else {
-			n = p.elNamespaceCount[elmDepth]
+			n = xpp.elNamespaceCount[elmDepth]
 		}
 	}
 	return
 }
 
-func (p *Parser) getNamespacePrefix(pos uint) (nsP string, err error) {
+func (xpp *Parser) getNamespacePrefix(pos uint) (nsP string, err error) {
 
-	if pos < p.namespaceEnd {
-		nsP = p.namespacePrefix[pos]
+	if pos < xpp.namespaceEnd {
+		nsP = xpp.namespacePrefix[pos]
 	} else {
 		msg := fmt.Sprintf("namespace index %d higher than max", pos)
-		err = p.NewXmlPullError(msg)
+		err = xpp.NewXmlPullError(msg)
 	}
 	return
 }
 
-func (p *Parser) getNamespaceFromPrefix(prefix string) (ns string, err error) {
+func (xpp *Parser) getNamespaceFromPrefix(prefix string) (ns string, err error) {
 
 	if prefix != "" {
-		for i := p.namespaceEnd - 1; i >= 0; i-- {
-			if prefix == p.namespacePrefix[i] {
-				ns = p.namespaceUri[i]
+		for i := xpp.namespaceEnd - 1; i >= 0; i-- {
+			if prefix == xpp.namespacePrefix[i] {
+				ns = xpp.namespaceUri[i]
 			}
 		}
 		if "xml" == prefix {
@@ -280,21 +146,21 @@ func (p *Parser) getNamespaceFromPrefix(prefix string) (ns string, err error) {
 			ns = XMLNS_URI
 		}
 	} else {
-		for i := p.namespaceEnd - 1; i >= 0; i-- {
-			if p.namespacePrefix[i] == "" {
-				ns = p.namespaceUri[i]
+		for i := xpp.namespaceEnd - 1; i >= 0; i-- {
+			if xpp.namespacePrefix[i] == "" {
+				ns = xpp.namespaceUri[i]
 			}
 		}
 	}
 	return
 } // FOO
 
-func (p *Parser) getNamespaceUri(pos uint) (uri string, err error) {
-	if pos < p.namespaceEnd {
-		uri = p.namespaceUri[pos]
+func (xpp *Parser) getNamespaceUri(pos uint) (uri string, err error) {
+	if pos < xpp.namespaceEnd {
+		uri = xpp.namespaceUri[pos]
 	} else {
 		msg := fmt.Sprintf("namespace index %d higher than max", pos)
-		err = p.NewXmlPullError(msg)
+		err = xpp.NewXmlPullError(msg)
 	}
 	return
 }
@@ -302,64 +168,64 @@ func (p *Parser) getNamespaceUri(pos uint) (uri string, err error) {
 // Return string describing current position of parser:
 //   'STATE @line:column'.
 //
-func (p *Parser) getPositionDescription() (s string) {
+func (xpp *Parser) getPositionDescription() (s string) {
 
 	s = fmt.Sprintf("%s @%d:%d",
-		PULL_EVENT_NAMES[p.curEvent], p.getLineNumber(), p.getColumnNumber())
+		PULL_EVENT_NAMES[xpp.curEvent], xpp.getLineNumber(), xpp.getColumnNumber())
 	return
 }
 
-func (p *Parser) getPrefix() (s string) {
+func (xpp *Parser) getPrefix() (s string) {
 
-	if p.curEvent == START_TAG {
-		s = p.elPrefix[p.elmDepth]
-	} else if p.curEvent == END_TAG {
-		s = p.elPrefix[p.elmDepth]
+	if xpp.curEvent == START_TAG {
+		s = xpp.elPrefix[xpp.elmDepth]
+	} else if xpp.curEvent == END_TAG {
+		s = xpp.elPrefix[xpp.elmDepth]
 	}
 	return
 }
 
-func (p *Parser) getProperty(name string) (object interface{}, err error) {
+func (xpp *Parser) getProperty(name string) (object interface{}, err error) {
 	if name == "" {
-		err = p.NewXmlPullError("property name must not be empty")
+		err = xpp.NewXmlPullError("property name must not be empty")
 	} else {
 		if PROPERTY_XMLDECL_VERSION == name {
-			object = p.xmlDeclVersion
+			object = xpp.xmlDeclVersion
 		} else if PROPERTY_XMLDECL_STANDALONE == name {
-			object = p.xmlDeclStandalone
+			object = xpp.xmlDeclStandalone
 		} else if PROPERTY_XMLDECL_CONTENT == name {
-			object = p.xmlDeclContent
+			object = xpp.xmlDeclContent
 		} else if PROPERTY_LOCATION == name {
-			object = p.location
+			object = xpp.location
 		}
 	}
 	return
 }
-func (p *Parser) setProperty(name string, value interface{}) (err error) {
+func (xpp *Parser) setProperty(name string, value interface{}) (err error) {
 	if PROPERTY_LOCATION == name {
-		p.location = value.(string)
+		xpp.location = value.(string)
 	} else {
 		msg := fmt.Sprintf("unsupported property: '%s'", name)
-		err = p.NewXmlPullError(msg)
+		err = xpp.NewXmlPullError(msg)
 	}
 	return
 }
 
 // XXX NEED TO CHECK ACTUAL USE TO DETERMINE WHETHER THIS MAKES SENSE
 //
-func (p *Parser) getText() (runes []rune, err error) {
-	if p.curEvent != START_DOCUMENT && p.curEvent != END_DOCUMENT {
-		if p.curEvent == ENTITY_REF {
-			// XXX Why isn't this p.entityRef ???
-			runes, err = MakeCopyRunes(p.text)
+func (xpp *Parser) getText() (runes []rune, err error) {
+	if xpp.curEvent != START_DOCUMENT && xpp.curEvent != END_DOCUMENT {
+		if xpp.curEvent == ENTITY_REF {
+			// XXX Why isn't this xpp.entityRef ???
+			runes, err = MakeCopyRunes(xpp.text)
 		} else {
-			runes, err = MakeCopyRunes(p.text)
+			runes, err = MakeCopyRunes(xpp.text)
 		}
 	}
 	return
 }
 
-func (p *Parser) getTextCharacters(holderForStartAndLength []uint) (
+func (xpp *Parser) getTextCharacters(holderForStartAndLength []uint) (
 	runes []rune, err error) {
 
 	fmt.Println("getTextCharacters() should never be called")
@@ -369,10 +235,10 @@ func (p *Parser) getTextCharacters(holderForStartAndLength []uint) (
 }
 
 // XXX MEANINGLESS
-func (p *Parser) isAttributeDefault(index uint) (found bool, err error) {
-	err = p.mustBeStartTag()
+func (xpp *Parser) isAttributeDefault(index uint) (found bool, err error) {
+	err = xpp.mustBeStartTag()
 	if err == nil {
-		err = p.checkAttrIndex(index)
+		err = xpp.checkAttrIndex(index)
 		if err == nil {
 			found = false
 		}
@@ -380,92 +246,50 @@ func (p *Parser) isAttributeDefault(index uint) (found bool, err error) {
 	return
 }
 
-func (p *Parser) isEmptyElementTag() (found bool, err error) {
+func (xpp *Parser) isEmptyElementTag() (found bool, err error) {
 
-	if p.curEvent != START_TAG {
-		err = p.NewXmlPullError(
+	if xpp.curEvent != START_TAG {
+		err = xpp.NewXmlPullError(
 			"parser must be on START_TAG to check for empty element")
 	} else {
-		found = p.isEmptyElement
+		found = xpp.isEmptyElement
 	}
 	return
 }
 
 // XXX NEED TO CHECK ACTUAL USE TO DETERMINE WHETHER THIS MAKES SENSE
 //
-func (p *Parser) isWhitespace() (whether bool, err error) {
+func (xpp *Parser) isWhitespace() (whether bool, err error) {
 
-	if p.curEvent == TEXT || p.curEvent == CDSECT {
+	if xpp.curEvent == TEXT || xpp.curEvent == CDSECT {
 		whether = true
-		for i := 0; i < len(p.text); i++ {
-			if !u.IsSpace(p.text[i]) {
+		for i := 0; i < len(xpp.text); i++ {
+			if !u.IsSpace(xpp.text[i]) {
 				whether = false
 				break
 			}
 		}
-	} else if p.curEvent == IGNORABLE_WHITESPACE {
+	} else if xpp.curEvent == IGNORABLE_WHITESPACE {
 		whether = true
 	} else {
-		err = p.NewXmlPullError("no content to check for white spaces")
+		err = xpp.NewXmlPullError("no content to check for white spaces")
 	}
 	return
 }
 
 // OTHER PROPERTY-RELATED METHODS ///////////////////////////////////
 
-func (p *Parser) defineEntityReplacementText(
+func (xpp *Parser) defineEntityReplacementText(
 	entityName, replacementText string) (err error) {
 
-	// p.ensureEntityCapacity()
+	// xpp.ensureEntityCapacity()
 
 	// make sure that if interning works we take advantage of it
 
 	runes := []rune(entityName)
-	p.entityName[p.entityEnd] = entityName
-	p.entityReplacement[p.entityEnd] = replacementText
-	p.entityNameHash[p.entityEnd] = FastHash(runes)
-	p.entityEnd++
+	xpp.entityName[xpp.entityEnd] = entityName
+	xpp.entityReplacement[xpp.entityEnd] = replacementText
+	xpp.entityNameHash[xpp.entityEnd] = FastHash(runes)
+	xpp.entityEnd++
 	return
 }
-
-func (p *Parser) require(_type PullEvent, namespace, name string) (err error) {
-
-	if !p.processNamespaces && namespace != "" {
-
-		err = p.NewXmlPullError(
-			"processing namespaces must be enabled to have possible namespaces declared on elements")
-
-	} else if (_type != p.getEventType()) ||
-		(namespace != "" && namespace != p.getNamespace()) ||
-		(name != "" && (name != p.getName(""))) {
-
-		expectedEvent := PULL_EVENT_NAMES[_type]
-		var expectedName, expectedNS string
-		if name != "" {
-			expectedName = fmt.Sprintf(" with name '%s'", name)
-		}
-		if namespace != "" {
-			expectedNS = fmt.Sprintf(" and namespace '%s'", namespace)
-		}
-		actualEvent := PULL_EVENT_NAMES[p.getEventType()]
-		var actualName, actualNS string
-		aName := p.getName("")
-		if aName != "" {
-			actualName = ", name was '%s'"
-		}
-		aNS := p.getNamespace()
-		if aNS != "" {
-			actualNS = ", and namespace was '%s'"
-		}
-
-		msg := fmt.Sprintf("expected %s %s %s but actual event was %s %s %s",
-			expectedEvent,
-			expectedName,
-			expectedNS,
-			actualEvent, actualName, actualNS)
-		err = p.NewXmlPullError(msg)
-	}
-	return
-}
-
-// WORKING HERE; CLEAN UP, SORT, MERGE //////////////////////////////
