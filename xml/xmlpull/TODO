@@ -1,8 +1,20 @@
 xgo/xml/xmlpull/TODO
 
+2014-04-18
+    * parseProlog must be restructured to match the syntax graph
+    * the test for \uFFFE could be moved to whatever calls parseProlog
+    * the call to parseProlog should NOT be in next.go's Next() 
+    * implement parseProlog_test.go 
+
+2014-04-18
+    * drop parseDocTypeDecl which is tested but never used		        * DONE
+        - convert its test to use parseDocdecl(), which is used		    * DONE
+            by parseProlog.go		                                    * DONE
+    * rename parseRestOfProlog() parseProlog()		                    * DONE
+
 2014-04-13
-    * move 'implementation of XmlPullParser' from parser.go
-        into implementation.go
+    * move 'implementation of XmlPullParser' from parser.go             * DONE
+        into implementation.go                                          * DONE
     * then move code from properties.go into that file
 
 2014-03-25

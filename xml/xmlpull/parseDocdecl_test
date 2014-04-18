@@ -1,6 +1,6 @@
 package xmlpull
 
-// xgo/xml/xmlpull/parseDocTypeDecl_test.go
+// xgo/xml/xmlpull/parseDocdecl_test.go
 
 import (
 	"fmt"
@@ -36,7 +36,8 @@ func (s *XLSuite) doTestParseDocTypeDecl(c *C, sample string) {
 	err = p.ExpectStr("<!D")
 	c.Assert(err, IsNil)
 
-	err = p.parseDocTypeDecl()
+	//err = p.parseDocTypeDecl()
+	err = p.parseDocdecl()
 	c.Assert(err, IsNil)
 	c.Assert(p.docTypeDecl, Equals, sample)
 

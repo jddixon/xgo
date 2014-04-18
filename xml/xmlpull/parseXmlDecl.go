@@ -1,6 +1,6 @@
 package xmlpull
 
-// xgo/xml/xmlpull/parse_xml_decl.go
+// xgo/xml/xmlpull/parseXmlDecl.go
 
 import (
 	e "errors"
@@ -67,7 +67,6 @@ func (p *Parser) getEncodingNameCh(quoteCh rune) (ch rune, err error) {
 func (p *Parser) parseXmlDecl() (err error) {
 
 	var (
-		found       bool
 		ch, quoteCh rune
 	)
 
@@ -113,6 +112,7 @@ func (p *Parser) parseXmlDecl() (err error) {
 
 	// [80] EncodingDecl ::= S 'encoding' Eq ('"' EncName '"' | "'" EncName "'" )
 	if err == nil {
+		var found bool
 		p.SkipS()
 		found, err = p.AcceptStr("encoding")
 		if err == nil {
@@ -146,6 +146,7 @@ func (p *Parser) parseXmlDecl() (err error) {
 	}
 	// [32] SDDecl ::= S 'standalone' Eq (("'" ('yes' | 'no') "'") | ('"' ('yes' | 'no') '"'))
 	if err == nil {
+		var found bool
 		p.SkipS()
 		found, err = p.AcceptStr("standalone")
 		if err == nil && found {

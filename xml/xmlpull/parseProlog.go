@@ -18,18 +18,11 @@ var _ = fmt.Print
 // [39] element ::= EmptyElemTag | STag content ETag
 // [40] STag ::= '<' Name (S Attribute)* S? '>'
 //
-// Enter having already parsed any XmlDecl.
-//
-func (p *Parser) parseRestOfProlog() (err error) {
+func (p *Parser) parseProlog() (err error) {
 
-	var ch rune
-	//if p.afterLT {
-	//	ch = buf[pos-1]
-	// } else {
-	ch, err = p.NextCh()
-	//}
+	ch, err := p.NextCh()
 
-	// DOES NOT BELONG HERE. ----------------------------------------
+	// KLUDGE: not present in the syntax graph. ---------------------
 	// This block analyzes the very first byte in a document.
 	if err == nil && p.curEvent == START_DOCUMENT {
 		// This is the first character of input, and so might be the
@@ -41,7 +34,19 @@ func (p *Parser) parseRestOfProlog() (err error) {
 			ch, err = p.NextCh()
 		}
 	}
-	// END DOES NOT BELONG ------------------------------------------
+
+	// optional XMLDecl ---------------------------------------------
+	if err == nil {
+		// if XMLDecl is present, it begins with "<?xml" followed by an S
+
+		// XXX STUB
+	}
+
+	// zero or more Misc --------------------------------------------
+
+	// XXX STUB
+
+	// optional (doctypedecl followed by zero or more Misc
 
 	if err == nil {
 		p.afterLT = false

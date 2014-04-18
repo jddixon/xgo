@@ -276,7 +276,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 		if p.haveRootTag {
 			err = p.parseEpilog()
 		} else {
-			err = p.parseRestOfProlog()
+			err = p.parseProlog()
 		}
 	}
 	return
