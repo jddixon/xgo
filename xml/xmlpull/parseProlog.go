@@ -22,7 +22,12 @@ func (p *Parser) parseProlog() (err error) {
 
 	ch, err := p.NextCh()
 
-	// KLUDGE: not present in the syntax graph. ---------------------
+	// --------------------------------------------------------------
+	// BOM (Byte Order Mark) - not in the syntax graph, examines the
+	// very first byte in a document.  This code should precede the 
+	// call to parseProlog(); look at the character and then panic, 
+	// push it back, or discard it.
+	// --------------------------------------------------------------
 	// This block analyzes the very first byte in a document.
 	if err == nil && p.curEvent == START_DOCUMENT {
 		// This is the first character of input, and so might be the

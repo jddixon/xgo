@@ -4,8 +4,8 @@ package lex
 
 import (
 	"fmt"
+	. "gopkg.in/check.v1"
 	"io"
-	. "launchpad.net/gocheck"
 	"strings"
 )
 
