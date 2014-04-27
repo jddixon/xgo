@@ -3,7 +3,7 @@ package om
 // xgo/xml/om/node_list_test.go
 
 import (
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 )
 
 func (s *XLSuite) TestOneNodeList(c *C) {

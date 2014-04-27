@@ -7,7 +7,7 @@ import (
 	gc "github.com/jddixon/xgo/context"
 	gu "github.com/jddixon/xgo/util"
 	"io"
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 	"strings"
 )
 
