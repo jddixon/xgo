@@ -1,5 +1,11 @@
 xgo/xml/om/TODO
 
+2014-05-18
+    * AttrList.Insert will be inefficient, rewrite to use copy with
+        three variants: n == 0, n == len(aList), other
+    * Bring names used here in sync with xmlpull 
+        - for example ProcessingInstruction becomes PI                  * DONE
+
 2013-12-02
     * Translate/implement Element.Populator()
 
@@ -7,24 +13,11 @@ xgo/xml/om/TODO
     * write/translate visitor_test.go
 
 2013-11-19
-    * drop node_test.go, which is just a mistranslation of Java         * DONE
     * consider writing a node_test.go
     * elaborate element_test.go
 
 2013-11-16
     * verify that all node-type tests test String()
 
-2013-11-15
-    * write/translate attr_list_test.go                                 * DONE
-    * text_test.go                                                      * DONE
-    * cdata.go, cdata_test.go                                           * DONE
-    * comment.go, comment_test.go                                       * DONE
-    * pi.go, pi_test.go                                                 * DONE
-    * node_test.go                                                      * DONE
-    * node_list_test.go                                                 * DONE
-    * element_test.go                                                   * DONE
-    * document_test.go                                                  * DONE
-
 2013-11-12
     * drop or make useful holderI.go
-    * get rid of IsAttr(), IsComment(), etc                             * SKIP

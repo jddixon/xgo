@@ -4,7 +4,6 @@ import ()
 
 // An XML text node containing text which must not be subjected to
 // further interpretation by the XML processor.
-//
 type Cdata struct {
 	Text
 }

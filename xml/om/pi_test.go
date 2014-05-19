@@ -5,7 +5,7 @@ import (
 )
 
 func (s *XLSuite) TestSimplePI(c *C) {
-	pi := NewProcessingInstruction("perl", "chomp;")
+	pi := NewPI("perl", "chomp;")
 	c.Assert(pi, NotNil)
 	c.Assert(pi.GetTarget(), Equals, "perl")
 	c.Assert(pi.GetText(), Equals, "chomp;")
@@ -13,7 +13,7 @@ func (s *XLSuite) TestSimplePI(c *C) {
 }
 
 func (s *XLSuite) TestComboPI(c *C) {
-	pi, err := ProcessingInstructionFromString("perl chomp;")
+	pi, err := PIFromString("perl chomp;")
 	c.Assert(err, IsNil)
 	c.Assert(pi, NotNil)
 	c.Assert(pi.GetTarget(), Equals, "perl")

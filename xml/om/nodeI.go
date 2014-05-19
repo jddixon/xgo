@@ -16,6 +16,6 @@ type NodeI interface {
 	IsComment() bool
 	IsDocType() bool
 	IsElement() bool
-	IsProcessingInstruction() bool
+	IsPI() bool
 	IsText() bool
 }

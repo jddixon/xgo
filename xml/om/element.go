@@ -330,7 +330,7 @@ func (e *Element) ToXml() (s string) {
 //                 nodeList.append( new Cdata(xpp.getText()))
 //                 break
 //             case pp.PROCESSING_INSTRUCTION:
-//                 nodeList.append( new ProcessingInstruction (xpp.getText() ))
+//                 nodeList.append( new PI (xpp.getText() ))
 //                 break
 //
 //             // //////////////////////////////////////////////////

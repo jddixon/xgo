@@ -6,7 +6,7 @@ import (
 
 // Class representing an XML processing instruction.
 //
-type ProcessingInstruction struct {
+type PI struct {
 	target string // target (language)///
 	text   string // text of the instruction///
 	Node
@@ -15,9 +15,9 @@ type ProcessingInstruction struct {
 // Create a node by specifying the target (language) and text
 // separately.
 //
-func NewProcessingInstruction(target string, text string) *ProcessingInstruction {
+func NewPI(target string, text string) *PI {
 
-	return &ProcessingInstruction{
+	return &PI{
 		target: target,
 		text:   text,
 	}
@@ -28,14 +28,14 @@ func NewProcessingInstruction(target string, text string) *ProcessingInstruction
 //
 // XXX Needs a better name.
 //
-func ProcessingInstructionFromString(comboText string) (
-	this *ProcessingInstruction, err error) {
+func PIFromString(comboText string) (
+	this *PI, err error) {
 
 	spaceAt := strings.Index(comboText, " ")
 	if spaceAt == -1 {
 		err = IllFormedPI
 	} else {
-		this = &ProcessingInstruction{
+		this = &PI{
 			target: comboText[0:spaceAt],
 			text:   comboText[spaceAt+1:],
 		}
@@ -47,26 +47,26 @@ func ProcessingInstructionFromString(comboText string) (
 
 // Return a reference to the target of the PI.
 //
-func (pi *ProcessingInstruction) GetTarget() string {
+func (pi *PI) GetTarget() string {
 	return pi.target
 }
 
 // Return a reference to the text of the PI.
 //
-func (pi *ProcessingInstruction) GetText() string {
+func (pi *PI) GetText() string {
 	return pi.text
 }
 
 // NODE METHODS /////////////////////////////////////////////////
 
-// Return true; this node is an ProcessingInstruction.
-func (a *ProcessingInstruction) IsProcessingInstruction() bool {
+// Return true; this node is an PI.
+func (a *PI) IsPI() bool {
 	return true
 }
 
 // Output properly bracketed PI content with a line separator,
 // without indenting.
 //
-func (pi *ProcessingInstruction) ToXml() string {
+func (pi *PI) ToXml() string {
 	return "<?" + pi.target + " " + pi.text + "?>\n"
 }
