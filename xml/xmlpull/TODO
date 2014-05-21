@@ -1,10 +1,19 @@
 xgo/xml/xmlpull/TODO
 
 2014-04-18
-    * parseProlog must be restructured to match the syntax graph
+    * parseProlog must be restructured to better match the xml 1.0 
+        syntax graph
+        - xml 1.1 compliance can be introduced later as an option or as 
+            a feature of a different parser
     * the test for \uFFFE could be moved to whatever calls parseProlog
     * the call to parseProlog should NOT be in next.go's Next() 
     * implement parseProlog_test.go 
+    * tentatively: all parser components should produce an xml object
+        (as in ../om/) which is then serialized to match the xmlpull
+        spec in a separate step.  That is, the xmlpull parser produces
+        objects, putting them in convetional places, and then the call
+        to the interface serializes those objects into the form called
+        for by the xmlpull spec
 
 2014-04-18
     * drop parseDocTypeDecl which is tested but never used		        * DONE

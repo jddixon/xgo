@@ -32,10 +32,11 @@ import (
 //
 // <p>The parser is always in some event state and type of the current event
 // can be determined by calling
-// <a href="#next()">getEventType()</a> mehod.
-// Initially parser is in <a href="#START_DOCUMENT">START_DOCUMENT</a> state.
+// <a href="#next()">getEventType()</a>.
+// Initially the parser is in the
+// <a href="#START_DOCUMENT">START_DOCUMENT</a> state.
 //
-// <p>Method <a href="#next()">next()</a> return int that contains identifier of parsing event.
+// <p>Method <a href="#next()">next()</a> returns int that contains identifier of parsing event.
 // This method can return following events (and will change parser state to the returned event):<dl>
 // <dt><a href="#START_TAG">START_TAG</a><dd> XML start tag was read
 // <dt><a href="#TEXT">TEXT</a><dd> element contents was read and is available via getText()

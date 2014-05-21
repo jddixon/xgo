@@ -24,8 +24,8 @@ func (p *Parser) parseProlog() (err error) {
 
 	// --------------------------------------------------------------
 	// BOM (Byte Order Mark) - not in the syntax graph, examines the
-	// very first byte in a document.  This code should precede the 
-	// call to parseProlog(); look at the character and then panic, 
+	// very first byte in a document.  This code should precede the
+	// call to parseProlog(); look at the character and then panic,
 	// push it back, or discard it.
 	// --------------------------------------------------------------
 	// This block analyzes the very first byte in a document.

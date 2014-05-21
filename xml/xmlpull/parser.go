@@ -38,9 +38,11 @@ type Parser struct {
 	entityRefName string // []rune
 
 	// global parser state
+	lineNo int // line number		// redundant
+	colNo  int // column number		// redundant
+
 	location      string
-	lineNo        int // line number		// redundant
-	colNo         int // column number		// redundant
+	reachedEnd    bool // used only in parseEpilog?
 	seenStartTag  bool
 	seenEndTag    bool
 	pastEndTag    bool
