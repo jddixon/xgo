@@ -15,6 +15,8 @@ var _ = fmt.Print
 //
 // Grammer does not allow ---> at end.
 //
+// On return, p.commentChars contains the body of the comment.
+//
 func (p *Parser) parseComment() (err error) {
 
 	// Enter having seen "<!-"
@@ -26,6 +28,9 @@ func (p *Parser) parseComment() (err error) {
 	)
 	ch, err := p.NextCh()
 	if ch != '-' {
+		// XXX Possibly ill-considered.  It would make more sense to
+		// just give up, probably treating what's been seen as simple
+		// text.
 		err = p.NewXmlPullError("comment must start with <!--")
 	}
 	if err == nil {

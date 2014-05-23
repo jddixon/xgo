@@ -1,5 +1,7 @@
 package xmlpull
 
+// xmlpull/implementation.go
+
 import (
 	"fmt"
 	"io"
@@ -43,21 +45,17 @@ func (xpp *Parser) mustBeStartTag() (err error) {
 // IMPLMENTATION OF XmlPullParserI
 // ==================================================================
 
-func (xpp *Parser) SetFeature(name string, state bool) (err error) {
-	// XXX STUB XXX
-	return
+func (xpp *Parser) SetFeature(name string, whether bool) (err error) {
+	return xpp.setFeature(name, whether)
 }
 func (xpp *Parser) GetFeature(name string) (whether bool, err error) {
-	// XXX STUB XXX
-	return
+	return xpp.getFeature(name)
 }
 func (xpp *Parser) SetProperty(name string, value interface{}) (err error) {
-	// XXX STUB XXX
-	return
+	return xpp.setProperty(name, value)
 }
-func (xpp *Parser) GetProperty(name string) (prop interface{}) {
-	// XXX STUB XXX
-	return
+func (xpp *Parser) GetProperty(name string) (interface{}, error) {
+	return xpp.getProperty(name)
 }
 func (xpp *Parser) SetInput(in *io.Reader) (err error) {
 	if in == nil {
@@ -68,33 +66,28 @@ func (xpp *Parser) SetInput(in *io.Reader) (err error) {
 	}
 	return
 }
-func (xpp *Parser) DefineEntityReplacementText(entityName, replacementText string) (err error) {
-	// XXX STUB XXX
-	return
+func (xpp *Parser) DefineEntityReplacementText(entityName,
+	replacementText string) (err error) {
+	return xpp.defineEntityReplacementText(entityName, replacementText)
 }
-func (xpp *Parser) GetNamespaceCount(depth int) (ret int, err error) {
-	// XXX STUB XXX
-	return
+func (xpp *Parser) GetNamespaceCount(depth uint) (uint, error) {
+	return xpp.getNamespaceCount(depth)
 }
-func (xpp *Parser) GetNamespacePrefix(pos int) (ns string, err error) {
-	// XXX STUB XXX
-	return
+func (xpp *Parser) GetNamespacePrefix(pos uint) (ns string, err error) {
+	return xpp.getNamespacePrefix(pos)
 }
-func (xpp *Parser) GetNamespaceUri(pos int) (ns string, err error) {
-	// XXX STUB XXX
-	return
+func (xpp *Parser) GetNamespaceUri(pos uint) (ns string, err error) {
+	return xpp.getNamespaceUri(pos)
 }
-func (xpp *Parser) GetNamespaceForPrefix(prefix string) (ns string, err error) {
-	// XXX STUB XXX
-	return
+func (xpp *Parser) GetNamespaceFromPrefix(prefix string) (ns string, err error) {
+	return xpp.getNamespaceForPrefix(prefix)
 }
 
 func (xpp *Parser) GetDepth() uint {
 	return xpp.elmDepth
 }
 func (xpp *Parser) GetPositionDescription() (desc string) {
-	// XXX STUB XXX
-	return
+	return xpp.getPositionDescription()
 }
 func (xpp *Parser) GetLineNumber() int {
 	return xpp.lineNo
@@ -103,12 +96,12 @@ func (xpp *Parser) GetColumnNumber() int {
 	return xpp.colNo
 }
 func (xpp *Parser) IsWhitespace() (whether bool, err error) {
-	// XXX STUB XXX
-	return
+	return xpp.isWhitespace()
 }
-func (xpp *Parser) GetText() (t string) {
-	// XXX STUB XXX
-	return
+
+// XXX WORKING HERE
+func (xpp *Parser) GetText() ([]rune, error) {
+	return xpp.getText()
 }
 
 // Should probably return a string.

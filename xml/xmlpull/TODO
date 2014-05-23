@@ -15,19 +15,11 @@ xgo/xml/xmlpull/TODO
         to the interface serializes those objects into the form called
         for by the xmlpull spec
 
-2014-04-18
-    * drop parseDocTypeDecl which is tested but never used		        * DONE
-        - convert its test to use parseDocdecl(), which is used		    * DONE
-            by parseProlog.go		                                    * DONE
-    * rename parseRestOfProlog() parseProlog()		                    * DONE
-
 2014-04-13
     * move 'implementation of XmlPullParser' from parser.go             * DONE
         into implementation.go                                          * DONE
     * then move code from properties.go into that file
 
-2014-03-25
-    * sort properties                                                   * DONE
 2014-03-23
     * get rudimentary parser working (decl + single line) ISSUE#5
 2014-03-22
@@ -37,20 +29,6 @@ xgo/xml/xmlpull/TODO
     * need test of getNamespace() -- properties_test.go
 2014-03-18
     * desperately need parseEntityRef_test.go
-
-2014-03-17
-    * start new 'pull' branch, all xmlpull work to be done on that      * DONE
-        branch                                                          * DONE
-    * drop string interning code; rune slices can't be interned			* DONE
-        (at least not at reasonable cost in dev man-hours)			    * DONE
-    * any ifs on allStringsInterned: drop the true branch			    * DONE
-
-2014-03-10
-    * parseStartTag needs parseAttribute()                              * DONE
-    * and getNamespace()                                                * DONE
-
-2014-03-09
-    * all functions returning PullEvent should also return error        * DONE
 
 2014-03-08
     * test printable*()

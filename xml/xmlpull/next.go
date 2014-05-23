@@ -62,10 +62,13 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			ch, err = p.NextCh()
 		}
 
-		// when true there is some potential event TEXT to return - keep gathering
+		// when true there is some potential event TEXT to return - keep
+		// gathering
 		charDataSeen := false
 
-		// when true TEXT data is not continual (like <![CDATA[text]]>) and requires PC merging
+		// when true TEXT data is not continual (like <![CDATA[text]]>) and
+		// requires PC merging
+
 		var needsMerging bool
 
 		for err == nil {

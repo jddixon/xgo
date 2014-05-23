@@ -1,5 +1,7 @@
 package xmlpull
 
+// xmlpull/properties.go
+
 import (
 	"fmt"
 	u "unicode"
@@ -132,7 +134,7 @@ func (xpp *Parser) getNamespacePrefix(pos uint) (nsP string, err error) {
 	return
 }
 
-func (xpp *Parser) getNamespaceFromPrefix(prefix string) (ns string, err error) {
+func (xpp *Parser) getNamespaceForPrefix(prefix string) (ns string, err error) {
 
 	if prefix != "" {
 		for i := xpp.namespaceEnd - 1; i >= 0; i-- {

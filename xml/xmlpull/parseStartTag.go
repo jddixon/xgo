@@ -130,7 +130,7 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		// If any namespaces were declared we can now resolve them
 		if p.processNamespaces {
 			var uri string
-			uri, err = p.getNamespaceFromPrefix(prefix)
+			uri, err = p.getNamespaceForPrefix(prefix)
 			if len(uri) == 0 {
 				if len(prefix) == 0 { // no prefix and no uri => use default namespace
 					uri = NO_NAMESPACE
@@ -147,7 +147,7 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				attrPrefix := p.attributePrefix[i]
 				if len(attrPrefix) > 0 {
 					var attrUri string
-					attrUri, err = p.getNamespaceFromPrefix(attrPrefix)
+					attrUri, err = p.getNamespaceForPrefix(attrPrefix)
 					// XXX HANDLE ERROR
 					if len(attrUri) == 0 {
 						err = p.NewXmlPullError(

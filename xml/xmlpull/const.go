@@ -25,8 +25,8 @@ const (
 	FEATURE_REPORT_NAMESPACE_ATTRIBUTES = "http://xmlpull.org/v1/doc/features.html#report-namespace-prefixes"
 
 	// FEATURE: Processing of DOCDECL is by default set to false
-	// and if DOCDECL is encountered it is reported by nextToken()
-	// and ignored by next().
+	// and if DOCDECL is encountered it is reported by NextToken()
+	// and ignored by Next().
 	//
 	// If processing is set to true then DOCDECL must be processed by parser.
 	//
@@ -51,141 +51,147 @@ const (
 	// EVENT TYPES AS REPORTED BY Next()
 	// ==============================================================
 
-	// EVENT TYPE and TOKEN: signalize that parser is at the very beginning of the document
-	// and nothing was read yet - the parser is before first call to next() or nextToken()
-	// (available from <a href="#next()">next()</a> and <a href="#nextToken()">nextToken()</a>).
+	// EVENT TYPE and TOKEN: signalize that parser is at the very beginning
+	// of the document and nothing has been read yet - the parser is before
+	// the first call to Next() or NextToken() (available from
+	// <a href="#Next()">Next()</a> and <a href="#NextToken()">NextToken()</a>).
 	//
-	// @see #next
-	// @see #nextToken
+	// @see #Next
+	// @see #NextToken
 	//
 	START_DOCUMENT PullEvent = iota
 
 	// EVENT TYPE and TOKEN: logical end of xml document
-	// (available from <a href="#next()">next()</a> and <a href="#nextToken()">nextToken()</a>).
+	// (available from
+	// <a href="#Next()">Next()</a> and <a href="#NextToken()">NextToken()</a>).
 	//
 	// <p><strong>NOTE:</strong> calling again
-	// <a href="#next()">next()</a> or <a href="#nextToken()">nextToken()</a>
+	// <a href="#Next()">Next()</a> or <a href="#NextToken()">NextToken()</a>
 	// will result in exception being thrown.
 	//
-	// @see #next
-	// @see #nextToken
+	// @see #Next
+	// @see #NextToken
 	//
 	END_DOCUMENT
 
 	// EVENT TYPE and TOKEN: start tag was just read
-	// (available from <a href="#next()">next()</a> and <a href="#nextToken()">nextToken()</a>).
-	// The name of start tag is available from getName(), its namespace and prefix are
-	// available from getNamespace() and getPrefix()
+	// (available from <a href="#Next()">Next()</a> and
+	// <a href="#NextToken()">NextToken()</a>).
+	// The name of start tag is available from GetName(), its namespace and
+	// prefix are available from GetNamespace() and GetPrefix()
 	// if <a href='#FEATURE_PROCESS_NAMESPACES'>namespaces are enabled</a>.
 	// See getAttribute* methods to retrieve element attributes.
-	// See getNamespace* methods to retrieve newly declared namespaces.
+	// See GetNamespace* methods to retrieve newly declared namespaces.
 	//
-	// @see #next
-	// @see #nextToken
-	// @see #getName
-	// @see #getPrefix
-	// @see #getNamespace
+	// @see #Next
+	// @see #NextToken
+	// @see #GetName
+	// @see #GetPrefix
+	// @see #GetNamespace
 	// @see #getAttributeCount
 	// @see #getDepth
-	// @see #getNamespaceCount
-	// @see #getNamespace
+	// @see #GetNamespaceCount
+	// @see #GetNamespace
 	// @see #FEATURE_PROCESS_NAMESPACES
 	//
 	START_TAG
 
-	// EVENT TYPE and TOKEN: end tag was just read
-	// (available from <a href="#next()">next()</a> and <a href="#nextToken()">nextToken()</a>).
-	// The name of start tag is available from getName(), its namespace and prefix are
-	// available from getNamespace() and getPrefix()
+	// EVENT TYPE and TOKEN: end tag was just read (available from
+	// <a href="#Next()">Next()</a> and <a href="#NextToken()">NextToken()</a>).
+	// The name of start tag is available from GetName(), its namespace and
+	// prefix are available from GetNamespace() and GetPrefix()
 	//
-	// @see #next
-	// @see #nextToken
-	// @see #getName
-	// @see #getPrefix
-	// @see #getNamespace
+	// @see #Next
+	// @see #NextToken
+	// @see #GetName
+	// @see #GetPrefix
+	// @see #GetNamespace
 	// @see #FEATURE_PROCESS_NAMESPACES
 	//
 	END_TAG
 
-	// EVENT TYPE and TOKEN: character data was read and will be available by call to getText()
-	// (available from <a href="#next()">next()</a> and <a href="#nextToken()">nextToken()</a>).
-	// <p><strong>NOTE:</strong> next() will (in contrast to nextToken ()) accumulate multiple
-	// events into one TEXT event, skipping IGNORABLE_WHITESPACE,
-	// PROCESSING_INSTRUCTION and COMMENT events.
-	// <p><strong>NOTE:</strong> if state was reached by calling next() the text value will
-	// be normalized and if the token was returned by nextToken() then getText() will
-	// return unnormalized content (no end-of-line normalization - it is content exactly as in
-	// input XML)
+	// EVENT TYPE and TOKEN: character data was read and will be available by
+	// a call to GetText() (available from <a href="#Next()">Next()</a> and
+	// <a href="#NextToken()">NextToken()</a>).
+	// <p><strong>NOTE:</strong> Next() will (in contrast to NextToken ())
+	// accumulate multiple events into one TEXT event, skipping
+	// IGNORABLE_WHITESPACE, PROCESSING_INSTRUCTION and COMMENT events.
+	// <p><strong>NOTE:</strong> if state was reached by calling Next() the
+	// text value will be normalized and if the token was returned by
+	// NextToken() then GetText() will return unnormalized content (no
+	// end-of-line normalization - it is content exactly as in input XML)
 	//
-	// @see #next
-	// @see #nextToken
-	// @see #getText
+	// @see #Next
+	// @see #NextToken
+	// @see #GetText
 	//
 	TEXT
 
 	// ==============================================================
-	// ADDITIONAL EVENTS EXPOSED BY LOWER-LEVEL nextToken()
+	// ADDITIONAL EVENTS EXPOSED BY LOWER-LEVEL NextToken()
 	// ==============================================================
 
-	// TOKEN: CDATA sections was just read
-	// (this token is available only from <a href="#nextToken()">nextToken()</a>).
-	// The value of text inside CDATA section is available  by callling getText().
+	// TOKEN: CDATA sections was just read (this token is available only
+	// from <a href="#NextToken()">NextToken()</a>).  The value of text
+	// inside CDATA section is available  by callling GetText().
 	//
-	// @see #nextToken
-	// @see #getText
+	// @see #NextToken
+	// @see #GetText
 	//
 	CDSECT
 
-	// TOKEN: Entity reference was just read
-	// (this token is available only from <a href="#nextToken()">nextToken()</a>).
-	// The entity name is available by calling getText() and it is user responsibility
-	// to resolve entity reference.
+	// TOKEN: Entity reference was just read (this token is available only
+	// from <a href="#NextToken()">NextToken()</a>).
+	// The entity name is available by calling GetText() and it is the user's
+	// responsibility to resolve entity references.
 	//
-	// @see #nextToken
-	// @see #getText
+	// @see #NextToken
+	// @see #GetText
 	//
 	ENTITY_REF
 
-	// TOKEN: Ignorable whitespace was just read
-	// (this token is available only from <a href="#nextToken()">nextToken()</a>).
-	// For non-validating
-	// parsers, this event is only reported by nextToken() when
-	// outside the root elment.
+	// TOKEN: Ignorable whitespace was just read (this token is available
+	// only from <a href="#NextToken()">NextToken()</a>).
+	// For non-validating parsers, this event is only reported by NextToken()
+	// when outside the root elment.
 	// Validating parsers may be able to detect ignorable whitespace at
 	// other locations.
-	// The value of ignorable whitespace is available by calling getText()
+	// The value of ignorable whitespace is available by calling GetText()
 	//
-	// <p><strong>NOTE:</strong> this is different than callinf isWhitespace() method
-	//    as element content may be whitespace but may not be ignorable whitespace.
+	// <p><strong>NOTE:</strong> this is different from calling the
+	// IsWhitespace() method as element content may be whitespace but may
+	// not be ignorable whitespace.
 	//
-	// @see #nextToken
-	// @see #getText
+	// @see #NextToken
+	// @see #GetText
 	//
 	IGNORABLE_WHITESPACE
 
 	// TOKEN: XML processing instruction declaration was just read
-	// and getText() will return text that is inside processing instruction
-	// (this token is available only from <a href="#nextToken()">nextToken()</a>).
+	// and GetText() will return text that is inside processing instruction
+	// (this token is available only from
+	// <a href="#NextToken()">NextToken()</a>).
 	//
-	// @see #nextToken
-	// @see #getText
+	// @see #NextToken
+	// @see #GetText
 	//
 	PROCESSING_INSTRUCTION
 
-	// TOKEN: XML comment was just read and getText() will return value inside comment
-	// (this token is available only from <a href="#nextToken()">nextToken()</a>).
+	// TOKEN: XML comment was just read and GetText() will return value
+	// inside the comment (this token is available only from
+	// <a href="#NextToken()">NextToken()</a>).
 	//
-	// @see #nextToken
-	// @see #getText
+	// @see #NextToken
+	// @see #GetText
 	//
 	COMMENT
 
-	// TOKEN: XML DOCTYPE declaration was just read
-	// and getText() will return text that is inside DOCDECL
-	// (this token is available only from <a href="#nextToken()">nextToken()</a>).
+	// TOKEN: XML DOCTYPE declaration was just read and GetText() will
+	// return any text inside the DOCDECL (this token is available only
+	// from <a href="#NextToken()">NextToken()</a>).
 	//
-	// @see #nextToken
-	// @see #getText
+	// @see #NextToken
+	// @see #GetText
 	//
 	DOCDECL
 )

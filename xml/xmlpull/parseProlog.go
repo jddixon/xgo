@@ -11,7 +11,7 @@ import (
 var _ = fmt.Print
 
 // [1]  document ::= prolog element Misc*
-// [2]  prolog: ::= XMLDecl? Misc* (doctypedecl Misc*)?
+// [22] prolog ::= XMLDecl? Misc* (doctypedecl Misc*)?
 // [27] Misc ::= Comment | PI | S
 // [28] doctypedecl ::= '<!DOCTYPE' S Name (S ExternalID)? S? ('['
 //                      (markupdecl | DeclSep)* ']' S?)? '>'

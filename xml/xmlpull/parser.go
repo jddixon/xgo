@@ -93,6 +93,7 @@ type Parser struct {
 	gl.LexInput
 }
 
+// Called at the beginning of a syntactic construct.
 func (p *Parser) start() {
 	p.startLine = p.LineNo()
 	p.startCol = p.ColNo()
