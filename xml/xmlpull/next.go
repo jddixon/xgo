@@ -62,7 +62,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			ch, err = p.NextCh()
 		}
 
-		// when true there is some potential event TEXT to return - keep
+		// When true there is some potential event TEXT to return - keep
 		// gathering
 		charDataSeen := false
 

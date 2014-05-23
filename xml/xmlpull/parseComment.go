@@ -15,6 +15,10 @@ var _ = fmt.Print
 //
 // Grammer does not allow ---> at end.
 //
+// Enter having seen "<!-".  Expect to see another '-' and then zero
+// or more Char, possibly including zero or more '-' but no longer
+// sequences of '-'.  Ends with '-->'.
+//
 // On return, p.commentChars contains the body of the comment.
 //
 func (p *Parser) parseComment() (err error) {

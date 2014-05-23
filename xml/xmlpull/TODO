@@ -1,10 +1,37 @@
 xgo/xml/xmlpull/TODO
 
+2014-04-22
+    VERIFY PRODUCTIONS
+    * 1     document --> 22 39 27*
+    * 3     S (1 or more whitespace char))
+        - FIX: Parser.ExpectS() does not correctly implement this rule
+        - CHECK: all use of Parser.SkipS()
+        - then rename to Parser.S, expecting 1 or more from 4 rune set
+    * 5     Name
+    * 10    AttrValue --> ... | 67 in quotes
+    * 14    CharData
+    * 15    comment                                                     * DONE
+    * 16-17 PI                                                          * DONE
+    * 18-19 CData section                                               * DONE
+    * 22    prolog --> 23? 27* (28 27*)?
+    * 23-26 XMLDecl 
+    * 27    Misc --> 15 | 16 | 3
+    * 28    doctypedecl --> 3 5 ... NEEDS WORK
+    * 39    element --> 39 | 40 43 42
+    * 40    STag  --> 5 (3 41)* 3?
+    * 41    Attribute --> 5 25 10 // 25 is Eq
+    * 42    ETag --> 5 3?
+    * 43    content -> 14? ((39 | 18 | 16 | 15) 14?
+    * 44    EmptyElemTag -> 5 (3 41)* 3?
+    * 67    Reference
+
+    * 80-81 EncodingDecl // uses 25, Eq
+
 2014-04-18
     * parseProlog must be restructured to better match the xml 1.0 
         syntax graph
-        - xml 1.1 compliance can be introduced later as an option or as 
-            a feature of a different parser
+        - xml 1.1 compliance can be introduced later as an option or as * SKIP
+            a feature of a different parser                             * SKIP
     * the test for \uFFFE could be moved to whatever calls parseProlog
     * the call to parseProlog should NOT be in next.go's Next() 
     * implement parseProlog_test.go 

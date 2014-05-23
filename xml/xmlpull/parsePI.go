@@ -13,7 +13,12 @@ var _ = fmt.Print
 // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
 // [17] PITarget         ::=    Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
 //
-// Return true if PI seen, false if an XmlDecl seen, error otherwise
+// Enter having seen '<?'.  Expect to see a target language name, whitespace,
+// and then the body of the PI followed by '?>'.
+//
+// Return true if PI seen, false if an XmlDecl seen, error otherwise.  If
+// true, p.piTarget contains the language name and b.piChars contains the
+// body of the PI.
 //
 func (p *Parser) parsePI() (isPI bool, err error) {
 

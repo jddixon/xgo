@@ -10,7 +10,7 @@ var _ = fmt.Print
 // [WFC: No External Entity References]
 // [WFC: No < in Attribute Values]
 //
-// XXX WHAT CHAR IS RETUNRED?
+// XXX WHAT CHAR IS RETURNED?
 //
 func (p *Parser) parseAttribute() (ch rune, err error) {
 
