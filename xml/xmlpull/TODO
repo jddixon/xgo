@@ -1,5 +1,15 @@
 xgo/xml/xmlpull/TODO
 
+2014-04-24
+    * Parser struct must contain root Element with semantic properties 
+        required by XML spec
+        - this is the bottom of the element stack
+    * parseDocTypeDecl.go and test need more work (but ok for now)
+
+    * for this to be a pull parser, the parser must know its position
+        in the syntax graph, returning a PullEvent at appropriate 
+        points (more events if tokenizing)
+
 2014-04-22
     VERIFY PRODUCTIONS
     * 1     document --> 22 39 27*
@@ -14,9 +24,10 @@ xgo/xml/xmlpull/TODO
     * 16-17 PI                                                          * DONE
     * 18-19 CData section                                               * DONE
     * 22    prolog --> 23? 27* (28 27*)?
-    * 23-26 XMLDecl 
+    * 23-26 XMLDecl (also includes 80-81, 32)                           * DONE 
+    * 25    Eq                                                          * DONE
     * 27    Misc --> 15 | 16 | 3
-    * 28    doctypedecl --> 3 5 ... NEEDS WORK
+    * 28    doctypedecl --> 3 5 ... NEEDS WORK, BUT OK FOR NOW          * DONE
     * 39    element --> 39 | 40 43 42
     * 40    STag  --> 5 (3 41)* 3?
     * 41    Attribute --> 5 25 10 // 25 is Eq

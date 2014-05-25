@@ -65,7 +65,7 @@ func (p *Parser) parseEpilog() (err error) {
 								break
 							}
 							if ch == 'D' {
-								p.parseDocdecl() //FIXME
+								p.parseDocTypeDecl() //FIXME
 								if p.tokenizing {
 									curEvent = DOCDECL
 									break

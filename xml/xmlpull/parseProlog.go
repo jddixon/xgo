@@ -43,8 +43,11 @@ func (p *Parser) parseProlog() (err error) {
 	// optional XMLDecl ---------------------------------------------
 	if err == nil {
 		// if XMLDecl is present, it begins with "<?xml" followed by an S
-
-		// XXX STUB
+		var found bool
+		found, err = p.AcceptStr("<?xml")
+		if found {
+			err = p.parseXmlDecl()
+		}
 	}
 
 	// zero or more Misc --------------------------------------------
@@ -96,7 +99,7 @@ func (p *Parser) parseProlog() (err error) {
 							break
 						}
 						p.seenDocdecl = true
-						p.parseDocdecl()
+						p.parseDocTypeDecl()
 						if p.tokenizing {
 							p.curEvent = DOCDECL
 							break
