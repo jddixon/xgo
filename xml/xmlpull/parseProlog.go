@@ -120,8 +120,9 @@ func (p *Parser) parseProlog() (err error) {
 						"start tag name cannot begin with '/'\n")
 					break
 				} else if isNameStartChar(ch) {
-					p.haveRootTag = true
+					p.rootElmSeen = true
 					p.PushBack(ch)
+					// XXX RETURNS PullEvent, error; these are lost!
 					p.parseStartTag()
 					break
 				} else {

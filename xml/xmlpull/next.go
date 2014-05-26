@@ -28,23 +28,35 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 	if p.pastEndTag {
 		p.pastEndTag = false
 		p.elmDepth--
-		p.namespaceEnd = p.elNamespaceCount[p.elmDepth] // less namespaces available
-	}
-	if p.isEmptyElement {
-		p.isEmptyElement = false
-		p.pastEndTag = true
-		return END_TAG, nil
+
+		// fewer namespaces available
+		p.namespaceEnd = p.elNamespaceCount[p.elmDepth]
 	}
 
-	if p.elmDepth > 0 {
+	// XXX else ?
+	if p.isEmptyElement { // set in parseStartTag
+		p.isEmptyElement = false
+		p.pastEndTag = true
+		return END_TAG, nil // RETURN END_TAG
+	}
+
+	if p.elmDepth == 0 {
+		if !p.rootElmSeen {
+			// we haven't seen the root element yet
+			err = p.parseProlog()
+		} else {
+			// we are post the root element; almost done
+			err = p.parseEpilog()
+		}
+	} else { //  p.elmDepth > 0 {
 
 		if p.seenStartTag {
 			p.seenStartTag = false
-			return p.parseStartTag() // XXx NEEDS ch
+			return p.parseStartTag() // RETURN START_TAG OR ERROR
 		}
 		if p.seenEndTag {
 			p.seenEndTag = false
-			return p.parseEndTag()
+			return p.parseEndTag() // RETURN END_TAG OR ERROR
 		}
 
 		// ASSUMPTION: we are _on_ first character of content or markup
@@ -79,7 +91,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 						p.afterLT = true
 						curEvent = TEXT
 						p.curEvent = curEvent
-						return
+						return // RETURN TEXT
 					}
 				}
 				ch, err = p.NextCh()
@@ -94,7 +106,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 						curEvent, err = p.parseEndTag()
 					}
 					p.curEvent = curEvent
-					return
+					return // RETURN TEXT OR END_TAG OR ERROR
 				} else if ch == '!' {
 					ch, err = p.NextCh()
 					if err != nil {
@@ -105,7 +117,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 						if p.tokenizing {
 							curEvent = COMMENT
 							p.curEvent = curEvent
-							return
+							return // COMMENT
 						}
 						//if !usePC && charDataSeen  {
 						//    needsMerging = true
@@ -120,7 +132,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 						if p.tokenizing {
 							curEvent = CDSECT
 							p.curEvent = curEvent
-							return
+							return // RETURN CDSECT
 						}
 
 						// if !usePC {
@@ -141,7 +153,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 					if p.tokenizing {
 						curEvent = PROCESSING_INSTRUCTION
 						p.curEvent = curEvent
-						return
+						return // RETURN PROCESSING_INSTRUCTION
 					}
 					// if !usePC && charDataSeen {
 					//	needsMerging = true
@@ -154,13 +166,13 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 						p.seenStartTag = true
 						curEvent = TEXT
 						p.curEvent = curEvent
-						return
+						return // RETURN TEXT
 					}
 					curEvent, err = p.parseStartTag()
 					if err == nil {
 						p.curEvent = curEvent
 					}
-					return
+					return // RETURN START_TAG OR ERROR
 				} else {
 					err = p.NewXmlPullError(
 						"unexpected character in markup " +
@@ -174,7 +186,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 					p.seenAmpersand = true
 					curEvent = TEXT
 					p.curEvent = curEvent
-					return
+					return // RETURN TEXT
 				}
 				var resolvedEntity []rune
 				resolvedEntity, err = p.parseEntityRef()
@@ -184,7 +196,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 				if p.tokenizing {
 					curEvent = ENTITY_REF
 					p.curEvent = curEvent
-					return
+					return // RETURN ENTITY_REF
 				}
 				// check if replacement text can be resolved !!!
 				if len(resolvedEntity) == 0 {
@@ -275,12 +287,6 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			}
 			ch, err = p.NextCh()
 		} // endless for err == nil
-	} else {
-		if p.haveRootTag {
-			err = p.parseEpilog()
-		} else {
-			err = p.parseProlog()
-		}
 	}
 	return
 }

@@ -1,5 +1,30 @@
 xgo/xml/xmlpull/TODO
 
+2014-05-25
+    * REVIEW decision to always set p.curEvent when returning
+        curEvent
+
+2014-05-24 (03-23, edited)
+    * get rudimentary parser working (ISSUE#5)
+        document ::= prolog element Misc*
+        element  ::= EmptyElemTag
+        prolog   ::= XMLDecl? Misc* (doctypedecl) 
+        Misc     ::= Comment | S
+    * Misc* implemented as Parser.acceptMisc
+
+2014-05-24 (04-18, edited)
+    * parseProlog must be restructured to better match the xml 1.0 
+        syntax graph
+    * the test for \uFFFE should be moved to whatever calls parseProlog
+    * the call to parseProlog should NOT be in next.go's Next() 
+    * implement parseProlog_test.go 
+
+    * create a tool which calls the pull parser to produce a tree of
+        xml OM object as in ../om/.
+    * then write a serializer which converts the OM tree to a cannical
+        serial form
+        - which is guaranteed to round-trip back to the same form
+
 2014-04-24
     * Parser struct must contain root Element with semantic properties 
         required by XML spec
@@ -28,7 +53,7 @@ xgo/xml/xmlpull/TODO
     * 25    Eq                                                          * DONE
     * 27    Misc --> 15 | 16 | 3
     * 28    doctypedecl --> 3 5 ... NEEDS WORK, BUT OK FOR NOW          * DONE
-    * 39    element --> 39 | 40 43 42
+    * 39    element --> 44 | 40 43 42
     * 40    STag  --> 5 (3 41)* 3?
     * 41    Attribute --> 5 25 10 // 25 is Eq
     * 42    ETag --> 5 3?
@@ -38,28 +63,11 @@ xgo/xml/xmlpull/TODO
 
     * 80-81 EncodingDecl // uses 25, Eq
 
-2014-04-18
-    * parseProlog must be restructured to better match the xml 1.0 
-        syntax graph
-        - xml 1.1 compliance can be introduced later as an option or as * SKIP
-            a feature of a different parser                             * SKIP
-    * the test for \uFFFE could be moved to whatever calls parseProlog
-    * the call to parseProlog should NOT be in next.go's Next() 
-    * implement parseProlog_test.go 
-    * tentatively: all parser components should produce an xml object
-        (as in ../om/) which is then serialized to match the xmlpull
-        spec in a separate step.  That is, the xmlpull parser produces
-        objects, putting them in convetional places, and then the call
-        to the interface serializes those objects into the form called
-        for by the xmlpull spec
-
 2014-04-13
     * move 'implementation of XmlPullParser' from parser.go             * DONE
         into implementation.go                                          * DONE
     * then move code from properties.go into that file
 
-2014-03-23
-    * get rudimentary parser working (decl + single line) ISSUE#5
 2014-03-22
     * move stuff from properties.ZZZ to properties.go
 2014-03-21

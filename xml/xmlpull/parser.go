@@ -12,10 +12,22 @@ const (
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
+	// VETTED FIELDS ////////////////////////////////////////////////
+	curEvent PullEvent //  defined in const.go
+
+	// defined in the prolog
 	xmlDeclVersion, xmlDeclEncoding string
 	xmlDeclContent                  string
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
+
+	// doNext State -------------------------------------------------
+	isEmptyElement bool
+	pastEndTag     bool
+	rootElmSeen    bool
+	seenStartTag   bool
+
+	// OTHER FIELDS /////////////////////////////////////////////////
 
 	// parser behavior
 	normalizeIgnorableWS bool
@@ -23,8 +35,6 @@ type Parser struct {
 	roundtripSupported   bool
 
 	startLine, startCol int // where a syntactic element begins
-
-	haveRootTag bool
 
 	// accumulated characters of various types -- yes, kludgey
 	cDataChars   []rune
@@ -43,15 +53,10 @@ type Parser struct {
 
 	location      string
 	reachedEnd    bool // used only in parseEpilog?
-	seenStartTag  bool
 	seenEndTag    bool
-	pastEndTag    bool
 	seenAmpersand bool
 	afterLT       bool // have encountered a left angle bracket (<)
 	seenDocdecl   bool
-
-	curEvent       PullEvent // aka eventType; PullEvent defined in const.go
-	isEmptyElement bool
 
 	// element stack
 	elmDepth      uint
@@ -133,6 +138,10 @@ func (xpp *Parser) GetLexer() *gl.LexInput {
 // All fields in the Parser struct should be reinitialized here.
 
 func (xpp *Parser) reset() {
+	// VETTED FIELDS ------------------------------------------------
+	xpp.curEvent = START_DOCUMENT
+
+	// OTHER FIELDS -------------------------------------------------
 	xpp.afterLT = false
 	xpp.colNo = 0
 	xpp.elmDepth = 0

@@ -16,7 +16,7 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 	// opening <
 	ch, err := p.NextCh()
 	if err != nil {
-		return
+		return // RETURN
 	}
 
 	var (

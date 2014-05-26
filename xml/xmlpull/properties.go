@@ -15,6 +15,10 @@ func (xpp *Parser) getColumnNumber() int {
 	return xpp.colNo
 }
 
+func (xpp *Parser) getCurEvent() PullEvent {
+	return xpp.curEvent
+}
+
 func (xpp *Parser) getDepth() uint {
 	return xpp.elmDepth
 }
