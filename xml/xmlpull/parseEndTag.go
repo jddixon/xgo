@@ -2,7 +2,6 @@ package xmlpull
 
 import (
 	"fmt"
-	u "unicode"
 )
 
 var _ = fmt.Print
@@ -40,9 +39,8 @@ func (p *Parser) parseEndTag() (curEvent PullEvent, err error) {
 				err = p.NewXmlPullError(msg)
 			}
 			if err == nil {
-				for u.IsSpace(ch) && err == nil {
-					ch, err = p.NextCh()
-				}
+				p.SkipS()
+				ch, err = p.NextCh()
 				if err == nil && ch != '>' {
 					msg := fmt.Sprintf(
 						"expected '>' to finish end tag not '%c'", ch)

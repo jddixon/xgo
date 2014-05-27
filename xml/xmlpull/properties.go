@@ -4,7 +4,6 @@ package xmlpull
 
 import (
 	"fmt"
-	u "unicode"
 )
 
 // PROPERTIES -------------------------------------------------------
@@ -270,7 +269,7 @@ func (xpp *Parser) isWhitespace() (whether bool, err error) {
 	if xpp.curEvent == TEXT || xpp.curEvent == CDSECT {
 		whether = true
 		for i := 0; i < len(xpp.text); i++ {
-			if !u.IsSpace(xpp.text[i]) {
+			if !xpp.IsS(xpp.text[i]) {
 				whether = false
 				break
 			}

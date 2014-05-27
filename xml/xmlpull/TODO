@@ -1,5 +1,8 @@
 xgo/xml/xmlpull/TODO
 
+2014-05-26
+    * implement IsS() which accepts only 0x20, 0x9, 0xa, 0xd            * DONE
+    * replace all u.IsSpace() with this
 2014-05-25
     * REVIEW decision to always set p.curEvent when returning
         curEvent
@@ -8,7 +11,7 @@ xgo/xml/xmlpull/TODO
     * get rudimentary parser working (ISSUE#5)
         document ::= prolog element Misc*
         element  ::= EmptyElemTag
-        prolog   ::= XMLDecl? Misc* (doctypedecl) 
+        prolog   ::= XMLDecl? Misc* (doctypedecl Misc*)? 
         Misc     ::= Comment | S
     * Misc* implemented as Parser.acceptMisc
 

@@ -5,7 +5,6 @@ package xmlpull
 import (
 	"fmt"
 	"io"
-	u "unicode"
 )
 
 var _ = fmt.Print
@@ -90,7 +89,7 @@ func (p *Parser) parseEpilog() (err error) {
 							err = p.NewXmlPullError(
 								"in epilog expected ignorable content and not " + printableChar(ch))
 						}
-					} else if u.IsSpace(ch) {
+					} else if p.IsS(ch) {
 						gotS = true
 						if normalizeIgnorableWS {
 							if ch == '\r' {

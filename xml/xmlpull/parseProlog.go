@@ -5,7 +5,6 @@ package xmlpull
 import (
 	// e "errors"
 	"fmt"
-	u "unicode"
 )
 
 var _ = fmt.Print
@@ -132,7 +131,7 @@ func (p *Parser) parseProlog() (err error) {
 					err = p.NewXmlPullError(msg)
 					break
 				}
-			} else if u.IsSpace(ch) {
+			} else if p.IsS(ch) {
 				gotS = true
 			} else {
 				msg := fmt.Sprintf(

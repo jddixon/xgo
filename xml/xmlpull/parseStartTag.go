@@ -2,7 +2,6 @@ package xmlpull
 
 import (
 	"fmt"
-	u "unicode"
 )
 
 var _ = fmt.Print
@@ -89,7 +88,7 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		}
 
 		for err == nil {
-			for u.IsSpace(ch) && err == nil {
+			for p.IsS(ch) && err == nil {
 				ch, err = p.NextCh()
 			} // skip additional white spaces
 

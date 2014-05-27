@@ -3,7 +3,6 @@ package xmlpull
 import (
 	"fmt"
 	"strings"
-	u "unicode"
 )
 
 var _ = fmt.Print
@@ -34,7 +33,7 @@ func (p *Parser) parsePI() (isPI bool, err error) {
 	if err == nil {
 		p.start()
 
-		if u.IsSpace(ch) {
+		if p.IsS(ch) {
 			err = p.NewXmlPullError("PI target may not begin with white space")
 		}
 		if err == nil {
@@ -43,7 +42,7 @@ func (p *Parser) parsePI() (isPI bool, err error) {
 				piTarget = append(piTarget, ch)
 				ch, err = p.NextCh()
 				if err == nil {
-					if u.IsSpace(ch) {
+					if p.IsS(ch) {
 						p.SkipS()
 						break
 					}
