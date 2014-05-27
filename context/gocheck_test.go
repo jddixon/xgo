@@ -3,7 +3,7 @@ package context
 // xgo/context/gocheck_test.go
 
 import (
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 	"testing"
 )
 

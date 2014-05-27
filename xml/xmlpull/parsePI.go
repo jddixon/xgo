@@ -3,7 +3,6 @@ package xmlpull
 import (
 	"fmt"
 	"strings"
-	u "unicode"
 )
 
 var _ = fmt.Print
@@ -13,7 +12,12 @@ var _ = fmt.Print
 // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
 // [17] PITarget         ::=    Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
 //
-// Return true if PI seen, false if an XmlDecl seen, error otherwise
+// Enter having seen '<?'.  Expect to see a target language name, whitespace,
+// and then the body of the PI followed by '?>'.
+//
+// Return true if PI seen, false if an XmlDecl seen, error otherwise.  If
+// true, p.piTarget contains the language name and b.piChars contains the
+// body of the PI.
 //
 func (p *Parser) parsePI() (isPI bool, err error) {
 
@@ -29,7 +33,7 @@ func (p *Parser) parsePI() (isPI bool, err error) {
 	if err == nil {
 		p.start()
 
-		if u.IsSpace(ch) {
+		if p.IsS(ch) {
 			err = p.NewXmlPullError("PI target may not begin with white space")
 		}
 		if err == nil {
@@ -38,7 +42,7 @@ func (p *Parser) parsePI() (isPI bool, err error) {
 				piTarget = append(piTarget, ch)
 				ch, err = p.NextCh()
 				if err == nil {
-					if u.IsSpace(ch) {
+					if p.IsS(ch) {
 						p.SkipS()
 						break
 					}

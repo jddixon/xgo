@@ -1,32 +1,33 @@
 package xmlpull
 
-// xgo/xml/xmlpull/parse_doc_decl_test.go
+// xgo/xml/xmlpull/parseDocTypeDecl_test.go
 
 import (
 	"fmt"
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 	"strings"
 )
 
 var _ = fmt.Print
 
 const (
-	WHATEVER = "abc123"
+	WHATEVER   = "abc123"
+	OPEN_DECL  = "<!DOCTYPE "
+	CLOSE_DECL = ">"
 
-	GENERAL_SYNTAX = "<!DOCTYPE root-element PUBLIC \"FPI\" [\"URI\"] [ \n" +
-		"<!-- internal subset declarations -->\n" +
-		"]>"
+	GENERAL_SYNTAX = OPEN_DECL + "root-element PUBLIC \"FPI\" [\"URI\"] [ \n" +
+		"<!-- internal subset declarations -->\n]"
 
-	COMMON_EXAMPLE = "<!DOCTYPE html PUBLIC\n" +
+	COMMON_EXAMPLE = "html PUBLIC\n" +
 		"\"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n" +
-		"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"
+		"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\""
 
-	HTML5_EXAMPLE = "<!DOCTYPE html>"
+	HTML5_EXAMPLE = "html"
 )
 
 func (s *XLSuite) doTestParseDocTypeDecl(c *C, sample string) {
 
-	input := sample + WHATEVER
+	input := OPEN_DECL + sample + CLOSE_DECL + WHATEVER
 	rd := strings.NewReader(input)
 	p, err := NewNewParser(rd)
 	c.Assert(err, IsNil)

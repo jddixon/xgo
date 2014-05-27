@@ -11,6 +11,10 @@ import (
 // [20] CData ::= (Char* - (Char* ']]>' Char*))
 // [21] CDEnd ::= ']]>'
 //
+// Enter having seen '<!['.  Collect 'CDATA[' and then accumulate any
+// runes seen until ']]>'.  Exit with the runes collected in p.cDataChars,
+// unless an error is encountered.
+//
 func (p *Parser) parseCDSect(hadCharData bool) (err error) {
 
 	// Enter having seen <![

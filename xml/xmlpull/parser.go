@@ -12,10 +12,22 @@ const (
 // Any fields added here also should be added to reset()
 //
 type Parser struct {
+	// VETTED FIELDS ////////////////////////////////////////////////
+	curEvent PullEvent //  defined in const.go
+
+	// defined in the prolog
 	xmlDeclVersion, xmlDeclEncoding string
 	xmlDeclContent                  string
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
+
+	// doNext State -------------------------------------------------
+	isEmptyElement bool
+	pastEndTag     bool
+	rootElmSeen    bool
+	seenStartTag   bool
+
+	// OTHER FIELDS /////////////////////////////////////////////////
 
 	// parser behavior
 	normalizeIgnorableWS bool
@@ -23,8 +35,6 @@ type Parser struct {
 	roundtripSupported   bool
 
 	startLine, startCol int // where a syntactic element begins
-
-	haveRootTag bool
 
 	// accumulated characters of various types -- yes, kludgey
 	cDataChars   []rune
@@ -38,18 +48,15 @@ type Parser struct {
 	entityRefName string // []rune
 
 	// global parser state
+	lineNo int // line number		// redundant
+	colNo  int // column number		// redundant
+
 	location      string
-	lineNo        int // line number		// redundant
-	colNo         int // column number		// redundant
-	seenStartTag  bool
+	reachedEnd    bool // used only in parseEpilog?
 	seenEndTag    bool
-	pastEndTag    bool
 	seenAmpersand bool
 	afterLT       bool // have encountered a left angle bracket (<)
 	seenDocdecl   bool
-
-	curEvent       PullEvent // aka eventType; PullEvent defined in const.go
-	isEmptyElement bool
 
 	// element stack
 	elmDepth      uint
@@ -86,9 +93,12 @@ type Parser struct {
 	entityReplacementBuf [][]rune
 	entityNameHash       []uint32
 
+	// XXX hmmm
+	inputEncoding string
 	gl.LexInput
 }
 
+// Called at the beginning of a syntactic construct.
 func (p *Parser) start() {
 	p.startLine = p.LineNo()
 	p.startCol = p.ColNo()
@@ -128,6 +138,10 @@ func (xpp *Parser) GetLexer() *gl.LexInput {
 // All fields in the Parser struct should be reinitialized here.
 
 func (xpp *Parser) reset() {
+	// VETTED FIELDS ------------------------------------------------
+	xpp.curEvent = START_DOCUMENT
+
+	// OTHER FIELDS -------------------------------------------------
 	xpp.afterLT = false
 	xpp.colNo = 0
 	xpp.elmDepth = 0
@@ -136,146 +150,4 @@ func (xpp *Parser) reset() {
 
 	// XXX STUB XXX
 
-}
-
-// ==================================================================
-// IMPLMENTATION OF XmlPullParserI
-// ==================================================================
-
-func (xpp *Parser) SetFeature(name string, state bool) (err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetFeature(name string) (whether bool, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) SetProperty(name string, value interface{}) (err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetProperty(name string) (prop interface{}) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) SetInput(in *io.Reader) (err error) {
-	if in == nil {
-		err = NilReader
-	} else {
-		xpp.reset()
-		xpp.LexInput.Reset()
-	}
-	return
-}
-func (xpp *Parser) DefineEntityReplacementText(entityName, replacementText string) (err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetNamespaceCount(depth int) (ret int, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetNamespacePrefix(pos int) (ns string, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetNamespaceUri(pos int) (ns string, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetNamespaceForPrefix(prefix string) (ns string, err error) {
-	// XXX STUB XXX
-	return
-}
-
-//
-//
-func (xpp *Parser) GetDepth() uint {
-	return xpp.elmDepth
-}
-func (xpp *Parser) GetPositionDescription() (desc string) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetLineNumber() int {
-	return xpp.lineNo
-}
-func (xpp *Parser) GetColumnNumber() int {
-	return xpp.colNo
-}
-func (xpp *Parser) IsWhitespace() (whether bool, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetText() (t string) {
-	// XXX STUB XXX
-	return
-}
-
-// Should probably return a string.
-//
-func (xpp *Parser) GetTextCharacters(holderForStartAndLength []int) (
-	chars []byte) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetNamespace() (ns string, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetName() (name string) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetPrefix() (prefix string) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) IsEmptyElementTag() (whether bool, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetAttributeCount() (count int) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetAttributeNamespace(index int) (
-	ns string, err error) {
-
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetAttributeName(index int) (name string) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetAttributePrefix(index int) (p string, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetAttributeValue(index int) (val string, err error) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) GetAttributeValueNS(namespace, name string) (
-	ns string, err error) {
-
-	// XXX STUB XXX
-	return
-}
-
-// Return the type of the current parser event.  The spec requires the
-// error return.
-//
-func (xpp *Parser) GetEventType() (PullEvent, error) {
-	return xpp.curEvent, nil
-}
-
-func (xpp *Parser) Require(type_ int, namespace, name string) {
-	// XXX STUB XXX
-	return
-}
-func (xpp *Parser) ReadText() (t string) {
-	// XXX STUB XXX
-	return
 }

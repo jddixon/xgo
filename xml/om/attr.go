@@ -18,14 +18,6 @@ type Attr struct {
 	Node
 }
 
-/////////////////////////////////////////////////////////////////////
-// XXX If I comment out everything below this block, I still get
-// "attr.go:18: invalid recursive type Node
-// followed by
-// "attr.go:19: invalid recursive type Attr
-// on the lines above.
-/////////////////////////////////////////////////////////////////////
-
 // Create an attribute.
 //
 // @param prefix NCNAME (non-colonized name) identifying the namespace

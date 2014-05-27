@@ -25,9 +25,9 @@ func (node *Node) GetDocument() DocumentI {
 //
 // This gets overridden in Holder and possibly elsewhere.
 //
-//  XXX Warning: possibility of introducing cycles or inconsistencies.
+// XXX Warning: possibility of introducing cycles or inconsistencies.
 //
-//  @param newDoc new value assigned; may be nil
+// @param newDoc new value assigned; may be nil
 //
 func (node *Node) SetDocument(newDoc DocumentI) (err error) {
 	if newDoc == nil {
@@ -82,43 +82,43 @@ func (node *Node) WalkAll(v VisitorI) (err error) {
 	return
 }
 
-//  // EVAL /////////////////////////////////////////////////////////
-//  public final Boolean evalAsBoolean(String s) {
-//      // STUB
-//      return Boolean.FALSE
-//  }
-//  //
-//   * XXX XPath refers to this as evalAsLocation?
+// // EVAL /////////////////////////////////////////////////////////
+// public final Boolean evalAsBoolean(String s) {
+//     // STUB
+//     return Boolean.FALSE
+// }
+// //
+//  * XXX XPath refers to this as evalAsLocation?
 //
-//  public final NodeSet evalAsNodeSet(String s) {
-//      // STUB
-//      return nil
-//  }
-//  public final Numeric evalAsNumeric(String s) {
-//      // STUB
-//      return new Numeric(0.0)
-//  }
-//  public final String evalAsString(String s) {
-//      // STUB
-//      return nil
-//  }
-//  // XXX SHOULD BE NodeSet? XXX
-//  public final Boolean evalAsBoolean(Context ctx, String s) {
-//      // STUB
-//      return Boolean.FALSE
-//  }
-//  public final Node evalAsLocation(Context ctx, String s) {
-//      // STUB
-//      return nil
-//  }
-//  public final Numeric evalAsNumeric(Context ctx, String s) {
-//      // STUB
-//      return new Numeric(0.0)
-//  }
-//  public final String evalAsString(Context ctx, String s) {
-//      // STUB
-//      return nil
-//  } // GEEP
+// public final NodeSet evalAsNodeSet(String s) {
+//     // STUB
+//     return nil
+// }
+// public final Numeric evalAsNumeric(String s) {
+//     // STUB
+//     return new Numeric(0.0)
+// }
+// public final String evalAsString(String s) {
+//     // STUB
+//     return nil
+// }
+// // XXX SHOULD BE NodeSet? XXX
+// public final Boolean evalAsBoolean(Context ctx, String s) {
+//     // STUB
+//     return Boolean.FALSE
+// }
+// public final Node evalAsLocation(Context ctx, String s) {
+//     // STUB
+//     return nil
+// }
+// public final Numeric evalAsNumeric(Context ctx, String s) {
+//     // STUB
+//     return new Numeric(0.0)
+// }
+// public final String evalAsString(Context ctx, String s) {
+//     // STUB
+//     return nil
+// } // GEEP
 
 // TYPE IDENTIFIERS /////////////////////////////////////////////
 
@@ -145,7 +145,7 @@ func (node *Node) IsElement() bool { return false }
 func (node *Node) IsText() bool { return false }
 
 // one of these gets overridden in each subclass
-func (node *Node) IsProcessingInstruction() bool {
+func (node *Node) IsPI() bool {
 	return false
 }
 

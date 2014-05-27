@@ -37,7 +37,7 @@ func (nc *NodeCounter) OnEntry(n *Node) {
 	if n.IsElement() {
 		nc.elementCount++
 	}
-	if n.IsProcessingInstruction() {
+	if n.IsPI() {
 		nc.piCount++
 	}
 	if n.IsText() {

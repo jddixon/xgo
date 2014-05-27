@@ -32,10 +32,11 @@ import (
 //
 // <p>The parser is always in some event state and type of the current event
 // can be determined by calling
-// <a href="#next()">getEventType()</a> mehod.
-// Initially parser is in <a href="#START_DOCUMENT">START_DOCUMENT</a> state.
+// <a href="#next()">getEventType()</a>.
+// Initially the parser is in the
+// <a href="#START_DOCUMENT">START_DOCUMENT</a> state.
 //
-// <p>Method <a href="#next()">next()</a> return int that contains identifier of parsing event.
+// <p>Method <a href="#next()">next()</a> returns int that contains identifier of parsing event.
 // This method can return following events (and will change parser state to the returned event):<dl>
 // <dt><a href="#START_TAG">START_TAG</a><dd> XML start tag was read
 // <dt><a href="#TEXT">TEXT</a><dd> element contents was read and is available via getText()
@@ -43,50 +44,44 @@ import (
 // <dt><a href="#END_DOCUMENT">END_DOCUMENT</a><dd> no more events is available
 // </dl>
 //
-// The minimal working example of use of API would be looking like this:
+// BEING HACKED, hence the odd mixture of Go and Java syntax.
+//
+// A minimal working example of the use of the API would look like this:
+//
 // <pre>
-// import java.io.IOException;
-// import java.io.StringReader;
+// import (
+//     "fmt"a
+//     "io"
+//     "strings"
+// )
 //
-// import org.xmlpull.v1.XmlPullParser;
-// import org.xmlpull.v1.XmlPullParserException;
-// import org.xmlpull.v1.XmlPullParserFactory;
+// func main() {
 //
-// public class SimpleXmlPullApp
-// {
-//
-//     public static void main (String args[])
-//         throws XmlPullParserException, IOException
-//     {
-//         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-//         factory.setNamespaceAware(true);
-//         XmlPullParser xpp = factory.newPullParser();
-//
-//         xpp.setInput ( new StringReader ( "&lt;foo>Hello World!&lt;/foo>" ) );
-//         PullEvent eventType = xpp.getEventType();
-//         while (eventType != xpp.END_DOCUMENT) {
-//          if(eventType == xpp.START_DOCUMENT) {
-//              System.out.println("Start document");
-//          } else if(eventType == xpp.END_DOCUMENT) {
-//              System.out.println("End document");
-//          } else if(eventType == xpp.START_TAG) {
-//              System.out.println("Start tag "+xpp.getName());
-//          } else if(eventType == xpp.END_TAG) {
-//              System.out.println("End tag "+xpp.getName());
-//          } else if(eventType == xpp.TEXT) {
-//              System.out.println("Text "+xpp.getText());
-//          }
-//          eventType = xpp.next();
+//     var rd1 io.Reader = string.NewReader("<foo>Hello, my good world!</foo>" )
+//     xpp, _ := NewNewParser(rd1)	// accept default encoding, UTF-8
+//     curEvent := xpp.getCurEvent()
+//     while curEvent != xpp.END_DOCUMENT {
+//         if curEvent == xpp.START_DOCUMENT {
+//             fmt.Println("Start document")
+//         } else if curEvent == xpp.END_DOCUMENT {
+//             fmt.Printfln ("End document")
+//         } else if curEvent == xpp.START_TAG {
+//             fmt.Printf ("Start tag %s\n", xpp.getName())
+//         } else if curEvent == xpp.END_TAG {
+//             fmt.Printf ("End tag %s\n, "+xpp.getName())
+//         } else if curEvent == xpp.TEXT {
+//             fmt.Printf ("Text %s\n", xpp.getText())
 //         }
+//         curEvent = xpp.Next()
 //     }
 // }
 // </pre>
 //
-// <p>When run it will produce following output:
+// <p>When run it will produce the following output:
 // <pre>
 // Start document
 // Start tag foo
-// Text Hello World!
+// Text Hello, my good world!
 // End tag foo
 // </pre>
 //

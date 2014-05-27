@@ -5,10 +5,9 @@ package lex
 import (
 	"fmt"
 	"io"
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 	"strings"
 	u "unicode"
-	//"unicode/utf8"
 )
 
 var _ = fmt.Print

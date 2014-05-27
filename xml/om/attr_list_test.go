@@ -1,7 +1,7 @@
 package om
 
 import (
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 )
 
 func (s *XLSuite) TestOneAttrList(c *C) {

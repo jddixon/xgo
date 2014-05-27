@@ -1,5 +1,10 @@
 xgo/lex/TODO
 
+2014-05-26
+    * INVESTIAGATE: if the last space in a file is a space, does
+        the underlying OS return space with an error or io.EOF ?
+        If so, what should ExpectS() do?  SkipS() ?
+
 2013-12-17
     * Where we have a function *Str() we should have a corresponding
         *Runes() and vice versa (eg PushBackStr, PushBackChars)

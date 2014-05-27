@@ -1,9 +1,76 @@
 xgo/xml/xmlpull/TODO
 
-2014-03-25
-    * sort properties                                                   * DONE
-2014-03-23
-    * get rudimentary parser working (decl + single line) ISSUE#5
+2014-05-26
+    * implement IsS() which accepts only 0x20, 0x9, 0xa, 0xd            * DONE
+    * replace all u.IsSpace() with this
+2014-05-25
+    * REVIEW decision to always set p.curEvent when returning
+        curEvent
+
+2014-05-24 (03-23, edited)
+    * get rudimentary parser working (ISSUE#5)
+        document ::= prolog element Misc*
+        element  ::= EmptyElemTag
+        prolog   ::= XMLDecl? Misc* (doctypedecl Misc*)? 
+        Misc     ::= Comment | S
+    * Misc* implemented as Parser.acceptMisc
+
+2014-05-24 (04-18, edited)
+    * parseProlog must be restructured to better match the xml 1.0 
+        syntax graph
+    * the test for \uFFFE should be moved to whatever calls parseProlog
+    * the call to parseProlog should NOT be in next.go's Next() 
+    * implement parseProlog_test.go 
+
+    * create a tool which calls the pull parser to produce a tree of
+        xml OM object as in ../om/.
+    * then write a serializer which converts the OM tree to a cannical
+        serial form
+        - which is guaranteed to round-trip back to the same form
+
+2014-04-24
+    * Parser struct must contain root Element with semantic properties 
+        required by XML spec
+        - this is the bottom of the element stack
+    * parseDocTypeDecl.go and test need more work (but ok for now)
+
+    * for this to be a pull parser, the parser must know its position
+        in the syntax graph, returning a PullEvent at appropriate 
+        points (more events if tokenizing)
+
+2014-04-22
+    VERIFY PRODUCTIONS
+    * 1     document --> 22 39 27*
+    * 3     S (1 or more whitespace char))
+        - FIX: Parser.ExpectS() does not correctly implement this rule
+        - CHECK: all use of Parser.SkipS()
+        - then rename to Parser.S, expecting 1 or more from 4 rune set
+    * 5     Name
+    * 10    AttrValue --> ... | 67 in quotes
+    * 14    CharData
+    * 15    comment                                                     * DONE
+    * 16-17 PI                                                          * DONE
+    * 18-19 CData section                                               * DONE
+    * 22    prolog --> 23? 27* (28 27*)?
+    * 23-26 XMLDecl (also includes 80-81, 32)                           * DONE 
+    * 25    Eq                                                          * DONE
+    * 27    Misc --> 15 | 16 | 3
+    * 28    doctypedecl --> 3 5 ... NEEDS WORK, BUT OK FOR NOW          * DONE
+    * 39    element --> 44 | 40 43 42
+    * 40    STag  --> 5 (3 41)* 3?
+    * 41    Attribute --> 5 25 10 // 25 is Eq
+    * 42    ETag --> 5 3?
+    * 43    content -> 14? ((39 | 18 | 16 | 15) 14?
+    * 44    EmptyElemTag -> 5 (3 41)* 3?
+    * 67    Reference
+
+    * 80-81 EncodingDecl // uses 25, Eq
+
+2014-04-13
+    * move 'implementation of XmlPullParser' from parser.go             * DONE
+        into implementation.go                                          * DONE
+    * then move code from properties.go into that file
+
 2014-03-22
     * move stuff from properties.ZZZ to properties.go
 2014-03-21
@@ -11,20 +78,6 @@ xgo/xml/xmlpull/TODO
     * need test of getNamespace() -- properties_test.go
 2014-03-18
     * desperately need parseEntityRef_test.go
-
-2014-03-17
-    * start new 'pull' branch, all xmlpull work to be done on that      * DONE
-        branch                                                          * DONE
-    * drop string interning code; rune slices can't be interned			* DONE
-        (at least not at reasonable cost in dev man-hours)			    * DONE
-    * any ifs on allStringsInterned: drop the true branch			    * DONE
-
-2014-03-10
-    * parseStartTag needs parseAttribute()                              * DONE
-    * and getNamespace()                                                * DONE
-
-2014-03-09
-    * all functions returning PullEvent should also return error
 
 2014-03-08
     * test printable*()
@@ -34,24 +87,6 @@ xgo/xml/xmlpull/TODO
     * verify lexer.go has all functions in xgo/lex/lex_input.go
         - and rearrange the latter into alphabetical order
     * parseXmlDecl must collect its runes, add to Parser struct
-
-2013-12-03 
-    from the syntax diagrams; here DONE means that it compiles, not
-    necessarily that tests exist and succeed
-
-    * Next()                                                            * DONE
-    * ParseAttribute                                                    * DONE
-    * ParseCDSect                                                       * DONE
-    * ParseComment                                                      * DONE
-    * ParseDocdecl                                                      * DONE
-    * ParseEndTag                                                       * DONE
-    * ParseEntityRef                                                    * DONE
-    * ParseEpilog                                                       * DONE
-    * ParseProcessingInstruction                                        * DONE
-    * ParseProlog                                                       * DONE
-    * ParseStartTag                                                     * DONE
-    * ParseXmlDecl                                                      * DONE
-    
 
 2013-11-21 (11-20, edited)
     * build skeletal parser as parser.go                                * DONE
@@ -64,6 +99,3 @@ xgo/xml/xmlpull/TODO
 2013-11-08
     * For string interning see eg stackoverflow 13017499                * DONE
         is-there-an-equivalent-to-javas-string-intern-function-in-go    * DONE
-
-    * but We should be interning []byte instead!                        * SKIP
-

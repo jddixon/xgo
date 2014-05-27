@@ -4,8 +4,7 @@ package lex
 
 import (
 	"fmt"
-	. "launchpad.net/gocheck"
-	//"strings"
+	. "gopkg.in/check.v1"
 	u "unicode"
 	"unicode/utf8"
 )

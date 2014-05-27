@@ -7,12 +7,10 @@ import (
 	gc "github.com/jddixon/xgo/context"
 	xr "github.com/jddixon/xlattice_go/rnglib"
 	xf "github.com/jddixon/xlattice_go/util/lfs"
-
+	. "gopkg.in/check.v1"
 	"io/ioutil"
-	. "launchpad.net/gocheck"
 	"os"
 	"path/filepath"
-	//"strings"
 )
 
 var _ = fmt.Print

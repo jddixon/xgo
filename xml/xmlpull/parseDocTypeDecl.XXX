@@ -1,5 +1,7 @@
 package xmlpull
 
+// XXX REDUNDANT, BEING DROPPED
+
 import (
 	"fmt"
 )

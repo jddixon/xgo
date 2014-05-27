@@ -4,17 +4,15 @@ import (
 	"strings"
 )
 
-//A container for attributes.  The order of attributes in the
-//container is not significant and is not guaranteed to be
-//repeatable.
-//
+// A container for attributes.  The order of attributes in the
+// container is not significant and is not guaranteed to be
+// repeatable.
 type AttrList struct {
 	attrs  []*Attr
-	holder ElementI
+	holder ElementI // points back to the element
 }
 
 // Create an empty attribute list with no holder specified.
-//
 func NewNewAttrList() *AttrList {
 	return &AttrList{}
 }
@@ -28,8 +26,7 @@ func NewAttrList(a ...*Attr) (aList *AttrList) {
 	return
 }
 
-//Add an attribute to an existing container.
-//
+// Add an attribute to an existing container.
 func (aList *AttrList) Add(attr *Attr) (err error) {
 	if attr == nil {
 		err = NilAttr
@@ -42,13 +39,13 @@ func (aList *AttrList) Add(attr *Attr) (err error) {
 	return
 }
 
-//Insert an attribute into an existing container in a particular
-//place, displacing any existing attributes if necessary.
+// Insert an attribute into an existing container in a particular
+// place, displacing any existing attributes if necessary.
 //
-//@param n    zero-based index at which the Attr is to be inserted
-//@param attr the attribute to be inserted
-//@throws IndexOutOfBoundsException if n is negative or out of range
-//@throws NullPointerException if the Attr argument is null
+// @param n    zero-based index at which the Attr is to be inserted
+// @param attr the attribute to be inserted
+// @throws IndexOutOfBoundsException if n is negative or out of range
+// @throws NullPointerException if the Attr argument is null
 //
 func (aList *AttrList) Insert(n uint, attr *Attr) (err error) {
 	if attr == nil {
@@ -70,11 +67,11 @@ func (aList *AttrList) Insert(n uint, attr *Attr) (err error) {
 	return
 }
 
-//Get the Nth attribute.
+// Get the Nth attribute.
 //
-//@param n index of the Attr to be returned
-//@return the Nth attr in the list
-//@throws IndexOutOfBoundsException
+// @param n index of the Attr to be returned
+// Return the Nth attr in the list
+// @throws IndexOutOfBoundsException
 //
 func (aList *AttrList) Get(n uint) (attr *Attr, err error) {
 	if n >= uint(len(aList.attrs)) {
@@ -85,23 +82,23 @@ func (aList *AttrList) Get(n uint) (attr *Attr, err error) {
 	return
 }
 
-//@return number of attrs in the list
-//
+// Return number of attrs in the list.
 func (aList *AttrList) Size() uint {
 	return uint(len(aList.attrs))
 }
 
 // PROPERTIES ///////////////////////////////////////////////////
-// @return the Element that the attribute belongs to//
+
+// Return the Element that the attribute belongs to//
 func (aList *AttrList) GetHolder() HolderI {
 	return aList.holder
 }
 
 //
-//Set the Holder for this attribute.  By definition the Holder
-//must be an XML Element.
+// Set the Holder for this attribute.  By definition the Holder
+// must be an XML Element.
 //
-//@param h the Holder being assigned
+// @param h the Holder being assigned
 //
 func (aList *AttrList) SetHolder(elm HolderI) {
 	e := elm.(*Element)
@@ -112,10 +109,10 @@ func (aList *AttrList) SetHolder(elm HolderI) {
 }
 
 // VISITOR-RELATED///////////////////////////////////////////////
-//
-//Walk a Visitor through the list of attributes, visiting each
-//in turn.
-//@param v the visitor
+
+// Walk a Visitor through the list of attributes, visiting each
+// in turn.
+// @param v the visitor
 //
 func (aList *AttrList) WalkAll(v VisitorI) (err error) {
 	for i := uint(0); i < aList.Size(); i++ {

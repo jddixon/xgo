@@ -4,7 +4,7 @@ package util
 
 import (
 	"fmt"
-	. "launchpad.net/gocheck"
+	. "gopkg.in/check.v1"
 	"reflect"
 	"unsafe"
 )
