@@ -19,7 +19,7 @@ var _ = fmt.Print
 //
 func (p *Parser) parseProlog() (err error) {
 
-	ch, err := p.NextCh()
+	var ch rune
 
 	// --------------------------------------------------------------
 	// BOM (Byte Order Mark) - not in the syntax graph, examines the
@@ -29,13 +29,13 @@ func (p *Parser) parseProlog() (err error) {
 	// --------------------------------------------------------------
 	// This block analyzes the very first byte in a document.
 	if err == nil && p.curEvent == START_DOCUMENT {
+		ch, err = p.NextCh()
 		// This is the first character of input, and so might be the
 		// unicode byte order mark (BOM)
 		if ch == '\uFFFE' {
 			panic("data in wrong byte order!")
-		} else if ch == '\uFEFF' {
-			// discard
-			ch, err = p.NextCh()
+		} else if ch != '\uFEFF' {
+			p.PushBack(ch)
 		}
 	}
 
@@ -45,6 +45,9 @@ func (p *Parser) parseProlog() (err error) {
 		var found bool
 		found, err = p.AcceptStr("<?xml")
 		if found {
+			// DEBUG
+			fmt.Println("parseProlog: '<?xml' SEEN")
+			// END
 			err = p.parseXmlDecl()
 		}
 	}
@@ -56,6 +59,7 @@ func (p *Parser) parseProlog() (err error) {
 	// optional (doctypedecl followed by zero or more Misc
 
 	if err == nil {
+		ch, err = p.NextCh()
 		p.afterLT = false
 		gotS := false
 		for err == nil {
@@ -121,6 +125,11 @@ func (p *Parser) parseProlog() (err error) {
 				} else if isNameStartChar(ch) {
 					p.rootElmSeen = true
 					p.PushBack(ch)
+					// DEBUG
+					fmt.Printf(
+						"parseProlog: '%c' seen, invoking parseStartTag\n", ch)
+					// END
+
 					// XXX RETURNS PullEvent, error; these are lost!
 					p.parseStartTag()
 					break

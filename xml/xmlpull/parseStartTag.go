@@ -23,7 +23,6 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		name, prefix           string
 	)
 
-	p.elmDepth++
 	p.isEmptyElement = false
 	attrCount := 0 // so far
 
@@ -34,10 +33,6 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		// DIJKSTRA
 	}
 	for err == nil {
-		ch, err = p.NextCh()
-		if err != nil {
-			break
-		}
 		if !isNameChar(ch) {
 			break
 		}
@@ -56,12 +51,18 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		} else {
 			nameRunes = append(nameRunes, ch)
 		}
+		ch, err = p.NextCh()
 	}
+	// DEBUG
+	fmt.Printf("parseStartTag: tag is '%s'; elmDepth is %d\n",
+		string(nameRunes), p.elmDepth)
+	// END
+
 	// we have a name and may have a prefix
 	if err == nil {
-		// ensureElementsCapacity()			// XXX MPLEMENT ???
-		p.elRawName[p.elmDepth] = nameRunes
-		p.elRawNameLine[p.elmDepth] = p.lineNo
+		// ensureElementsCapacity()			// XXX IMPLEMENT ???
+		p.elRawName = append(p.elRawName, nameRunes)
+		p.elRawNameLine = append(p.elRawNameLine, p.lineNo)
 
 		// work on prefixes and namespace URI
 		if p.processNamespaces {
@@ -77,13 +78,11 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 			} else {
 				// prefix is empty
 				p.elPrefix[p.elmDepth] = ""
-				// XXX FIX ME
-				// p.elName[ p.elmDepth ] = newString(buf, nameStart - bufAbsoluteStart, elLen)
+				p.elName = append(p.elName, string(nameRunes))
 				name = p.elName[p.elmDepth]
 			}
 		} else {
-			// XXX FIX ME FIX ME
-			// p.elName[ p.elmDepth ] = newString(buf, nameStart - bufAbsoluteStart, elLen)
+			p.elName = append(p.elName, string(nameRunes))
 			name = p.elName[p.elmDepth]
 		}
 
@@ -205,7 +204,9 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 
 		_ = name // XXX MAJOR ERROR THAT THIS IS NOT USED
 
-		p.elNamespaceCount[p.elmDepth] = p.namespaceEnd
+		p.elNamespaceCount = append(p.elNamespaceCount, p.namespaceEnd)
+
+		p.elmDepth++
 
 		curEvent = START_TAG
 		p.curEvent = curEvent
