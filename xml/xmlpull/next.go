@@ -9,8 +9,6 @@ import (
 
 var _ = fmt.Print
 
-// [1] document ::= prolog element Misc*
-//
 func (p *Parser) Next() (PullEvent, error) {
 	p.tokenizing = false
 	return p.doNext()
@@ -21,10 +19,142 @@ func (p *Parser) NextToken() (PullEvent, error) {
 	return p.doNext()
 }
 
+// Parser.state is initialized in NewParser()
 func (p *Parser) doNext() (curEvent PullEvent, err error) {
 
-	p.text = p.text[:0] // clear the slice
+	var (
+		ch    rune
+		found bool
+	)
 
+	for err == nil {
+		p.text = p.text[:0] // clear the slice
+		switch p.state {
+		case PRE_START_DOC:
+			p.state = START_STATE
+			curEvent = START_DOCUMENT
+			return
+
+		case START_STATE:
+			// handle for xmlDecl is <?xml
+			found, err = p.AcceptStr("<?xml")
+			if err == nil {
+				if found {
+					err = p.parseXmlDecl()
+					if err == nil {
+						p.state = XML_DECL_SEEN
+					}
+				}
+			}
+			if err != nil {
+				return
+			}
+			fallthrough
+
+		case XML_DECL_SEEN:
+			// misc1:
+			// handle for comment is '<!-'
+			found, err = p.AcceptStr("<!-")
+			if err == nil {
+				if found {
+					err = p.parseComment()
+					if err == nil {
+						curEvent = COMMENT
+						if p.tokenizing {
+							return
+						} else {
+							// no change in state
+							continue
+						}
+					}
+				}
+			}
+			if err != nil {
+				return
+			}
+			// handle for PI is '<?'
+			found, err = p.AcceptStr("<?")
+			if err == nil {
+				if found {
+					found, err = p.parsePI()
+					if err == nil && found {
+						curEvent = PROCESSING_INSTRUCTION
+						if p.tokenizing {
+							return
+						} else {
+							// no change in state
+							continue
+						}
+					}
+				}
+			}
+			if err != nil {
+				return
+			}
+			// handle for S is IsS()
+			ch, err = p.PeekCh()
+			for err == nil && p.IsS(ch) {
+				p.text = append(p.text, ch) // ACCUMULATING WHITESPACE IN text
+			}
+			if err != nil {
+				return
+			}
+			// POSSIBLE EOF?
+			p.PushBack(ch)
+			if len(p.text) > 0 {
+				curEvent = IGNORABLE_WHITESPACE
+				if p.tokenizing {
+					return
+				} else {
+					// no change in state
+					continue
+				}
+			}
+			// handle for doctypedecl is '<!D
+			found, err = p.AcceptStr("<!D")
+			if err == nil {
+				if found {
+					err = p.parseDocTypeDecl()
+					if err == nil {
+						curEvent = DOCDECL
+						// change in state
+						p.state = DOC_DECL_SEEN
+						if p.tokenizing {
+							return
+						} else {
+							continue
+						}
+					}
+				}
+			}
+			if err != nil {
+				return
+			}
+
+			fallthrough
+
+		case DOC_DECL_SEEN:
+
+			// misc2: handles for comment, PI, S
+			// handle for rootStart is '<' plus start char
+
+		case START_ROOT_SEEN:
+			// deeper handlers
+
+			// handle for rootEnd is '/>'
+
+		case END_ROOT_SEEN:
+			// miscN: handlers for comment, PI, S
+			// otherwise require EOF
+			curEvent = END_DOCUMENT
+			p.state = PAST_END_DOC
+
+		case PAST_END_DOC:
+
+		}
+	}
+
+	// VESTIGIAL CODE ===============================================
 	if p.pastEndTag {
 		p.pastEndTag = false
 		p.elmDepth--

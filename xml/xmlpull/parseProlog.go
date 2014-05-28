@@ -21,42 +21,22 @@ func (p *Parser) parseProlog() (err error) {
 
 	var ch rune
 
-	// --------------------------------------------------------------
-	// BOM (Byte Order Mark) - not in the syntax graph, examines the
-	// very first byte in a document.  This code should precede the
-	// call to parseProlog(); look at the character and then panic,
-	// push it back, or discard it.
-	// --------------------------------------------------------------
-	// This block analyzes the very first byte in a document.
-	if err == nil && p.curEvent == START_DOCUMENT {
-		ch, err = p.NextCh()
-		// This is the first character of input, and so might be the
-		// unicode byte order mark (BOM)
-		if ch == '\uFFFE' {
-			panic("data in wrong byte order!")
-		} else if ch != '\uFEFF' {
-			p.PushBack(ch)
-		}
-	}
-
 	// optional XMLDecl ---------------------------------------------
-	if err == nil {
-		// if XMLDecl is present, it begins with "<?xml" followed by an S
-		var found bool
-		found, err = p.AcceptStr("<?xml")
-		if found {
-			// DEBUG
-			fmt.Println("parseProlog: '<?xml' SEEN")
-			// END
-			err = p.parseXmlDecl()
-		}
+	// if XMLDecl is present, it begins with "<?xml" followed by an S
+	var found bool
+	found, err = p.AcceptStr("<?xml")
+	if found {
+		// DEBUG
+		fmt.Println("parseProlog: '<?xml' SEEN")
+		// END
+		err = p.parseXmlDecl()
 	}
 
 	// zero or more Misc --------------------------------------------
 
 	// XXX STUB
 
-	// optional (doctypedecl followed by zero or more Misc
+	// optional (doctypedecl followed by zero or more Misc ----------
 
 	if err == nil {
 		ch, err = p.NextCh()
@@ -126,8 +106,8 @@ func (p *Parser) parseProlog() (err error) {
 					p.rootElmSeen = true
 					p.PushBack(ch)
 					// DEBUG
-					fmt.Printf(
-						"parseProlog: '%c' seen, invoking parseStartTag\n", ch)
+					fmt.Printf("parseProlog: '%c' seen and pushed back, "+
+						"invoking parseStartTag\n", ch)
 					// END
 
 					// XXX RETURNS PullEvent, error; these are lost!

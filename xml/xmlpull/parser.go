@@ -1,9 +1,12 @@
 package xmlpull
 
 import (
+	"fmt"
 	gl "github.com/jddixon/xgo/lex"
 	"io"
 )
+
+var _ = fmt.Println
 
 const (
 	READ_CHUNK_SIZE = 4096 // or multiple
@@ -13,13 +16,16 @@ const (
 //
 type Parser struct {
 	// VETTED FIELDS ////////////////////////////////////////////////
-	curEvent PullEvent //  defined in const.go
+	curEvent PullEvent   //  defined in const.go
+	state    ParserState // states also defined in const.go
 
 	// defined in the prolog
 	xmlDeclVersion, xmlDeclEncoding string
 	xmlDeclContent                  string
 	xmlDeclStandalone               bool
 	docTypeDecl                     string
+
+	// FIELDS MADE UNNECESSARY BY Parser.state //////////////////////
 
 	// doNext State -------------------------------------------------
 	isEmptyElement bool
@@ -123,7 +129,25 @@ func NewParser(reader io.Reader, encoding string) (p *Parser, err error) {
 			LexInput: *lx,
 		}
 		p.reset()
+		// --------------------------------------------------------------
+		// BOM (Byte Order Mark) - not in the syntax graph, examines the
+		// very first byte in a document.  This code should precede the
+		// call to parseProlog(); look at the character and then panic,
+		// push it back, or discard it.
+		// --------------------------------------------------------------
+		// This block analyzes the very first byte in a document.
+		var ch rune
+		ch, err = p.NextCh()
+		// This is the first character of input, and so might be the
+		// unicode byte order mark (BOM)
+		if ch == '\uFFFE' {
+			panic("data in wrong byte order!")
+		} else if ch != '\uFEFF' {
+			p.PushBack(ch)
+		}
+		p.state = PRE_START_DOC
 	}
+
 	return
 }
 

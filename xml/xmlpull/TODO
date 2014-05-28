@@ -1,8 +1,19 @@
 xgo/xml/xmlpull/TODO
 
+2014-05-28
+    * non-tokenizing rudimentary parser returns four event types:
+        {START,END}_DOCUMENT, {START,END}_TAG
+    * tokenizing rudimentary parser returns at least _ event types:
+        {START,END}_DOCUMENT, {START,END}_TAG plus
+        PROCESSING_INSTRUCTION, COMMENT, DOCDECL
+        
+2014-05-27
+    * delete local pull branch
+    * test handling of BOM
+
 2014-05-26
     * implement IsS() which accepts only 0x20, 0x9, 0xa, 0xd            * DONE
-    * replace all u.IsSpace() with this
+    * replace all u.IsSpace() with this                                 * DONE
 2014-05-25
     * REVIEW decision to always set p.curEvent when returning
         curEvent
@@ -10,7 +21,7 @@ xgo/xml/xmlpull/TODO
 2014-05-24 (03-23, edited)
     * get rudimentary parser working (ISSUE#5)
         document ::= prolog element Misc*
-        element  ::= EmptyElemTag
+        element  ::= EmptyElemTag                                       * DONE
         prolog   ::= XMLDecl? Misc* (doctypedecl Misc*)? 
         Misc     ::= Comment | S
     * Misc* implemented as Parser.acceptMisc

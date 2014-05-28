@@ -14,8 +14,8 @@ import (
 
 // [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
 //
-// Function called after encountering <?xmlS at the beginning of the input,
-// where S as usual represents one or more spaces.
+// Function called after encountering <?xml at the beginning of the input.
+// THIS IS A CHANGE: handle was <?xmlS
 //
 func (p *Parser) parseXmlDecl() (err error) {
 

@@ -212,3 +212,30 @@ var PULL_EVENT_NAMES = []string{
 	"COMMENT",
 	"DOCDECL",
 }
+
+// parser states as used in Next() ----------------------------------
+// XXX STATES AND NAMES MUST BE KEPT SYNCHRONIZED
+
+type ParserState uint
+
+const (
+	PRE_START_DOC ParserState = iota
+	START_STATE
+	XML_DECL_SEEN
+	DOC_DECL_SEEN
+	START_ROOT_SEEN
+
+	END_ROOT_SEEN
+	PAST_END_DOC
+)
+
+var PARSER_STATE_NAMES = []string{
+	"PRE_START_DOC",
+	"START_STATE",
+	"XML_DECL_SEEN",
+	"DOC_DECL_SEEN",
+	"START_ROOT_SEEN",
+
+	"END_ROOT_SEEN",
+	"PAST_END_DOC",
+}
