@@ -33,9 +33,9 @@ func (s *XLSuite) TestBasicDecl(c *C) {
 
 	err = p.parseXmlDecl()
 	c.Assert(err, IsNil)
-	c.Assert(p.xmlDeclVersion, Equals, "1.0")
+	c.Assert(p.xmlVersion, Equals, "1.0")
 	c.Assert(p.xmlDeclStandalone, Equals, false)
-	c.Assert(p.xmlDeclEncoding, Equals, "")
+	c.Assert(p.xmlEncoding, Equals, "")
 }
 func (s *XLSuite) TestSpaceyBasicDecl(c *C) {
 
@@ -51,9 +51,9 @@ func (s *XLSuite) TestSpaceyBasicDecl(c *C) {
 
 	err = p.parseXmlDecl()
 	c.Assert(err, IsNil)
-	c.Assert(p.xmlDeclVersion, Equals, "1.0")
+	c.Assert(p.xmlVersion, Equals, "1.0")
 	c.Assert(p.xmlDeclStandalone, Equals, false)
-	c.Assert(p.xmlDeclEncoding, Equals, "")
+	c.Assert(p.xmlEncoding, Equals, "")
 }
 func (s *XLSuite) TestDeclWithEncoding(c *C) {
 
@@ -69,9 +69,9 @@ func (s *XLSuite) TestDeclWithEncoding(c *C) {
 
 	err = p.parseXmlDecl()
 	c.Assert(err, IsNil)
-	c.Assert(p.xmlDeclVersion, Equals, "1.0")
+	c.Assert(p.xmlVersion, Equals, "1.0")
 	c.Assert(p.xmlDeclStandalone, Equals, false)
-	c.Assert(p.xmlDeclEncoding, Equals, "utf-8")
+	c.Assert(p.xmlEncoding, Equals, "utf-8")
 }
 func (s *XLSuite) TestStandaloneDecl(c *C) {
 
@@ -87,9 +87,9 @@ func (s *XLSuite) TestStandaloneDecl(c *C) {
 
 	err = p.parseXmlDecl()
 	c.Assert(err, IsNil)
-	c.Assert(p.xmlDeclVersion, Equals, "1.0")
+	c.Assert(p.xmlVersion, Equals, "1.0")
 	c.Assert(p.xmlDeclStandalone, Equals, true)
-	c.Assert(p.xmlDeclEncoding, Equals, "")
+	c.Assert(p.xmlEncoding, Equals, "")
 }
 func (s *XLSuite) TestFullDecl(c *C) {
 
@@ -105,7 +105,7 @@ func (s *XLSuite) TestFullDecl(c *C) {
 
 	err = p.parseXmlDecl()
 	c.Assert(err, IsNil)
-	c.Assert(p.xmlDeclVersion, Equals, "1.0")
+	c.Assert(p.xmlVersion, Equals, "1.0")
 	c.Assert(p.xmlDeclStandalone, Equals, true)
-	c.Assert(p.xmlDeclEncoding, Equals, "utf-8")
+	c.Assert(p.xmlEncoding, Equals, "utf-8")
 }

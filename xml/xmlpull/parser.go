@@ -20,10 +20,10 @@ type Parser struct {
 	state    ParserState // states also defined in const.go
 
 	// defined in the prolog
-	xmlDeclVersion, xmlDeclEncoding string
-	xmlDeclContent                  string
-	xmlDeclStandalone               bool
-	docTypeDecl                     string
+	xmlVersion, xmlEncoding string
+	xmlDeclContent          string
+	xmlDeclStandalone       bool
+	docTypeDecl             string
 
 	// FIELDS MADE UNNECESSARY BY Parser.state //////////////////////
 

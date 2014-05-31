@@ -1,11 +1,18 @@
 xgo/xml/xmlpull/TODO
 
+2014-05-30
+    * FIX: minimalDoc_test is looping
+
 2014-05-28
     * non-tokenizing rudimentary parser returns four event types:
         {START,END}_DOCUMENT, {START,END}_TAG
     * tokenizing rudimentary parser returns at least _ event types:
         {START,END}_DOCUMENT, {START,END}_TAG plus
         PROCESSING_INSTRUCTION, COMMENT, DOCDECL
+    * need thorough tests of proper handling of xmlDecl, Misc*, 
+        doctypedecl, attribute-less empty element; these can live
+        in minimalDoc_test.go
+    * need to factor out detection and handling of Misc*
         
 2014-05-27
     * delete local pull branch

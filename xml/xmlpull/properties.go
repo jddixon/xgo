@@ -195,7 +195,7 @@ func (xpp *Parser) getProperty(name string) (object interface{}, err error) {
 		err = xpp.NewXmlPullError("property name must not be empty")
 	} else {
 		if PROPERTY_XMLDECL_VERSION == name {
-			object = xpp.xmlDeclVersion
+			object = xpp.xmlVersion
 		} else if PROPERTY_XMLDECL_STANDALONE == name {
 			object = xpp.xmlDeclStandalone
 		} else if PROPERTY_XMLDECL_CONTENT == name {

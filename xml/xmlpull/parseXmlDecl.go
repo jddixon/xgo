@@ -20,9 +20,14 @@ import (
 func (p *Parser) parseXmlDecl() (err error) {
 
 	var (
-		ch, quoteCh rune
+		ch, quoteCh    rune
+		vRunes, eRunes []rune
 	)
 	// We must be on the first S past <?xml
+
+	// DEBUG
+	fmt.Println("entering parseXmlDecl")
+	// END
 
 	// [24] VersionInfo ::= S 'version' Eq ("'" VersionNum "'" |
 	//                                      '"' VersionNum '"')
@@ -39,9 +44,8 @@ func (p *Parser) parseXmlDecl() (err error) {
 
 	// [26] VersionNum ::= ([a-zA-Z0-9_.:] | '-')+
 	//
-	// Expect a valid version number; unless err, write it to p.xmlDeclVersion.
+	// Expect a valid version number; unless err, write it to p.xmlVersion.
 	if err == nil {
-		var vRunes []rune
 		ch, err = p.NextCh()
 		for err == nil && ch != quoteCh {
 			if ('a' <= ch && ch <= 'z') ||
@@ -59,8 +63,8 @@ func (p *Parser) parseXmlDecl() (err error) {
 		}
 		if err == nil {
 			// ch is guaranteed to be quoteCh
-			p.xmlDeclVersion = string(vRunes)
-			if p.xmlDeclVersion != "1.0" {
+			p.xmlVersion = string(vRunes)
+			if p.xmlVersion != "1.0" {
 				err = OnlyVersion1_0
 			}
 		}
@@ -79,7 +83,6 @@ func (p *Parser) parseXmlDecl() (err error) {
 		found, err = p.AcceptStr("encoding")
 		if err == nil {
 			if found {
-				var eRunes []rune
 				err = p.expectEq()
 				if err == nil {
 					var eStartCh, eNameCh rune
@@ -101,7 +104,7 @@ func (p *Parser) parseXmlDecl() (err error) {
 					}
 				}
 				if err == nil {
-					p.xmlDeclEncoding = string(eRunes)
+					p.xmlEncoding = string(eRunes)
 				}
 			}
 		}
@@ -149,6 +152,11 @@ func (p *Parser) parseXmlDecl() (err error) {
 		p.SkipS()
 		err = p.ExpectStr("?>")
 	}
+	// DEBUG
+	fmt.Printf("exiting parseXmlDecl, version %s, encoding %s\n",
+		string(vRunes), string(eRunes))
+	// END
+
 	return
 }
 
@@ -178,6 +186,9 @@ func (p *Parser) _getEncodingStartCh() (ch rune, err error) {
 
 func (p *Parser) _getEncodingNameCh(quoteCh rune) (ch rune, err error) {
 	ch, err = p.NextCh()
+	// DEBUG
+	fmt.Printf("  getEncodingNameCh: '%c'\n", ch)
+	// END
 	if err == nil && ch != quoteCh {
 		if !('a' <= ch && ch <= 'z') && !('A' <= ch && ch <= 'Z') &&
 			!('0' <= ch && ch <= '9') && (ch != '.') && (ch != '_') &&

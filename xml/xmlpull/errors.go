@@ -14,6 +14,7 @@ var (
 	IndexOutOfBounds         = e.New("XmlPullParser index out of bounds")
 	IOError                  = e.New("XmlPullParser io error")
 	MissingDeclClosingQuote  = e.New("missing closing quote in xml decl")
+	MissingRootElement       = e.New("xml document missing root element")
 	MustBeYesOrNo            = e.New("standalone choice must be yes or no")
 	NilReader                = e.New("nil reader argument")
 	NotOnStartTag            = e.New("XmlPullParser not on start tag")

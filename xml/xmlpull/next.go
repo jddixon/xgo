@@ -28,7 +28,9 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 	)
 
 	for err == nil {
-		p.text = p.text[:0] // clear the slice
+		// DEBUG
+		fmt.Printf("doNext: state == %s\n", PARSER_STATE_NAMES[p.state])
+		// END
 		switch p.state {
 		case PRE_START_DOC:
 			p.state = START_STATE
@@ -38,6 +40,9 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 		case START_STATE:
 			// handle for xmlDecl is <?xml
 			found, err = p.AcceptStr("<?xml")
+			// DEBUG
+			fmt.Printf("    <?xml found = %v\n", found)
+			// END
 			if err == nil {
 				if found {
 					err = p.parseXmlDecl()
@@ -52,68 +57,37 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			fallthrough
 
 		case XML_DECL_SEEN:
-			// misc1:
-			// handle for comment is '<!-'
-			found, err = p.AcceptStr("<!-")
-			if err == nil {
-				if found {
-					err = p.parseComment()
-					if err == nil {
-						curEvent = COMMENT
-						if p.tokenizing {
-							return
-						} else {
-							// no change in state
-							continue
-						}
-					}
-				}
-			}
-			if err != nil {
-				return
-			}
-			// handle for PI is '<?'
-			found, err = p.AcceptStr("<?")
-			if err == nil {
-				if found {
-					found, err = p.parsePI()
-					if err == nil && found {
-						curEvent = PROCESSING_INSTRUCTION
-						if p.tokenizing {
-							return
-						} else {
-							// no change in state
-							continue
-						}
-					}
-				}
-			}
-			if err != nil {
-				return
-			}
-			// handle for S is IsS()
-			ch, err = p.PeekCh()
-			for err == nil && p.IsS(ch) {
-				p.text = append(p.text, ch) // ACCUMULATING WHITESPACE IN text
-			}
-			if err != nil {
-				return
-			}
-			// POSSIBLE EOF?
-			p.PushBack(ch)
-			if len(p.text) > 0 {
-				curEvent = IGNORABLE_WHITESPACE
-				if p.tokenizing {
+			// DEBUG
+			fmt.Println("fell through to check for XML_DECL_SEEN handles")
+			fmt.Println("  checking for comment")
+			// END
+
+			// Misc1: ===============================================
+			miscFound := true
+			for err == nil && miscFound {
+				miscFound, curEvent, err = p.acceptMisc()
+				if miscFound && p.tokenizing {
 					return
-				} else {
-					// no change in state
-					continue
 				}
 			}
+			if err != nil {
+				return
+			}
+
+			// END Misc1 ============================================
+
+			// DEBUG
+			fmt.Println("  checking for DOCDECL")
+			// END
+
 			// handle for doctypedecl is '<!D
-			found, err = p.AcceptStr("<!D")
+			var docDeclFound bool
+			docDeclFound, err = p.AcceptStr("<!D")
 			if err == nil {
-				if found {
+				if docDeclFound {
+					// DEBUG
+					fmt.Println("docDeclFound DOC_TYPE_DECL")
+					// END
 					err = p.parseDocTypeDecl()
 					if err == nil {
 						curEvent = DOCDECL
@@ -130,26 +104,77 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			if err != nil {
 				return
 			}
+			if !docDeclFound {
+				p.state = EXPECT_START_ROOT
+				continue
+			}
+
+			// DEBUG
+			fmt.Println("falling through to DOC_DECL_SEEN")
+			// END
 
 			fallthrough
 
 		case DOC_DECL_SEEN:
 
-			// misc2: handles for comment, PI, S
-			// handle for rootStart is '<' plus start char
+			// Misc2: ===============================================
+			miscFound := true
+			for err == nil && miscFound {
+				miscFound, curEvent, err = p.acceptMisc()
+				if miscFound && p.tokenizing {
+					return
+				}
+			}
+			if err != nil {
+				return
+			}
+
+			// state becomes EXPECT START_ROOT
+			p.state = EXPECT_START_ROOT
+			fallthrough
+
+		case EXPECT_START_ROOT:
+			// DEBUG
+			fmt.Println("EXPECT_START_ROOT: looking for START_ROOT handles")
+			// END
+			ch, err = p.NextCh()
+			if err == nil {
+				// handle for rootStart is '<' plus start char
+				if ch == '<' {
+					ch, err = p.NextCh()
+					if err == nil {
+						curEvent, err = p.parseStartTag()
+					}
+				} else {
+					err = MissingRootElement
+				}
+			}
+			return
 
 		case START_ROOT_SEEN:
+			// DEBUG
+			fmt.Println("looking for START_ROOT_SEEN handles")
+			// END
+
 			// deeper handlers
 
 			// handle for rootEnd is '/>'
 
 		case END_ROOT_SEEN:
+			// DEBUG
+			fmt.Println("looking for END_ROOT_SEEN handles")
+			// END
+
 			// miscN: handlers for comment, PI, S
 			// otherwise require EOF
 			curEvent = END_DOCUMENT
 			p.state = PAST_END_DOC
 
 		case PAST_END_DOC:
+
+			// DEBUG
+			fmt.Println("looking for PAST_END_DOC handles ???")
+			// END
 
 		}
 	}
@@ -417,6 +442,72 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			}
 			ch, err = p.NextCh()
 		} // endless for err == nil
+	}
+	return
+}
+
+// Accept zero or one Misc productions, returning miscFound == true if one
+// is found.
+//
+func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
+	var found bool
+
+	// handle for comment is '<!-' --------------------------
+	found, err = p.AcceptStr("<!-")
+	if err == nil {
+		if found {
+			// DEBUG
+			fmt.Println("state XML_DECL_SEEN: found COMMENT")
+			// END
+			err = p.parseComment()
+			if err == nil {
+				curEvent = COMMENT
+				miscFound = true
+			}
+		}
+	}
+	// handle for PI is '<?' --------------------------------
+	if !miscFound && err == nil {
+		// DEBUG
+		fmt.Println("  checking for PI")
+		// END
+
+		found, err = p.AcceptStr("<?")
+		if err == nil {
+			if found {
+				// DEBUG
+				fmt.Println("found PROCESSING_INSTRUCTION")
+				// END
+				found, err = p.parsePI()
+				if err == nil && found {
+					curEvent = PROCESSING_INSTRUCTION
+					miscFound = true
+				}
+			}
+		}
+	}
+	if !miscFound && err == nil {
+		// DEBUG
+		fmt.Println("  checking for S")
+		// END
+		p.text = p.text[:0] // clear the slice
+
+		// handle for S is IsS() --------------------------------
+		var ch rune
+		ch, err = p.NextCh()
+		for err == nil && p.IsS(ch) {
+			p.text = append(p.text, ch) // ACCUMULATING WHITESPACE IN text
+			ch, err = p.NextCh()
+		}
+		if err == nil {
+			// POSSIBLE EOF?
+			p.PushBack(ch)
+
+			if len(p.text) > 0 {
+				curEvent = IGNORABLE_WHITESPACE
+				miscFound = true
+			}
+		}
 	}
 	return
 }
