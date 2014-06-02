@@ -29,7 +29,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 
 	for err == nil {
 		// DEBUG
-		fmt.Printf("doNext: state == %s\n", PARSER_STATE_NAMES[p.state])
+		fmt.Printf("\nDO_NEXT: state == %s\n", PARSER_STATE_NAMES[p.state])
 		// END
 		switch p.state {
 		case PRE_START_DOC:
@@ -59,7 +59,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 		case XML_DECL_SEEN:
 			// DEBUG
 			fmt.Println("fell through to check for XML_DECL_SEEN handles")
-			fmt.Println("  checking for comment")
+			fmt.Println("  checking for Misc1")
 			// END
 
 			// Misc1: ===============================================
@@ -67,6 +67,10 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			for err == nil && miscFound {
 				miscFound, curEvent, err = p.acceptMisc()
 				if miscFound && p.tokenizing {
+					// DEBUG
+					fmt.Printf("    MISC FOUND; curEvent := %s\n",
+						PULL_EVENT_NAMES[curEvent])
+					// END
 					return
 				}
 			}
@@ -442,72 +446,6 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			}
 			ch, err = p.NextCh()
 		} // endless for err == nil
-	}
-	return
-}
-
-// Accept zero or one Misc productions, returning miscFound == true if one
-// is found.
-//
-func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
-	var found bool
-
-	// handle for comment is '<!-' --------------------------
-	found, err = p.AcceptStr("<!-")
-	if err == nil {
-		if found {
-			// DEBUG
-			fmt.Println("state XML_DECL_SEEN: found COMMENT")
-			// END
-			err = p.parseComment()
-			if err == nil {
-				curEvent = COMMENT
-				miscFound = true
-			}
-		}
-	}
-	// handle for PI is '<?' --------------------------------
-	if !miscFound && err == nil {
-		// DEBUG
-		fmt.Println("  checking for PI")
-		// END
-
-		found, err = p.AcceptStr("<?")
-		if err == nil {
-			if found {
-				// DEBUG
-				fmt.Println("found PROCESSING_INSTRUCTION")
-				// END
-				found, err = p.parsePI()
-				if err == nil && found {
-					curEvent = PROCESSING_INSTRUCTION
-					miscFound = true
-				}
-			}
-		}
-	}
-	if !miscFound && err == nil {
-		// DEBUG
-		fmt.Println("  checking for S")
-		// END
-		p.text = p.text[:0] // clear the slice
-
-		// handle for S is IsS() --------------------------------
-		var ch rune
-		ch, err = p.NextCh()
-		for err == nil && p.IsS(ch) {
-			p.text = append(p.text, ch) // ACCUMULATING WHITESPACE IN text
-			ch, err = p.NextCh()
-		}
-		if err == nil {
-			// POSSIBLE EOF?
-			p.PushBack(ch)
-
-			if len(p.text) > 0 {
-				curEvent = IGNORABLE_WHITESPACE
-				miscFound = true
-			}
-		}
 	}
 	return
 }

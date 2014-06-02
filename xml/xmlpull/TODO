@@ -1,7 +1,21 @@
 xgo/xml/xmlpull/TODO
 
+2014-05-31
+    * minimalDoc_test needs to be elaborated to include
+        - randomized Misc1 after XMLDecl?
+            * newlines should be IGNORABLE_WHITESPACE
+            * Misc should be nothing or zeor or more S or Comment 
+                or PI
+        - doctypedecl optionally present or absent
+        - randomized Misc2 after doctypedecl if present
+        - randomized MiscN after empty element
+    * so terminating newlines must be removed from XML_DECL and         * DONE
+        DOCTYPE_DECL in minimalDoc_test.go (but possibly added          * DONE
+        back in as Misc*)                                               * DONE
+        - fix the test failure that this causes!
+
 2014-05-30
-    * FIX: minimalDoc_test is looping
+    * FIX: minimalDoc_test is looping                                   * FIXED
 
 2014-05-28
     * non-tokenizing rudimentary parser returns four event types:
