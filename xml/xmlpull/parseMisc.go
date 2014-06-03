@@ -63,6 +63,10 @@ func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
 			if len(p.text) > 0 {
 				curEvent = IGNORABLE_WHITESPACE
 				miscFound = true
+				// DEBUG
+				fmt.Printf("  exiting acceptMisc(): IGNORABLE, len %d, '%s'\n",
+					len(p.text), string(p.text))
+				// END
 			}
 		}
 	}

@@ -1,5 +1,13 @@
 xgo/xml/xmlpull/TODO
 
+2014-06-01
+    * minimalDocTest sometimes fails because of unexpected S when
+        collecting Misc1 - for example ' \n\r\n ' has become ' '
+        or '\r\r\r\r has become '\r\r' or ' \t\t\n ' is '\t'
+        (about 1 in 6-9 failure rate)
+    * parseMisc_test.go: set initial state, devise way to specify
+        state if no Misc found
+
 2014-05-31
     * minimalDoc_test needs to be elaborated to include
         - randomized Misc1 after XMLDecl?
