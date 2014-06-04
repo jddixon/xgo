@@ -110,7 +110,7 @@ func main() {
 					err = nil
 				}
 				if err == nil {
-					html := []byte(string(doc.Get()))
+					html := []byte(string(doc.GetHtml()))
 					err = ioutil.WriteFile(outFile, html, 0666)
 				}
 			}
