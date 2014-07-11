@@ -12,7 +12,7 @@ xgo/xml/xmlpull/TODO
     * minimalDoc_test needs to be elaborated to include
         - randomized Misc1 after XMLDecl?
             * newlines should be IGNORABLE_WHITESPACE
-            * Misc should be nothing or zeor or more S or Comment 
+            * Misc should be nothing or zero or more S or Comment 
                 or PI
         - doctypedecl optionally present or absent
         - randomized Misc2 after doctypedecl if present
