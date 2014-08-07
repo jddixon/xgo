@@ -21,6 +21,9 @@ const (
 
 func (s *XLSuite) TestBasicDecl(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_BASIC_DECL")
+	}
 	var rd1 io.Reader = strings.NewReader(BASIC_DECL)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -39,6 +42,9 @@ func (s *XLSuite) TestBasicDecl(c *C) {
 }
 func (s *XLSuite) TestSpaceyBasicDecl(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_SPACEY_BASIC_DECL")
+	}
 	var rd1 io.Reader = strings.NewReader(SPACEY_BASIC_DECL)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -57,6 +63,9 @@ func (s *XLSuite) TestSpaceyBasicDecl(c *C) {
 }
 func (s *XLSuite) TestDeclWithEncoding(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_DECL_WITH_ENCODING")
+	}
 	var rd1 io.Reader = strings.NewReader(DECL_WITH_ENCODING)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -75,6 +84,9 @@ func (s *XLSuite) TestDeclWithEncoding(c *C) {
 }
 func (s *XLSuite) TestStandaloneDecl(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_STANDALONE_DECL")
+	}
 	var rd1 io.Reader = strings.NewReader(STANDALONE_DECL)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -93,6 +105,9 @@ func (s *XLSuite) TestStandaloneDecl(c *C) {
 }
 func (s *XLSuite) TestFullDecl(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_FULL_DECL")
+	}
 	var rd1 io.Reader = strings.NewReader(FULL_DECL)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)

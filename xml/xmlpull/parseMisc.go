@@ -2,6 +2,7 @@ package xmlpull
 
 import (
 	"fmt"
+	"io"
 )
 
 // xgo/xml/xmlpull/parseMisc.go
@@ -53,13 +54,21 @@ func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
 		var ch rune
 		ch, err = p.NextCh()
 		for err == nil && p.IsS(ch) {
+			// DEBUG
+			fmt.Printf("    got S 0x%02x, err %v\n", ch, err)
+			// END
 			p.text = append(p.text, ch) // ACCUMULATING WHITESPACE IN text
 			ch, err = p.NextCh()
 		}
-		if err == nil {
-			// POSSIBLE EOF?
-			p.PushBack(ch)
-
+		// DEBUG
+		fmt.Printf("S-count = %d\n", len(p.text))
+		// END
+		if (err == nil) || (err == io.EOF)  {
+			if err == io.EOF {
+				err = nil
+			} else {
+				p.PushBack(ch)
+			}
 			if len(p.text) > 0 {
 				curEvent = IGNORABLE_WHITESPACE
 				miscFound = true
@@ -70,5 +79,9 @@ func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
 			}
 		}
 	}
+	// DEBUG
+	fmt.Printf ("acceptMisc returning curEvent %d, error %v\n", 
+		curEvent, err)
+	// END
 	return
 }

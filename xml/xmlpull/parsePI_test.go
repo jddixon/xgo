@@ -21,6 +21,9 @@ const (
 
 func (s *XLSuite) TestSimplePI(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_SIMPLE_PI")
+	}
 	var rd1 io.Reader = strings.NewReader(SIMPLE_PI)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -40,6 +43,9 @@ func (s *XLSuite) TestSimplePI(c *C) {
 
 func (s *XLSuite) TestMidQmarkPI(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_MID_QMARK_PI")
+	}
 	var rd1 io.Reader = strings.NewReader(MID_QMARK_PI)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -59,6 +65,9 @@ func (s *XLSuite) TestMidQmarkPI(c *C) {
 
 func (s *XLSuite) TestDashQMarkAtEnd(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_DASH_QMARK_PI")
+	}
 	var rd1 io.Reader = strings.NewReader(DASH_QMARK_AT_END)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -77,6 +86,9 @@ func (s *XLSuite) TestDashQMarkAtEnd(c *C) {
 
 func (s *XLSuite) TestEndlessPI(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_ENDLESS_PI")
+	}
 	var rd1 io.Reader = strings.NewReader(ENDLESS_PI)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)

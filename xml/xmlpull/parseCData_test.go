@@ -20,6 +20,9 @@ const (
 
 func (s *XLSuite) TestSimpleCDSect(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_SIMPLE_CD_SECT")
+	}
 	var rd1 io.Reader = strings.NewReader(SIMPLE_CDSECT)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -38,6 +41,9 @@ func (s *XLSuite) TestSimpleCDSect(c *C) {
 
 func (s *XLSuite) TestTwoBracketCDSect(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_TWO_BRACKET_CD_SECT")
+	}
 	var rd1 io.Reader = strings.NewReader(TWO_BRACKET_CDSECT)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)
@@ -56,6 +62,9 @@ func (s *XLSuite) TestTwoBracketCDSect(c *C) {
 
 func (s *XLSuite) TestEndlessCDSect(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_ENDLESS_CD_SECT")
+	}
 	var rd1 io.Reader = strings.NewReader(ENDLESS_CDSECT)
 	p, err := NewNewParser(rd1) // accept default encoding
 	c.Assert(err, IsNil)

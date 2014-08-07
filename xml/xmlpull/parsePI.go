@@ -2,7 +2,8 @@ package xmlpull
 
 import (
 	"fmt"
-	"strings"
+	"io"
+	//"strings"
 )
 
 var _ = fmt.Print
@@ -104,7 +105,9 @@ func (p *Parser) parsePI() (isPI bool, err error) {
 	}
 	if (err == nil && !endSeen) ||
 		// not a terribly robust test
-		(err != nil && strings.HasSuffix(err.Error(), ": EOF")) {
+		// (err != nil && strings.HasSuffix(err.Error(), ": EOF")) {
+		err == io.EOF {
+
 		err = p.NotClosedErr("processing instruction")
 	}
 	if err == nil {

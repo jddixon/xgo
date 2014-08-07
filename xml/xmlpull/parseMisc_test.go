@@ -4,6 +4,7 @@ package xmlpull
 
 import (
 	"fmt"
+	"io"
 	xr "github.com/jddixon/rnglib_go"
 	. "gopkg.in/check.v1"
 	"strings"
@@ -71,7 +72,7 @@ func (s *XLSuite) createMiscItems(rng *xr.PRNG) (items []*MiscItem) {
 	for i := 0; i < count; i++ {
 		items = append(items, s.createMiscItem(rng))
 	}
-	return
+	return 
 }
 func (s *XLSuite) textFromMISlice(items []*MiscItem) string {
 	var ss []string
@@ -121,12 +122,15 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 	// THIS IS OUR OWN LOCAL COPY OF THE EVENT, NOT p.curEvent
 	//////////////////////////////////////////////////////////
 	event, err := p.NextToken()
-	c.Assert(err, IsNil)
+	if err != io.EOF {
+		c.Assert(err, IsNil)
+	}
 
-	for i := 0; i < len(misc1); i++ {
+	lenMisc := len(misc1)
+	for i := 0; i < lenMisc; i++ {
 		// DEBUG
-		fmt.Printf("Misc[%d]: event is %s\n",
-			i, PULL_EVENT_NAMES[event])
+		fmt.Printf("Misc[%d/%d]: event is %s\n",
+			i, lenMisc, PULL_EVENT_NAMES[event])
 		// END
 		misc := misc1[i]
 		t := misc._type
@@ -144,12 +148,32 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 		case MISC_PI:
 			c.Assert(string(p.piChars), Equals, misc.body)
 		case MISC_S:
+			// DEBUG
+			fmt.Printf("p.text is    '%s'\n", 
+				s.dumpWhiteSpace(string(p.text)))
+			fmt.Printf("misc.body is '%s'\n", 
+				s.dumpWhiteSpace(string(misc.body)))
+			// END
 			c.Assert(string(p.text), Equals, misc.body)
 		}
 		event, err = p.NextToken()
 	}
 	return
 }
+func (s *XLSuite) dumpWhiteSpace(sIn string) (sOut string) {
+	var ss []string
+	// DEBUG
+	i := 0
+	_ = i
+	// END
+	for i := 0; i < len(sIn); i++ {
+		ch := sIn[i]
+		ss = append(ss, fmt.Sprintf("%02x", ch))
+	}
+	sOut = strings.Join(ss, " ")
+	return
+}
+	
 func (s *XLSuite) TestParseMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_MISC")
@@ -167,4 +191,10 @@ func (s *XLSuite) TestParseMisc(c *C) {
 	}
 	p, event := s.doTestParseMisc(c, s.textFromMISlice(misc), misc)
 	_, _ = p, event
+
+	// making sure that we all agree on what white space is
+	c.Assert( p.IsS('\t'), Equals, true)
+	c.Assert( p.IsS('\r'), Equals, true)
+	c.Assert( p.IsS('\n'), Equals, true)
+	c.Assert( p.IsS(' '), Equals, true)
 }

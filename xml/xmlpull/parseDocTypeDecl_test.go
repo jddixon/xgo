@@ -46,6 +46,9 @@ func (s *XLSuite) doTestParseDocTypeDecl(c *C, sample string) {
 }
 func (s *XLSuite) TestParseDocTypeDecl(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_PARSE_DOC_TYPE_DECL")
+	}
 	s.doTestParseDocTypeDecl(c, GENERAL_SYNTAX)
 	s.doTestParseDocTypeDecl(c, COMMON_EXAMPLE)
 	s.doTestParseDocTypeDecl(c, HTML5_EXAMPLE)

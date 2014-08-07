@@ -1,7 +1,7 @@
 package xmlpull
 
 import (
-	"strings"
+	"io"
 )
 
 // XML 1.0 Section 2.7 CDATA Sections
@@ -60,12 +60,10 @@ func (p *Parser) parseCDSect(hadCharData bool) (err error) {
 					}
 					cDataChars = append(cDataChars, ch)
 				}
-			}
+			} 
 		}
 	}
-	if (err == nil && !endSeen) ||
-		// not a terribly robust test
-		(err != nil && strings.HasSuffix(err.Error(), ": EOF")) {
+	if (err == nil && !endSeen) || err == io.EOF {
 		err = p.NotClosedErr("cData")
 	}
 	if err == nil {

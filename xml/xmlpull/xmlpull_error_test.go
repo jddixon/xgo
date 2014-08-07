@@ -13,6 +13,9 @@ var _ = fmt.Print
 
 func (s *XLSuite) TestXmlPullError(c *C) {
 
+	if VERBOSITY > 0 {
+		fmt.Println("TEST_XML_PULL_ERROR")
+	}
 	const (
 		ERR_MSG_1 = "test msg 1"
 		ERR_MSG_2 = "second test msg"

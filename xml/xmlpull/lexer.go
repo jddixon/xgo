@@ -48,7 +48,7 @@ func (p *Parser) ExpectS() (err error) {
 }
 
 func (p *Parser) ExpectStr(what string) (err error) {
-	lx := p.GetLexer()
+	lx    := p.GetLexer()
 	lxErr := lx.ExpectStr(what)
 	if lxErr != nil {
 		err = p.NewXmlPullError(lxErr.Error())
@@ -70,18 +70,17 @@ func (p *Parser) IsS(ch rune) bool {
 
 // Get the next character from the input.
 func (p *Parser) NextCh() (ch rune, err error) {
-	var lxErr error
-	ch, lxErr = p.GetLexer().NextCh()
-	if lxErr != nil {
-		err = p.NewXmlPullError(lxErr.Error())
+	ch, err = p.GetLexer().NextCh()
+	if err != nil && err != io.EOF {
+		err = p.NewXmlPullError(err.Error())
 	}
 	return
 }
 
 func (p *Parser) PeekCh() (r rune, err error) {
 	var lxErr error
-	r, lxErr = p.GetLexer().PeekCh()
-	if lxErr != nil {
+	r, err = p.GetLexer().PeekCh()
+	if err != nil && err != io.EOF {
 		err = p.NewXmlPullError(lxErr.Error())
 	}
 	return
