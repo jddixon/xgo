@@ -4,9 +4,9 @@ package xmlpull
 
 import (
 	"fmt"
-	"io"
 	xr "github.com/jddixon/rnglib_go"
 	. "gopkg.in/check.v1"
+	"io"
 	"strings"
 )
 
@@ -41,7 +41,13 @@ func (s *XLSuite) createMiscItem(rng *xr.PRNG) *MiscItem {
 	t := MiscType(rng.Intn(int(MISC_S) + 1))
 	switch t {
 	case MISC_COMMENT:
-		fallthrough
+		// The comment must not end with a dash
+		for {
+			body = rng.NextFileName(16) // a quasi-random string, len < 16
+			if !strings.HasSuffix(body, "-") {
+				break
+			}
+		}
 	case MISC_PI:
 		body = rng.NextFileName(16) // a quasi-random string, len < 16
 	case MISC_S:
@@ -69,10 +75,16 @@ func (s *XLSuite) createMiscItem(rng *xr.PRNG) *MiscItem {
 }
 func (s *XLSuite) createMiscItems(rng *xr.PRNG) (items []*MiscItem) {
 	count := rng.Intn(4) // so 0 to 3 inclusive
+	lastWasS := false
 	for i := 0; i < count; i++ {
-		items = append(items, s.createMiscItem(rng))
+		item := s.createMiscItem(rng)
+		for item._type == MISC_S && lastWasS {
+			item = s.createMiscItem(rng)
+		}
+		lastWasS = item._type == MISC_S
+		items = append(items, item)
 	}
-	return 
+	return
 }
 func (s *XLSuite) textFromMISlice(items []*MiscItem) string {
 	var ss []string
@@ -128,12 +140,12 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 
 	lenMisc := len(misc1)
 	for i := 0; i < lenMisc; i++ {
+		item := misc1[i]
 		// DEBUG
-		fmt.Printf("Misc[%d/%d]: event is %s\n",
-			i, lenMisc, PULL_EVENT_NAMES[event])
+		fmt.Printf("Misc[%d/%d]: event is %-20s, body is %s\n",
+			i, lenMisc, PULL_EVENT_NAMES[event], s.dumpStrAsHex(item.body))
 		// END
-		misc := misc1[i]
-		t := misc._type
+		t := item._type
 		if event != eventForMiscType[t] {
 			fmt.Printf(
 				"expected event %s for misc type %s but event is %s\n",
@@ -144,23 +156,23 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 		c.Assert(event, Equals, eventForMiscType[t])
 		switch t {
 		case MISC_COMMENT:
-			c.Assert(string(p.commentChars), Equals, misc.body)
+			c.Assert(string(p.commentChars), Equals, item.body)
 		case MISC_PI:
-			c.Assert(string(p.piChars), Equals, misc.body)
+			c.Assert(string(p.piChars), Equals, item.body)
 		case MISC_S:
 			// DEBUG
-			fmt.Printf("p.text is    '%s'\n", 
-				s.dumpWhiteSpace(string(p.text)))
-			fmt.Printf("misc.body is '%s'\n", 
-				s.dumpWhiteSpace(string(misc.body)))
+			fmt.Printf("p.text is    '%s'\n",
+				s.dumpStrAsHex(string(p.text)))
+			fmt.Printf("item.body is '%s'\n",
+				s.dumpStrAsHex(string(item.body)))
 			// END
-			c.Assert(string(p.text), Equals, misc.body)
+			c.Assert(string(p.text), Equals, item.body)
 		}
 		event, err = p.NextToken()
 	}
 	return
 }
-func (s *XLSuite) dumpWhiteSpace(sIn string) (sOut string) {
+func (s *XLSuite) dumpStrAsHex(sIn string) (sOut string) {
 	var ss []string
 	// DEBUG
 	i := 0
@@ -173,7 +185,7 @@ func (s *XLSuite) dumpWhiteSpace(sIn string) (sOut string) {
 	sOut = strings.Join(ss, " ")
 	return
 }
-	
+
 func (s *XLSuite) TestParseMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_MISC")
@@ -193,8 +205,8 @@ func (s *XLSuite) TestParseMisc(c *C) {
 	_, _ = p, event
 
 	// making sure that we all agree on what white space is
-	c.Assert( p.IsS('\t'), Equals, true)
-	c.Assert( p.IsS('\r'), Equals, true)
-	c.Assert( p.IsS('\n'), Equals, true)
-	c.Assert( p.IsS(' '), Equals, true)
+	c.Assert(p.IsS('\t'), Equals, true)
+	c.Assert(p.IsS('\r'), Equals, true)
+	c.Assert(p.IsS('\n'), Equals, true)
+	c.Assert(p.IsS(' '), Equals, true)
 }

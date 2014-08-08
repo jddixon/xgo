@@ -53,21 +53,28 @@ func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
 		// handle for S is IsS() --------------------------------
 		var ch rune
 		ch, err = p.NextCh()
-		for err == nil && p.IsS(ch) {
+		chIsS := p.IsS(ch)
+		for err == nil && chIsS {
 			// DEBUG
 			fmt.Printf("    got S 0x%02x, err %v\n", ch, err)
 			// END
 			p.text = append(p.text, ch) // ACCUMULATING WHITESPACE IN text
 			ch, err = p.NextCh()
+			chIsS = p.IsS(ch)
 		}
 		// DEBUG
 		fmt.Printf("S-count = %d\n", len(p.text))
 		// END
-		if (err == nil) || (err == io.EOF)  {
+		if (err == nil) || (err == io.EOF) {
 			if err == io.EOF {
 				err = nil
 			} else {
-				p.PushBack(ch)
+				// DEBUG
+				fmt.Printf("  pushing back 0x%02x\n", ch)
+				// END
+				if !chIsS {
+					p.PushBack(ch)
+				}
 			}
 			if len(p.text) > 0 {
 				curEvent = IGNORABLE_WHITESPACE
@@ -80,7 +87,7 @@ func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
 		}
 	}
 	// DEBUG
-	fmt.Printf ("acceptMisc returning curEvent %d, error %v\n", 
+	fmt.Printf("acceptMisc returning curEvent %d, error %v\n",
 		curEvent, err)
 	// END
 	return

@@ -60,7 +60,7 @@ func (p *Parser) parseCDSect(hadCharData bool) (err error) {
 					}
 					cDataChars = append(cDataChars, ch)
 				}
-			} 
+			}
 		}
 	}
 	if (err == nil && !endSeen) || err == io.EOF {

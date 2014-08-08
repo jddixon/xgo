@@ -12,18 +12,17 @@ import (
 
 func (p *Parser) AcceptStr(what string) (found bool, err error) {
 	lx := p.GetLexer()
-	found, lxErr := lx.AcceptStr(what)
-	if lxErr != nil {
-		err = p.NewXmlPullError(lxErr.Error())
+	found, err = lx.AcceptStr(what)
+	if err != nil {
+		err = p.NewXmlPullError(err.Error())
 	}
 	return
 }
 
 func (p *Parser) ExpectCh(ch rune) (err error) {
-	var lxErr error
-	lxErr = p.GetLexer().ExpectCh(ch)
-	if lxErr != nil {
-		err = p.NewXmlPullError(lxErr.Error())
+	err = p.GetLexer().ExpectCh(ch)
+	if err != nil {
+		err = p.NewXmlPullError(err.Error())
 	}
 	return
 }
@@ -32,9 +31,8 @@ func (p *Parser) ExpectCh(ch rune) (err error) {
 // any others silently.  This implementation never returns io.EOF.
 //
 func (p *Parser) ExpectS() (err error) {
-	var lxErr error
-	ch, lxErr := p.NextCh()
-	if lxErr == nil || lxErr == io.EOF {
+	ch, err := p.NextCh()
+	if err == nil {
 		if !p.IsS(ch) {
 			msg := fmt.Sprintf("expected XML space buf found '%c'", ch)
 			err = p.NewXmlPullError(msg)
@@ -42,16 +40,18 @@ func (p *Parser) ExpectS() (err error) {
 			p.SkipS()
 		}
 	} else {
-		err = p.NewXmlPullError(lxErr.Error())
+		err = p.NewXmlPullError(err.Error())
 	}
 	return
 }
 
 func (p *Parser) ExpectStr(what string) (err error) {
-	lx    := p.GetLexer()
-	lxErr := lx.ExpectStr(what)
-	if lxErr != nil {
-		err = p.NewXmlPullError(lxErr.Error())
+	if len(what) > 0 {
+		lx := p.GetLexer()
+		err = lx.ExpectStr(what)
+		if err != nil {
+			err = p.NewXmlPullError(err.Error())
+		}
 	}
 	return
 }
@@ -78,10 +78,9 @@ func (p *Parser) NextCh() (ch rune, err error) {
 }
 
 func (p *Parser) PeekCh() (r rune, err error) {
-	var lxErr error
 	r, err = p.GetLexer().PeekCh()
 	if err != nil && err != io.EOF {
-		err = p.NewXmlPullError(lxErr.Error())
+		err = p.NewXmlPullError(err.Error())
 	}
 	return
 }
