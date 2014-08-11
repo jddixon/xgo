@@ -1,5 +1,11 @@
 xgo/xml/xmlpull/TODO
 
+2014-08-07 (edited from 06-01)
+    * FIX: minimalDoclTest.TestParseBoth... is incomplete
+
+    * parseMisc_test.go: set initial state, devise way to specify
+        state if no Misc found
+
 2014-08-06
     * lexer.go handling of EOF is confused; get rid of lxErr            * DONE
 
@@ -14,14 +20,6 @@ xgo/xml/xmlpull/TODO
         comments with bodies ending in '-', causing occasional          * FIXED
         three-dashes-in-a-row erros                                     * FIXED
 
-2014-06-01
-    * minimalDocTest sometimes fails because of unexpected S when
-        collecting Misc1 - for example ' \n\r\n ' has become ' '
-        or '\r\r\r\r has become '\r\r' or ' \t\t\n ' is '\t'
-        (about 1 in 6-9 failure rate)
-    * parseMisc_test.go: set initial state, devise way to specify
-        state if no Misc found
-
 2014-05-31
     * minimalDoc_test needs to be elaborated to include
         - randomized Misc1 after XMLDecl?
@@ -35,9 +33,6 @@ xgo/xml/xmlpull/TODO
         DOCTYPE_DECL in minimalDoc_test.go (but possibly added          * DONE
         back in as Misc*)                                               * DONE
         - fix the test failure that this causes!
-
-2014-05-30
-    * FIX: minimalDoc_test is looping                                   * FIXED
 
 2014-05-28
     * non-tokenizing rudimentary parser returns four event types:
@@ -54,9 +49,6 @@ xgo/xml/xmlpull/TODO
     * delete local pull branch
     * test handling of BOM
 
-2014-05-26
-    * implement IsS() which accepts only 0x20, 0x9, 0xa, 0xd            * DONE
-    * replace all u.IsSpace() with this                                 * DONE
 2014-05-25
     * REVIEW decision to always set p.curEvent when returning
         curEvent

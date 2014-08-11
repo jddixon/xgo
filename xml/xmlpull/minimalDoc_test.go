@@ -1,6 +1,6 @@
 package xmlpull
 
-// xgo/xml/xmlpull/minimalDocl_test.go
+// xgo/xml/xmlpull/minimalDoc_test.go
 
 import (
 	"fmt"
@@ -118,7 +118,7 @@ func (s *XLSuite) aaaTestParseEmptyElm(c *C) {
 }
 
 // aaa effectively comments out this test
-func (s *XLSuite) aaaTestParseXmlDeclPlusElm(c *C) {
+func (s *XLSuite) TestParseXmlDeclPlusElm(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_XML_DECL_PLUS_ELM")
 	}
@@ -126,7 +126,7 @@ func (s *XLSuite) aaaTestParseXmlDeclPlusElm(c *C) {
 }
 
 // aaa effectively comments out this test
-func (s *XLSuite) aaaTestParseXmlDeclPlusElmPlusMisc(c *C) {
+func (s *XLSuite) TestParseXmlDeclPlusElmPlusMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_XML_DECL_PLUS_ELM_PLUS_MISC")
 	}
@@ -142,7 +142,7 @@ func (s *XLSuite) aaaTestParseXmlDeclPlusElmPlusMisc(c *C) {
 } // GEEP
 
 // aaa effectively comments out this test
-func (s *XLSuite) aaaTestParseBothDeclPlusElm(c *C) {
+func (s *XLSuite) TestParseBothDeclPlusElm(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_BOTH_DECL_PLUS_ELM")
 	}
@@ -150,7 +150,7 @@ func (s *XLSuite) aaaTestParseBothDeclPlusElm(c *C) {
 }
 
 // aaa effectively comments out this test
-func (s *XLSuite) aaaTestParseBothDeclPlusElmPlusMisc(c *C) {
+func (s *XLSuite) TestParseBothDeclPlusElmPlusMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_BOTH_DECL_PLUS_ELM_PLUS_MISC")
 	}
