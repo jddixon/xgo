@@ -82,11 +82,11 @@ func (s *XLSuite) doParseXmlDeclWithMisc(c *C, input string,
 		c.Assert(event, Equals, eventForMiscType[t])
 		switch t {
 		case MISC_COMMENT:
-			c.Assert(string(p.commentChars), Equals, misc.body)
+			c.Assert(string(p.commentChars), Equals, string(misc.body))
 		case MISC_PI:
-			c.Assert(string(p.piChars), Equals, misc.body)
+			c.Assert(string(p.piChars), Equals, string(misc.body))
 		case MISC_S:
-			c.Assert(string(p.text), Equals, misc.body)
+			c.Assert(string(p.text), Equals, string(misc.body))
 		}
 		event, err = p.NextToken()
 	}
@@ -109,15 +109,13 @@ func (s *XLSuite) doParseBothDecl(c *C, input string) (
 	return
 }
 
-// aaa effectively comments out this test
-func (s *XLSuite) aaaTestParseEmptyElm(c *C) {
+func (s *XLSuite) TestParseEmptyElm(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_EMPTY_ELM")
 	}
 	s.doInitialParse(c, EMPTY_ELM)
 }
 
-// aaa effectively comments out this test
 func (s *XLSuite) TestParseXmlDeclPlusElm(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_XML_DECL_PLUS_ELM")
@@ -125,7 +123,6 @@ func (s *XLSuite) TestParseXmlDeclPlusElm(c *C) {
 	s.doParseXmlDecl(c, XML_DECL+EMPTY_ELM)
 }
 
-// aaa effectively comments out this test
 func (s *XLSuite) TestParseXmlDeclPlusElmPlusMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_XML_DECL_PLUS_ELM_PLUS_MISC")
@@ -134,14 +131,12 @@ func (s *XLSuite) TestParseXmlDeclPlusElmPlusMisc(c *C) {
 	misc1 := s.createMiscItems(rng) // a small, possibly empty, slice
 	miscN := s.createMiscItems(rng) // a small, possibly empty, slice
 
-	// WORKING HERE
 	_, _ = misc1, miscN
 
 	s.doParseXmlDeclWithMisc(c, XML_DECL+s.textFromMISlice(misc1)+
 		EMPTY_ELM+s.textFromMISlice(miscN), misc1)
 } // GEEP
 
-// aaa effectively comments out this test
 func (s *XLSuite) TestParseBothDeclPlusElm(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_BOTH_DECL_PLUS_ELM")
@@ -149,7 +144,6 @@ func (s *XLSuite) TestParseBothDeclPlusElm(c *C) {
 	s.doParseBothDecl(c, XML_DECL+DOCTYPE_DECL+EMPTY_ELM)
 }
 
-// aaa effectively comments out this test
 func (s *XLSuite) TestParseBothDeclPlusElmPlusMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_BOTH_DECL_PLUS_ELM_PLUS_MISC")

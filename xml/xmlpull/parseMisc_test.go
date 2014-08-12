@@ -26,7 +26,7 @@ var MiscTypeNames = []string{
 
 type MiscItem struct {
 	_type MiscType
-	body  string
+	body  []rune
 }
 
 var eventForMiscType = make(map[MiscType]PullEvent)
@@ -36,20 +36,29 @@ func init() {
 	eventForMiscType[MISC_PI] = PROCESSING_INSTRUCTION
 	eventForMiscType[MISC_S] = IGNORABLE_WHITESPACE
 }
-func (s *XLSuite) createMiscItem(rng *xr.PRNG) *MiscItem {
-	var body string
-	t := MiscType(rng.Intn(int(MISC_S) + 1))
+
+// Create a single randomly chosen MiscItem. If sOK it may be an S.  In any 
+// case it may be either a Comment or a PI.
+func (s *XLSuite) createMiscItem(sOK bool, rng *xr.PRNG) *MiscItem {
+	var body []rune
+	var t MiscType
+	if sOK {
+		t = MiscType(rng.Intn(int(MISC_S) + 1))
+	} else {
+		t = MiscType(rng.Intn(int(MISC_S)))
+	}
 	switch t {
 	case MISC_COMMENT:
 		// The comment must not end with a dash
 		for {
-			body = rng.NextFileName(16) // a quasi-random string, len < 16
-			if !strings.HasSuffix(body, "-") {
+			body = []rune(rng.NextFileName(16)) // a quasi-random string, len < 16
+			text := string(body)
+			if !strings.HasSuffix(text, "-") {
 				break
 			}
 		}
 	case MISC_PI:
-		body = rng.NextFileName(16) // a quasi-random string, len < 16
+		body = []rune(rng.NextFileName(16)) // a quasi-random string, len < 16
 	case MISC_S:
 		var runes []rune
 		count := 1 + rng.Intn(3) // 1 to 3 inclusive
@@ -66,20 +75,29 @@ func (s *XLSuite) createMiscItem(rng *xr.PRNG) *MiscItem {
 				runes = append(runes, ' ')
 			}
 		}
-		body = string(runes)
+		body = runes
 	}
 	// DEBUG
 	fmt.Printf("  CREATED MISC: %-7s '%s'\n", MiscTypeNames[t], body)
 	// END
 	return &MiscItem{_type: t, body: body}
 }
+
+func (s *XLSuite) IsS (ch rune) bool {
+	return (ch == ' ') || (ch == '\t') || ( ch == '\n') || (ch == '\r')
+}
+
+// Returns a slice of zero or more MiscItems.  The slice must not contain
+// any S-S sequences (which are indistinguishable from a single S.
 func (s *XLSuite) createMiscItems(rng *xr.PRNG) (items []*MiscItem) {
 	count := rng.Intn(4) // so 0 to 3 inclusive
 	lastWasS := false
 	for i := 0; i < count; i++ {
-		item := s.createMiscItem(rng)
+		item := s.createMiscItem(true, rng)		// true = S ok
+		lastWasS = s.IsS(item.body[0])
 		for item._type == MISC_S && lastWasS {
-			item = s.createMiscItem(rng)
+			item = s.createMiscItem(!lastWasS, rng)
+			lastWasS = s.IsS(item.body[0])
 		}
 		lastWasS = item._type == MISC_S
 		items = append(items, item)
@@ -97,13 +115,15 @@ func (s *XLSuite) textFromMISlice(items []*MiscItem) string {
 	return strings.Join(ss, "")
 }
 func (mi *MiscItem) String() (text string) {
+	
+	bodyBit := string(mi.body)
 	switch mi._type {
 	case MISC_COMMENT:
-		text = "<!--" + mi.body + "-->"
+		text = "<!--" + bodyBit + "-->"
 	case MISC_PI:
-		text = "<?lang " + mi.body + "?>"
+		text = "<?lang " + bodyBit + "?>"
 	case MISC_S:
-		text = mi.body
+		text = bodyBit
 	}
 	return
 }
@@ -143,7 +163,8 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 		item := misc1[i]
 		// DEBUG
 		fmt.Printf("Misc[%d/%d]: event is %-20s, body is %s\n",
-			i, lenMisc, PULL_EVENT_NAMES[event], s.dumpStrAsHex(item.body))
+			i, lenMisc, PULL_EVENT_NAMES[event], 
+			s.dumpStrAsHex(string(item.body)))
 		// END
 		t := item._type
 		if event != eventForMiscType[t] {
@@ -156,9 +177,9 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 		c.Assert(event, Equals, eventForMiscType[t])
 		switch t {
 		case MISC_COMMENT:
-			c.Assert(string(p.commentChars), Equals, item.body)
+			c.Assert(string(p.commentChars), Equals, string(item.body))
 		case MISC_PI:
-			c.Assert(string(p.piChars), Equals, item.body)
+			c.Assert(string(p.piChars), Equals, string(item.body))
 		case MISC_S:
 			// DEBUG
 			fmt.Printf("p.text is    '%s'\n",
@@ -166,7 +187,7 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 			fmt.Printf("item.body is '%s'\n",
 				s.dumpStrAsHex(string(item.body)))
 			// END
-			c.Assert(string(p.text), Equals, item.body)
+			c.Assert(string(p.text), Equals, string(item.body))
 		}
 		event, err = p.NextToken()
 	}
