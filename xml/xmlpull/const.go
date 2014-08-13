@@ -200,16 +200,19 @@ const (
 // to string giving event name, ex: "START_TAG" == TYPES[START_TAG]
 //
 var PULL_EVENT_NAMES = []string{
+	// 0..4
 	"START_DOCUMENT",
 	"END_DOCUMENT",
 	"START_TAG",
 	"END_TAG",
 	"TEXT",
+	// 5..9
 	"CDSECT",
 	"ENTITY_REF",
 	"IGNORABLE_WHITESPACE",
 	"PROCESSING_INSTRUCTION",
 	"COMMENT",
+	// 10
 	"DOCDECL",
 }
 

@@ -8,18 +8,15 @@ xgo/xml/xmlpull/TODO
 
 2014-08-06
     * lexer.go handling of EOF is confused; get rid of lxErr            * DONE
-
     * apparently acceptMisc() at least sometimes duplicates last        * WRONG
         character in p.text: misc.body 20 0a yields p.text 20 0a 0a     * OK...
         - MISDIAGNOSIS: got misc body 20 0a 20 but p.text 20 01 20 09   * OK...
         - useful: go test | tee junk                                    * RIGHT
         - PROBLEM IS IN THE TEST: it sometimes creates two S items      * FIXED
             in a row, which of course get merged !                      * FIXED
-
     * FIX: comment generator in parseMisc_test.go generates random      * FIXED
         comments with bodies ending in '-', causing occasional          * FIXED
         three-dashes-in-a-row erros                                     * FIXED
-
 2014-05-31
     * minimalDoc_test needs to be elaborated to include
         - randomized Misc1 after XMLDecl?

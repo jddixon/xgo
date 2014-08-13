@@ -37,7 +37,7 @@ func init() {
 	eventForMiscType[MISC_S] = IGNORABLE_WHITESPACE
 }
 
-// Create a single randomly chosen MiscItem. If sOK it may be an S.  In any 
+// Create a single randomly chosen MiscItem. If sOK it may be an S.  In any
 // case it may be either a Comment or a PI.
 func (s *XLSuite) createMiscItem(sOK bool, rng *xr.PRNG) *MiscItem {
 	var body []rune
@@ -83,8 +83,8 @@ func (s *XLSuite) createMiscItem(sOK bool, rng *xr.PRNG) *MiscItem {
 	return &MiscItem{_type: t, body: body}
 }
 
-func (s *XLSuite) IsS (ch rune) bool {
-	return (ch == ' ') || (ch == '\t') || ( ch == '\n') || (ch == '\r')
+func (s *XLSuite) IsS(ch rune) bool {
+	return (ch == ' ') || (ch == '\t') || (ch == '\n') || (ch == '\r')
 }
 
 // Returns a slice of zero or more MiscItems.  The slice must not contain
@@ -93,7 +93,7 @@ func (s *XLSuite) createMiscItems(rng *xr.PRNG) (items []*MiscItem) {
 	count := rng.Intn(4) // so 0 to 3 inclusive
 	lastWasS := false
 	for i := 0; i < count; i++ {
-		item := s.createMiscItem(true, rng)		// true = S ok
+		item := s.createMiscItem(true, rng) // true = S ok
 		lastWasS = s.IsS(item.body[0])
 		for item._type == MISC_S && lastWasS {
 			item = s.createMiscItem(!lastWasS, rng)
@@ -115,7 +115,7 @@ func (s *XLSuite) textFromMISlice(items []*MiscItem) string {
 	return strings.Join(ss, "")
 }
 func (mi *MiscItem) String() (text string) {
-	
+
 	bodyBit := string(mi.body)
 	switch mi._type {
 	case MISC_COMMENT:
@@ -163,7 +163,7 @@ func (s *XLSuite) doTestParseMisc(c *C, input string,
 		item := misc1[i]
 		// DEBUG
 		fmt.Printf("Misc[%d/%d]: event is %-20s, body is %s\n",
-			i, lenMisc, PULL_EVENT_NAMES[event], 
+			i, lenMisc, PULL_EVENT_NAMES[event],
 			s.dumpStrAsHex(string(item.body)))
 		// END
 		t := item._type

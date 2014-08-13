@@ -6,6 +6,7 @@ import (
 	"fmt"
 	xr "github.com/jddixon/rnglib_go"
 	. "gopkg.in/check.v1"
+	"io"
 	"strings"
 )
 
@@ -16,7 +17,7 @@ const (
 	DOCTYPE_DECL = "<!DOCTYPE document PUBLIC \"-//APACHE//DTD Documentation V2.0//EN\" \"http://forrest.apache.org/dtd/document-v20.dtd\">"
 	PROLOG_MISC  = "<!-- this is a comment in the prolog -->\n"
 	EPILOG_MISC  = "<!-- this is a comment in the epilog -->\n"
-	EMPTY_ELM    = "<document/>"
+	EMPTY_ELM    = "<root/>"
 )
 
 func (s *XLSuite) doInitialParse(c *C, input string) (p *Parser) {
@@ -93,19 +94,55 @@ func (s *XLSuite) doParseXmlDeclWithMisc(c *C, input string,
 	return
 }
 
+// Parse a sequence: XmlDecl Misc* (doctypedecl Misc*) EmptyElement Misc*
 func (s *XLSuite) doParseBothDecl(c *C, input string) (
 	p *Parser, event PullEvent) {
 
+	var err error
 	p, event = s.doParseXmlDecl(c, input)
-	// DEBUG
-	if event != DOCDECL {
-		fmt.Printf("expected DOCDECL but got %s\n", PULL_EVENT_NAMES[event])
+
+	// we have seen the XmlDecl; now allow zero or more Misc but
+	// requuire doctypedecl
+	for event != DOCDECL {
+		if event == IGNORABLE_WHITESPACE || event == PROCESSING_INSTRUCTION ||
+			event == COMMENT {
+
+			event, err = p.NextToken()
+		} else {
+			fmt.Printf("expected DOCDECL but got %s\n", PULL_EVENT_NAMES[event])
+		}
 	}
-	// END
 	c.Assert(event, Equals, DOCDECL)
 
-	event, err := p.NextToken()
+	event, err = p.NextToken()
 	c.Assert(err, IsNil)
+
+	// Allow zero or more Misc but require the EmptyElement
+	for event != START_TAG {
+		if event == IGNORABLE_WHITESPACE || event == PROCESSING_INSTRUCTION ||
+			event == COMMENT {
+
+			event, err = p.NextToken()
+		} else {
+			fmt.Printf("expected START_TAG but got %s\n", PULL_EVENT_NAMES[event])
+			break // XXX SHOULD FAIL
+		}
+	}
+	c.Assert(err, IsNil)
+	c.Assert(event, Equals, START_TAG)
+
+	event, err = p.NextToken()
+	c.Assert(err == nil || err == io.EOF, Equals, true)
+	// --------------------------------------------------------------
+	// XXX event is actually zero, incorrectly interpreted as START_DOCUMENT
+	// The parser is probably failing to set a value because the error is
+	// not nil. XXX
+	// --------------------------------------------------------------
+	c.Assert(event, Equals, END_TAG)
+
+	fmt.Println("ACCEPTING ZERO OR MORE Misc")
+
+	// XXX ZERO OR MORE Misc IGNORED
 	return
 }
 
@@ -123,6 +160,7 @@ func (s *XLSuite) TestParseXmlDeclPlusElm(c *C) {
 	s.doParseXmlDecl(c, XML_DECL+EMPTY_ELM)
 }
 
+// Parse an XmlDecl followed by an (empty) element followed by Misc
 func (s *XLSuite) TestParseXmlDeclPlusElmPlusMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_XML_DECL_PLUS_ELM_PLUS_MISC")
@@ -130,12 +168,9 @@ func (s *XLSuite) TestParseXmlDeclPlusElmPlusMisc(c *C) {
 	rng := xr.MakeSimpleRNG()
 	misc1 := s.createMiscItems(rng) // a small, possibly empty, slice
 	miscN := s.createMiscItems(rng) // a small, possibly empty, slice
-
-	_, _ = misc1, miscN
-
 	s.doParseXmlDeclWithMisc(c, XML_DECL+s.textFromMISlice(misc1)+
 		EMPTY_ELM+s.textFromMISlice(miscN), misc1)
-} // GEEP
+}
 
 func (s *XLSuite) TestParseBothDeclPlusElm(c *C) {
 	if VERBOSITY > 0 {
@@ -144,6 +179,11 @@ func (s *XLSuite) TestParseBothDeclPlusElm(c *C) {
 	s.doParseBothDecl(c, XML_DECL+DOCTYPE_DECL+EMPTY_ELM)
 }
 
+// Parse an XmlDecl followed a DocDecl followed by an (empty) element followed
+// by Misc
+// [1]  document ::= prolog element Misc*
+// [22] prolog ::= XMLDecl? Misc* (doctypedecl Misc*)?
+//
 func (s *XLSuite) TestParseBothDeclPlusElmPlusMisc(c *C) {
 	if VERBOSITY > 0 {
 		fmt.Println("\nTEST_PARSE_BOTH_DECL_PLUS_ELM_PLUS_MISC")
@@ -152,11 +192,10 @@ func (s *XLSuite) TestParseBothDeclPlusElmPlusMisc(c *C) {
 	misc1 := s.createMiscItems(rng) // a small, possibly empty, slice
 	misc2 := s.createMiscItems(rng) // a small, possibly empty, slice
 	miscN := s.createMiscItems(rng) // a small, possibly empty, slice
-
-	// WORKING HERE
-	_, _, _ = misc1, misc2, miscN
-
-	s.doParseBothDecl(c, XML_DECL+DOCTYPE_DECL+EMPTY_ELM)
+	s.doParseBothDecl(c,
+		XML_DECL+s.textFromMISlice(misc1)+
+			DOCTYPE_DECL+s.textFromMISlice(misc2)+
+			EMPTY_ELM+s.textFromMISlice(miscN))
 }
 
 // Simple test that constants and their string representations agree.
