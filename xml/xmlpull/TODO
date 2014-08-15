@@ -1,5 +1,9 @@
 xgo/xml/xmlpull/TODO
 
+2014-08-13:
+    * FIX: next.go case START_ROOT_SEEN is just stupped and so goes
+        into an infinite loop
+
 2014-08-07 (edited from 06-01)
     * FIX: minimalDoclTest.TestParseBoth... is incomplete
 

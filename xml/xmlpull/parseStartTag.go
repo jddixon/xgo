@@ -2,20 +2,25 @@ package xmlpull
 
 import (
 	"fmt"
+	//"io"
 )
 
 var _ = fmt.Print
 
 // [40] STag ::=  '<' Name (S Attribute)* S? '>'
 // [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
-
+//
+// Take care to handle EOF correctly.  An empty root tag is a valid
+// production; at EOF we would then get curEvent == END_TAG and 
+// err = io.EOF, which is not a fatal error.
+//
 func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 
 	// The first character of Name is the next char;  we have seen the
 	// opening <
 	ch, err := p.NextCh()
 	if err != nil {
-		return // RETURN
+		return
 	}
 
 	var (
@@ -51,6 +56,12 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		} else {
 			nameRunes = append(nameRunes, ch)
 		}
+		// DEBUG
+		if len(prefixRunes) > 0 {
+			fmt.Printf("parseStartTag: prefixRunes '%s'\n", string(nameRunes))
+		}
+		fmt.Printf("parseStartTag: nameRunes   '%s'\n", string(nameRunes))
+		// END
 		ch, err = p.NextCh()
 	}
 	// DEBUG
@@ -97,6 +108,7 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				// WORKING HERE XXX
 				if p.isEmptyElement {
 					err = p.NewXmlPullError("repeated / in tag declaration")
+					// XXX NOT HANDLED
 				}
 				p.isEmptyElement = true
 				ch, err = p.NextCh()

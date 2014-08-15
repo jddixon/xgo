@@ -143,11 +143,13 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			// END
 			ch, err = p.NextCh()
 			if err == nil {
-				// handle for rootStart is '<' plus start char
+				// handle for rootStart is '<' 
 				if ch == '<' {
-					ch, err = p.NextCh()
-					if err == nil {
-						curEvent, err = p.parseStartTag()
+					curEvent, err = p.parseStartTag()
+					if err == nil && curEvent == START_TAG {
+						p.state = START_ROOT_SEEN
+					} else {
+						// UNHANDLED ERROR; should go to error state
 					}
 				} else {
 					err = MissingRootElement
@@ -160,11 +162,17 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			fmt.Println("looking for START_ROOT_SEEN handles")
 			// END
 
+			// XXX STUB XXX
+
 			// deeper handlers
+
+			// XXX STUB XXX
 
 			// handle for rootEnd is '/>'
 
 		case END_ROOT_SEEN:
+			// accept zero or more Misc and EOF
+
 			// DEBUG
 			fmt.Println("looking for END_ROOT_SEEN handles")
 			// END
