@@ -4,6 +4,8 @@ package xmlpull
 
 import (
 	"fmt"
+	"io"
+
 	// "strings"
 )
 
@@ -143,7 +145,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			// END
 			ch, err = p.NextCh()
 			if err == nil {
-				// handle for rootStart is '<' 
+				// handle for rootStart is '<'
 				if ch == '<' {
 					curEvent, err = p.parseStartTag()
 					if err == nil && curEvent == START_TAG {
@@ -169,6 +171,13 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			// XXX STUB XXX
 
 			// handle for rootEnd is '/>'
+			ch, err = p.NextCh()
+			if err == nil && ch == '/' {
+				ch, err = p.NextCh()
+				if (err == nil || err == io.EOF) && ch == '>' {
+					curEvent, err = p.parseEndTag()
+				}
+			}
 
 		case END_ROOT_SEEN:
 			// accept zero or more Misc and EOF
