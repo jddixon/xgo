@@ -14,124 +14,88 @@ var _ = fmt.Print
 //
 // XXX The existing code expects this to return just an error, but it modifies
 // p.curEvent.
-func (p *Parser) parseEpilog() (err error) {
+func (p *Parser) parseEpilog() (curEvent PullEvent, err error) {
 
 	var (
-		ch       rune
-		curEvent PullEvent
-		gotS     bool
+		ch           rune
+		gotS         bool // NOT USED
+		normalizedCR bool // NOT USED
 	)
 
-	if p.curEvent == END_DOCUMENT {
-		err = p.NewXmlPullError("already reached end of XML input")
-	} else {
-		if p.reachedEnd {
-			curEvent = END_DOCUMENT
-		} else {
-			gotS = false
-			normalizeIgnorableWS := p.tokenizing && !p.roundtripSupported
-			normalizedCR := false
+	gotS = false
+	normalizeIgnorableWS := p.tokenizing && !p.roundtripSupported
 
-			// epilog: Misc*
+	// epilog: Misc*
+	ch, err = p.NextCh()
+	for err == nil || err == io.EOF {
+		// deal with Misc
+		// [27] Misc ::= Comment | PI | S
+		if ch == '<' {
 			ch, err = p.NextCh()
-			p.afterLT = false // ???
-			if !p.reachedEnd {
-				for err != nil {
-					// deal with Misc
-					// [27] Misc ::= Comment | PI | S
-					if ch == '<' {
-						if gotS && p.tokenizing {
-							p.afterLT = true
-							curEvent = IGNORABLE_WHITESPACE
-							break
-						}
-						ch, err = p.NextCh()
-						if p.reachedEnd { // ????
-							break
-						}
-						if ch == '?' {
-							// check if it is 'xml'
-							// deal with XMLDecl
-							p.parsePI()
-							if p.tokenizing {
-								curEvent = PROCESSING_INSTRUCTION
-								break
-							}
+			if ch == '?' {
+				// check if it is 'xml'
+				// deal with XMLDecl
+				p.parsePI()
+				if p.tokenizing {
+					curEvent = PROCESSING_INSTRUCTION
+					break
+				}
 
-						} else if ch == '!' {
-							ch, err = p.NextCh()
-							if err != nil || p.reachedEnd {
-								break
-							}
-							if ch == 'D' {
-								p.parseDocTypeDecl() //FIXME
-								if p.tokenizing {
-									curEvent = DOCDECL
-									break
-								}
-							} else if ch == '-' {
-								p.parseComment()
-								if p.tokenizing {
-									curEvent = COMMENT
-									break
-								}
-							} else {
-								err = p.NewXmlPullError(
-									"unexpected markup <!" + printableChar(ch))
-							}
-						} else if ch == '/' {
-							err = p.NewXmlPullError(
-								"end tag not allowed in epilog but got " + printableChar(ch))
-						} else if isNameStartChar(ch) {
-							err = p.NewXmlPullError(
-								"start tag not allowed in epilog but got " + printableChar(ch))
-						} else {
-							err = p.NewXmlPullError(
-								"in epilog expected ignorable content and not " + printableChar(ch))
-						}
-					} else if p.IsS(ch) {
-						gotS = true
-						if normalizeIgnorableWS {
-							if ch == '\r' {
-								normalizedCR = true
-							} else if ch == '\n' {
-								normalizedCR = false
-							} else {
-								normalizedCR = false
-							}
-						}
-					} else {
-						err = p.NewXmlPullError(
-							"in epilog non whitespace content is not allowed but got " + printableChar(ch))
-					}
-					ch, err = p.NextCh()
-					if p.reachedEnd {
+			} else if ch == '!' {
+				ch, err = p.NextCh()
+				if err != nil && err != io.EOF {
+					break
+				}
+				if ch == 'D' {
+					err = p.parseDocTypeDecl() //FIXME
+					if p.tokenizing {
+						curEvent = DOCDECL
 						break
 					}
-
+				} else if ch == '-' {
+					p.parseComment()
+					if p.tokenizing {
+						curEvent = COMMENT
+						break
+					}
+				} else {
+					err = p.NewXmlPullError(
+						"unexpected markup <!" + printableChar(ch))
+				}
+			} else if ch == '/' {
+				err = p.NewXmlPullError(
+					"end tag not allowed in epilog but got " + printableChar(ch))
+			} else if isNameStartChar(ch) {
+				err = p.NewXmlPullError(
+					"start tag not allowed in epilog but got " + printableChar(ch))
+			} else {
+				err = p.NewXmlPullError(
+					"in epilog expected ignorable content and not " + printableChar(ch))
+			}
+		} else if p.IsS(ch) {
+			gotS = true
+			if normalizeIgnorableWS {
+				if ch == '\r' {
+					normalizedCR = true
+				} else if ch == '\n' {
+					normalizedCR = false
+				} else {
+					normalizedCR = false
 				}
 			}
-			_ = normalizedCR // NOT USED XXX
-
-			// throw Exception("unexpected content in epilog
-		}
-		if err == io.EOF {
-			err = nil
-			p.reachedEnd = true
-		}
-
-		if p.reachedEnd {
-			if p.tokenizing && gotS {
-				curEvent = IGNORABLE_WHITESPACE
-			} else {
-				curEvent = END_DOCUMENT
-			}
 		} else {
-			err = p.NewXmlPullError("internal error in parseEpilog")
+			err = p.NewXmlPullError(
+				"in epilog non whitespace content is not allowed but got " + printableChar(ch))
 		}
 	}
-	if err == nil {
+	if err == nil || err == io.EOF {
 		p.curEvent = curEvent
+		if err != io.EOF {
+			p.state = COLLECTING_EPILOG
+		} else {
+			p.state = PAST_END_DOC
+		}
 	}
+	_, _ = gotS, normalizedCR // UNUSED
 	return
 }

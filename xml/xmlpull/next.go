@@ -178,25 +178,29 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 					curEvent, err = p.parseEndTag()
 				}
 			}
+			fmt.Printf("   START_ROOT_SEEN returning END_ROOT_SEEN\n")
+			p.state = END_ROOT_SEEN
+			return
 
 		case END_ROOT_SEEN:
 			// accept zero or more Misc and EOF
+			curEvent, err = p.parseEpilog()
+			if err == io.EOF {
+				p.state = PAST_END_DOC
+			} else {
+				p.state = COLLECTING_EPILOG
+			}
+			return
 
-			// DEBUG
-			fmt.Println("looking for END_ROOT_SEEN handles")
-			// END
-
-			// miscN: handlers for comment, PI, S
-			// otherwise require EOF
-			curEvent = END_DOCUMENT
-			p.state = PAST_END_DOC
-
-		case PAST_END_DOC:
-
-			// DEBUG
-			fmt.Println("looking for PAST_END_DOC handles ???")
-			// END
-
+		case COLLECTING_EPILOG:
+			// accept zero or more Misc and EOF
+			curEvent, err = p.parseEpilog()
+			if err == io.EOF {
+				p.state = PAST_END_DOC
+			} else {
+				p.state = COLLECTING_EPILOG
+			}
+			return
 		}
 	}
 
@@ -222,7 +226,7 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			err = p.parseProlog()
 		} else {
 			// we are post the root element; almost done
-			err = p.parseEpilog()
+			curEvent, err = p.parseEpilog()
 		}
 	} else { //  p.elmDepth > 0 {
 

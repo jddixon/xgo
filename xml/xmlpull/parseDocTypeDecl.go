@@ -2,6 +2,7 @@ package xmlpull
 
 import (
 	"fmt"
+	"io"
 )
 
 var _ = fmt.Print
@@ -48,8 +49,7 @@ func (p *Parser) parseDocTypeDecl() (err error) {
 			decl = append(decl, ch)
 		}
 	}
-	// CRUDE INDEED
-	if err == nil {
+	if err == nil || err == io.EOF {
 		p.docTypeDecl = string(decl)
 	}
 	return

@@ -58,7 +58,6 @@ type Parser struct {
 	colNo  int // column number		// redundant
 
 	location      string
-	reachedEnd    bool // used only in parseEpilog?
 	seenEndTag    bool
 	seenAmpersand bool
 	afterLT       bool // have encountered a left angle bracket (<)

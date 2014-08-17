@@ -1,5 +1,9 @@
 xgo/xml/xmlpull/TODO
 
+2014-08-16:
+    * parseEpilog is incorrectly specified; should return
+        curEvent, error -- otherwise the Misc* are lost
+
 2014-08-13:
     * FIX: next.go case START_ROOT_SEEN is just stupped and so goes
         into an infinite loop
