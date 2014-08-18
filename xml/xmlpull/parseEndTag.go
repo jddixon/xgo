@@ -2,6 +2,7 @@ package xmlpull
 
 import (
 	"fmt"
+	"io"
 )
 
 var _ = fmt.Print
@@ -12,6 +13,8 @@ func (p *Parser) parseEndTag() (curEvent PullEvent, err error) {
 
 	// ASSUMPTION input is past "</"
 
+	fmt.Println("Entering parseEndTag") // DEBUG
+
 	ch, err := p.NextCh()
 	if !isNameStartChar(ch) {
 		msg := fmt.Sprintf(
@@ -19,7 +22,6 @@ func (p *Parser) parseEndTag() (curEvent PullEvent, err error) {
 		err = p.NewXmlPullError(msg)
 	}
 	if err == nil {
-		// XXX HANDLE POSSIBLE err
 		var name []rune
 		name = append(name, ch)
 		for err == nil {
@@ -30,6 +32,9 @@ func (p *Parser) parseEndTag() (curEvent PullEvent, err error) {
 				break
 			}
 		}
+		// DEBUG
+		fmt.Printf("parseEndTag: name is %s\n", name)
+		// END
 		if err == nil {
 			// end tag must match start tag
 			startName := p.elRawName[p.elmDepth]
@@ -39,14 +44,23 @@ func (p *Parser) parseEndTag() (curEvent PullEvent, err error) {
 				err = p.NewXmlPullError(msg)
 			}
 			if err == nil {
+				fmt.Printf("COLLECTING /> FOR ROOT TAG\n") // DEBUG
 				p.SkipS()
 				ch, err = p.NextCh()
-				if err == nil && ch != '>' {
+				if err == nil && ch != '/' {
 					msg := fmt.Sprintf(
-						"expected '>' to finish end tag not '%c'", ch)
+						"expected '/' to finish end tag not '%c'", ch)
 					err = p.NewXmlPullError(msg)
 				}
-				if err != nil {
+				if err == nil {
+					ch, err = p.NextCh()
+					if (err == nil || err == io.EOF) && ch != '>' {
+						msg := fmt.Sprintf(
+							"expected '>' to finish end tag not '%c'", ch)
+						err = p.NewXmlPullError(msg)
+					}
+				}
+				if err != nil || err == io.EOF {
 					curEvent = END_TAG
 				}
 			}
