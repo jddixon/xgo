@@ -146,8 +146,12 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 				// handle for rootStart is '<'
 				if ch == '<' {
 					curEvent, err = p.parseStartTag()
-					if err == nil && curEvent == START_TAG {
-						p.state = START_ROOT_SEEN
+					if (err == nil || err == io.EOF) && curEvent == START_TAG {
+						if p.isEmptyElement {
+							p.state = COLLECTING_EPILOG
+						} else {
+							p.state = START_ROOT_SEEN
+						}
 					} else {
 						// UNHANDLED ERROR; should go to error state
 					}
@@ -167,11 +171,12 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 
 			// deeper handlers
 
-			// XXX STUB XXX
+			// XXX STUB XXX THIS IS WHERE WE PROCESS THE BODY OF THE
+			// XXX ELEMENT
 
 			// handle for rootEnd is '/>'
 			ch, err = p.NextCh()
-			fmt.Printf("ch '%c' err %s\n", ch, err) // DEBUG
+			fmt.Printf("ROOT END: ch '%c' err %s\n", ch, err) // DEBUG
 			if err == nil && ch == '/' {
 				ch, err = p.NextCh()
 				fmt.Printf("ch '%c' err %s\n", ch, err) // DEBUG
@@ -185,7 +190,11 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 				}
 			}
 			fmt.Printf("   START_ROOT_SEEN: state --> END_ROOT_SEEN\n")
-			p.state = END_ROOT_SEEN
+			if p.isEmptyElement {
+				p.state = COLLECTING_EPILOG
+			} else {
+				p.state = END_ROOT_SEEN
+			}
 			return
 
 		case END_ROOT_SEEN:

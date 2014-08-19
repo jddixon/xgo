@@ -98,6 +98,10 @@ func (s *XLSuite) doParseXmlDeclWithMisc(c *C, input string,
 func (s *XLSuite) doParseBothDecl(c *C, input string) (
 	p *Parser, event PullEvent) {
 
+	// DEBUG
+	fmt.Printf("doParseBothDecl: INPUT: %s\n", input)
+	// END
+
 	var err error
 	p, event = s.doParseXmlDecl(c, input)
 
@@ -132,17 +136,13 @@ func (s *XLSuite) doParseBothDecl(c *C, input string) (
 	c.Assert(event, Equals, START_TAG)
 
 	event, err = p.NextToken()
+	// DEBUG
+	fmt.Printf("DoParseBothDecl: NextToken => event %d, err %v\n",
+		event, err)
+	// END
 	c.Assert(err == nil || err == io.EOF, Equals, true)
-	// --------------------------------------------------------------
-	// XXX event is actually zero, incorrectly interpreted as START_DOCUMENT
-	// The parser is probably failing to set a value because the error is
-	// not nil. XXX
-	// --------------------------------------------------------------
-	c.Assert(event, Equals, END_TAG)
-
-	fmt.Println("ACCEPTING ZERO OR MORE Misc")
-
-	// XXX ZERO OR MORE Misc IGNORED
+	fmt.Printf("err: %v\n", err)
+	c.Assert(event, Equals, END_DOCUMENT)
 	return
 }
 

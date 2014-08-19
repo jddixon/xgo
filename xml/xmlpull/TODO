@@ -1,7 +1,7 @@
 xgo/xml/xmlpull/TODO
 
 2014-08-17:
-    * FIX: parseStartTag about line 107 consumes the /> needed by 
+    * FIX: parseStartTag() about line 107 consumes the /> needed by 
         parseEndTag.  If it's going to do this it must skip 
         parseEndTag, going to state COLLECING_EPILOG
 2014-08-16:

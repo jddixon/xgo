@@ -27,6 +27,12 @@ func (p *Parser) parseEpilog() (curEvent PullEvent, err error) {
 
 	// epilog: Misc*
 	ch, err = p.NextCh()
+	// DEBUG
+	if err == io.EOF && ch == rune(0) {
+		fmt.Println("Null byte at end of file")
+		return END_DOCUMENT, err
+	}
+	// END
 	for err == nil || err == io.EOF {
 		// deal with Misc
 		// [27] Misc ::= Comment | PI | S
