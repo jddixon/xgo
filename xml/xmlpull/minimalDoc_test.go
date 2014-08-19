@@ -135,13 +135,25 @@ func (s *XLSuite) doParseBothDecl(c *C, input string) (
 	c.Assert(err, IsNil)
 	c.Assert(event, Equals, START_TAG)
 
+	// allow any arbitrary number of Misc
 	event, err = p.NextToken()
 	// DEBUG
-	fmt.Printf("DoParseBothDecl: NextToken => event %d, err %v\n",
-		event, err)
+	fmt.Printf("DoParseBothDecl: NextToken => event %s, err %v\n",
+		PULL_EVENT_NAMES[event], err)
 	// END
 	c.Assert(err == nil || err == io.EOF, Equals, true)
 	fmt.Printf("err: %v\n", err)
+	for event == IGNORABLE_WHITESPACE ||
+		event == PROCESSING_INSTRUCTION || event == COMMENT {
+
+		event, err = p.NextToken()
+		// DEBUG
+		fmt.Printf("DoParseBothDecl: NextToken => event %s, err %v\n",
+			PULL_EVENT_NAMES[event], err)
+		// END
+		c.Assert(err == nil || err == io.EOF, Equals, true)
+		fmt.Printf("err: %v\n", err)
+	}
 	c.Assert(event, Equals, END_DOCUMENT)
 	return
 }
