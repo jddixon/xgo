@@ -59,11 +59,6 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			fallthrough
 
 		case XML_DECL_SEEN:
-			// DEBUG
-			fmt.Println("fell through to check for XML_DECL_SEEN handles")
-			fmt.Println("  checking for Misc1")
-			// END
-
 			// Misc1: ===============================================
 			miscFound := true
 			for err == nil && miscFound {
@@ -79,21 +74,13 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 			if err != nil {
 				return
 			}
-
 			// END Misc1 ============================================
-
-			// DEBUG
-			fmt.Println("  checking for DOCDECL")
-			// END
 
 			// handle for doctypedecl is '<!D
 			var docDeclFound bool
 			docDeclFound, err = p.AcceptStr("<!D")
 			if err == nil {
 				if docDeclFound {
-					// DEBUG
-					fmt.Println("docDeclFound DOC_TYPE_DECL")
-					// END
 					err = p.parseDocTypeDecl()
 					if err == nil {
 						curEvent = DOCDECL
@@ -114,11 +101,6 @@ func (p *Parser) doNext() (curEvent PullEvent, err error) {
 				p.state = EXPECT_START_ROOT
 				continue
 			}
-
-			// DEBUG
-			fmt.Println("falling through to DOC_DECL_SEEN")
-			// END
-
 			fallthrough
 
 		case DOC_DECL_SEEN:

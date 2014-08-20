@@ -60,7 +60,6 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		if len(prefixRunes) > 0 {
 			fmt.Printf("parseStartTag: prefixRunes '%s'\n", string(nameRunes))
 		}
-		fmt.Printf("parseStartTag: nameRunes   '%s'\n", string(nameRunes))
 		// END
 		ch, err = p.NextCh()
 	}

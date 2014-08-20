@@ -28,10 +28,6 @@ func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
 	}
 	// handle for PI is '<?' --------------------------------
 	if !miscFound && err == nil {
-		// DEBUG
-		fmt.Println("  checking for PI")
-		// END
-
 		found, err = p.AcceptStr("<?")
 		if err == nil && found {
 			// DEBUG
@@ -45,9 +41,6 @@ func (p *Parser) acceptMisc() (miscFound bool, curEvent PullEvent, err error) {
 		}
 	}
 	if !miscFound && err == nil {
-		// DEBUG
-		fmt.Println("  checking for S")
-		// END
 		p.text = p.text[:0] // clear the slice
 
 		// handle for S is IsS() --------------------------------

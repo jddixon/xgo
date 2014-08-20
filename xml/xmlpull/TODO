@@ -3,13 +3,10 @@ xgo/xml/xmlpull/TODO
 2014-08-17:
     * FIX: parseStartTag() about line 107 consumes the /> needed by 
         parseEndTag.  If it's going to do this it must skip 
-        parseEndTag, going to state COLLECING_EPILOG
-2014-08-16:
-    * parseEpilog is incorrectly specified; should return
-        curEvent, error -- otherwise the Misc* are lost
+        parseEndTag, going to state COLLECTING_EPILOG
 
 2014-08-13:
-    * FIX: next.go case START_ROOT_SEEN is just stupped and so goes
+    * FIX: next.go case START_ROOT_SEEN is just stubbed and so goes
         into an infinite loop
 
 2014-08-07 (edited from 06-01)
@@ -17,18 +14,6 @@ xgo/xml/xmlpull/TODO
 
     * parseMisc_test.go: set initial state, devise way to specify
         state if no Misc found
-
-2014-08-06
-    * lexer.go handling of EOF is confused; get rid of lxErr            * DONE
-    * apparently acceptMisc() at least sometimes duplicates last        * WRONG
-        character in p.text: misc.body 20 0a yields p.text 20 0a 0a     * OK...
-        - MISDIAGNOSIS: got misc body 20 0a 20 but p.text 20 01 20 09   * OK...
-        - useful: go test | tee junk                                    * RIGHT
-        - PROBLEM IS IN THE TEST: it sometimes creates two S items      * FIXED
-            in a row, which of course get merged !                      * FIXED
-    * FIX: comment generator in parseMisc_test.go generates random      * FIXED
-        comments with bodies ending in '-', causing occasional          * FIXED
-        three-dashes-in-a-row erros                                     * FIXED
 2014-05-31
     * minimalDoc_test needs to be elaborated to include
         - randomized Misc1 after XMLDecl?
@@ -145,12 +130,8 @@ xgo/xml/xmlpull/TODO
 
 2013-11-21 (11-20, edited)
     * build skeletal parser as parser.go                                * DONE
-        - be able to read and parse first line
-            * parseXmlDecl()
+        - be able to read and parse first line                          * DONE
+            * parseXmlDecl()                                            * DONE
 
     * write parser_test.go, initially testing that reset() works 
         as expected
-
-2013-11-08
-    * For string interning see eg stackoverflow 13017499                * DONE
-        is-there-an-equivalent-to-javas-string-intern-function-in-go    * DONE

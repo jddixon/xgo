@@ -22,9 +22,6 @@ const (
 
 func (s *XLSuite) doInitialParse(c *C, input string) (p *Parser) {
 
-	// DEBUG
-	fmt.Printf("PARSING: '%s'\n", input)
-	// END
 	rd := strings.NewReader(input)
 	p, err := NewNewParser(rd)
 	c.Assert(err, IsNil)
@@ -97,10 +94,6 @@ func (s *XLSuite) doParseXmlDeclWithMisc(c *C, input string,
 // Parse a sequence: XmlDecl Misc* (doctypedecl Misc*) EmptyElement Misc*
 func (s *XLSuite) doParseBothDecl(c *C, input string) (
 	p *Parser, event PullEvent) {
-
-	// DEBUG
-	fmt.Printf("doParseBothDecl: INPUT: %s\n", input)
-	// END
 
 	var err error
 	p, event = s.doParseXmlDecl(c, input)

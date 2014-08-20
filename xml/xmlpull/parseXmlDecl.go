@@ -25,10 +25,6 @@ func (p *Parser) parseXmlDecl() (err error) {
 	)
 	// We must be on the first S past <?xml
 
-	// DEBUG
-	fmt.Println("entering parseXmlDecl")
-	// END
-
 	// [24] VersionInfo ::= S 'version' Eq ("'" VersionNum "'" |
 	//                                      '"' VersionNum '"')
 	err = p.ExpectS()
@@ -152,11 +148,6 @@ func (p *Parser) parseXmlDecl() (err error) {
 		p.SkipS()
 		err = p.ExpectStr("?>")
 	}
-	// DEBUG
-	fmt.Printf("exiting parseXmlDecl, version %s, encoding %s\n",
-		string(vRunes), string(eRunes))
-	// END
-
 	return
 }
 
@@ -186,9 +177,6 @@ func (p *Parser) _getEncodingStartCh() (ch rune, err error) {
 
 func (p *Parser) _getEncodingNameCh(quoteCh rune) (ch rune, err error) {
 	ch, err = p.NextCh()
-	// DEBUG
-	fmt.Printf("  getEncodingNameCh: '%c'\n", ch)
-	// END
 	if err == nil && ch != quoteCh {
 		if !('a' <= ch && ch <= 'z') && !('A' <= ch && ch <= 'Z') &&
 			!('0' <= ch && ch <= '9') && (ch != '.') && (ch != '_') &&

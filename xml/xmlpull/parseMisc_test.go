@@ -77,9 +77,6 @@ func (s *XLSuite) createMiscItem(sOK bool, rng *xr.PRNG) *MiscItem {
 		}
 		body = runes
 	}
-	// DEBUG
-	fmt.Printf("  CREATED MISC: %-7s '%s'\n", MiscTypeNames[t], body)
-	// END
 	return &MiscItem{_type: t, body: body}
 }
 
