@@ -1,5 +1,7 @@
 package xmlpull
 
+// parseAttribute.go
+
 import (
 	"fmt"
 )

@@ -1,5 +1,11 @@
 xgo/xml/xmlpull/TODO
 
+2014-08-21:
+    * extend minimalDoc_test to add a variable number of attributes
+        to the otherwise empty element
+    * XXX note rnglib in current form will not return a zero-length
+        NextFileName()
+
 2014-08-17:
     * FIX: parseStartTag() about line 107 consumes the /> needed by 
         parseEndTag.  If it's going to do this it must skip 
