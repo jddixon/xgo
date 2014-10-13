@@ -78,6 +78,11 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 		return
 	}
 
+	// DEBUG
+	fmt.Printf("AFTER COLLECTING NAME %s, ch is '%c' (0x%x)\n",
+		string(cName), ch, ch)
+	// END
+
 	// XXX Kukemal !
 	// ensureAttributesCapacity(p.attributeCount)
 
@@ -108,6 +113,7 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 			if colonPos > 0 {
 				// prefixLen = colonPos - 1
 				prefix = string(cName[:colonPos])
+				// XXX MUST BE append
 				p.attributePrefix[p.attributeCount] = prefix
 
 				// XXX THIS IS STUPID: assert calculated len = real len
@@ -115,10 +121,12 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 				name = string(cName[colonPos+1:])
 			} else {
 				prefix = ""
+				// XXX MUST BE append
 				p.attributePrefix[p.attributeCount] = ""
 
 				nameLen = cNameLen
 				name = string(cName)
+				// XXX MUST BE append
 				p.attributeName[p.attributeCount] = name
 			}
 
@@ -130,10 +138,12 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 		nameLen = cNameLen
 		nameRunes = cName
 		name = string(nameRunes)
-		p.attributeName[p.attributeCount] = name
+		//p.attributeName[p.attributeCount] = name
+		p.attributeName = append(p.attributeName, name)
 
 		// FashHash replaces Java String.hashCode
-		p.attributeNameHash[p.attributeCount] = FastHash(nameRunes)
+		//p.attributeNameHash[p.attributeCount] = FastHash(nameRunes)
+		p.attributeNameHash = append(p.attributeNameHash, FastHash(nameRunes))
 	}
 
 	// XXX WORKING HERE XXX
@@ -141,14 +151,20 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 	// [25] Eq ::=  S? '=' S?
 
 	// skip any spaces
-	p.SkipS()
-
-	ch, err = p.NextCh()
+	for p.IsS(ch) && err == nil {
+		ch, err = p.NextCh()
+	}
+	// DEBUG
+	fmt.Printf("  EQ is '%c'\n", ch)
+	// END
 	if err == nil {
 		if ch != '=' {
 			err = p.NewXmlPullError("expected = after attribute name")
 		}
-		p.SkipS()
+		ch, err = p.NextCh()
+		if err == nil {
+			p.SkipS()
+		}
 	}
 	if err != nil {
 		return
@@ -158,6 +174,10 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 	//                  |  "'" ([^<&'] | Reference)* "'"
 
 	DELIM := ch // consider me a constant, please
+
+	// DEBUG
+	fmt.Printf("  attribute value delimiter is '%c'\n", DELIM)
+	// END
 
 	if DELIM != '"' && DELIM != '\'' {
 		msg := fmt.Sprintf(
@@ -266,8 +286,12 @@ func (p *Parser) parseAttribute() (ch rune, err error) {
 		p.namespaceEnd++
 
 	} else {
-		// XXX NEEDS TESTING
-		p.attributeValue[p.attributeCount] = value
+		// p.attributeValue[p.attributeCount] = value
+		p.attributeValue = append(p.attributeValue, value)
+		// DEBUG
+		fmt.Printf("ATTRIBUTE %d: NAME %s, VALUE %s\n",
+			p.attributeCount, name, value)
+		// END
 		p.attributeCount++
 	}
 	return

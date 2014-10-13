@@ -6,11 +6,14 @@ import (
 	"fmt"
 	xr "github.com/jddixon/rnglib_go"
 	. "gopkg.in/check.v1"
-	"io"
+	//"io"
 	"strings"
+	u "unicode"
 )
 
 var _ = fmt.Print
+
+// STRUCT FOR USE IN TESTING ========================================
 
 type AttrValPair struct {
 	Attr string
@@ -26,48 +29,57 @@ func (s *XLSuite) createAttrValPair(rng *xr.PRNG) *AttrValPair {
 	var attr, val string
 
 	attr = rng.NextFileName(8) // so 1 to 7 characters long
-	val = rng.NextFileName(8)  // XXX len of zero should be OK
+	for u.IsDigit(rune(attr[0])) {
+		attr = rng.NextFileName(8)
+	}
+	val = rng.NextFileName(8) // XXX len of zero should be OK
 	return &AttrValPair{Attr: attr, Val: val}
 }
 
+func (av *AttrValPair) String() (text string) {
+
+	text = fmt.Sprintf(" %s=\"%s\"", av.Attr, av.Val)
+	return
+}
+
+// UTILITY FUNCTIONS ================================================
+
 // Returns a slice of zero or more Attributes.  Attribute names must be
 // unique within the slice.
-func (s *XLSuite) createAttrValPairs(rng *xr.PRNG) (items []*AttrValPair) {
+func (s *XLSuite) createAttrValPairs(rng *xr.PRNG) (pairs []*AttrValPair) {
 	count := rng.Intn(4) // so 0 to 3 inclusive
 	var byName = make(map[string]*AttrValPair)
 	for i := 0; i < count; i++ {
-		var item *AttrValPair
+		var pair *AttrValPair
 		for {
-			item = s.createAttrValPair(rng)
+			pair = s.createAttrValPair(rng)
 			// attr names must be unique; values need not be
-			name := item.Attr
+			name := pair.Attr
 			if _, ok := byName[name]; ok {
 				continue
 			} else {
 				// it's not in the map, so add it
-				byName[name] = item
+				byName[name] = pair
 				break
 			}
 		}
-		items = append(items, item)
+		pairs = append(pairs, pair)
 	}
 	return
 }
-func (s *XLSuite) textFromAttrValPair(items []*AttrValPair) string {
+func (s *XLSuite) textFromAttrValPair(pairs []*AttrValPair) string {
 	var ss []string
-	for i := 0; i < len(items); i++ {
-		ss = append(ss, items[i].String())
+	for i := 0; i < len(pairs); i++ {
+		ss = append(ss, pairs[i].String())
 	}
 	// DEBUG
-	fmt.Printf("  TEXT_FROM_SLICES: '%s'\n", strings.Join(ss, ""))
+	fmt.Printf("  TEXT_FROM_AV_PAIRS: '%s'\n", strings.Join(ss, ""))
 	// END
 	return strings.Join(ss, "")
 }
-func (av *AttrValPair) String() (text string) {
 
-	text = fmt.Sprintf("%s=\"%s\"", av.Attr, av.Val)
-	return
-}
+// UNIT TEST ========================================================
+
 func (s *XLSuite) setupAttrParser(c *C, input string) (p *Parser) {
 
 	// DEBUG
@@ -95,15 +107,18 @@ func (s *XLSuite) doTestParseAttr(c *C, input string,
 	// THIS IS OUR OWN LOCAL COPY OF THE EVENT, NOT p.curEvent
 	//////////////////////////////////////////////////////////
 	event, err := p.NextToken()
-	if err != io.EOF {
-		c.Assert(err, IsNil)
-	}
+	c.Assert(err, IsNil)
+	fmt.Printf("first event:  %s\n", PULL_EVENT_NAMES[event])
 
-	// XXX This is not right.  We are parsing an element and the AV
+	event, err = p.NextToken()
+	c.Assert(err, IsNil)
+	fmt.Printf("second event: %s\n", PULL_EVENT_NAMES[event])
+
+	// We are parsing an element and the AV
 	// pairs, if any, are right after the tag name
 
 	lenAVPairs := len(pairs)
-	c.Assert(p.attributeCount, Equals, lenAVPairs)
+	c.Assert(p.attributeCount, Equals, uint(lenAVPairs))
 
 	for i := 0; i < lenAVPairs; i++ {
 		pair := pairs[i]
@@ -116,27 +131,24 @@ func (s *XLSuite) doTestParseAttr(c *C, input string,
 	return
 }
 
-func (s *XLSuite) TestParseAVPair(c *C) {
+// AAA
+func (s *XLSuite) TestAAAParseAVPair(c *C) {
 	if VERBOSITY > 0 {
-		fmt.Println("\nTEST_PARSE_MISC")
+		fmt.Println("\nTEST_PARSE_AV_PAIR")
 	}
 	rng := xr.MakeSimpleRNG()
-	var misc []*AttrValPair
+	var pairs []*AttrValPair
 	for {
-		misc = s.createAttrValPairs(rng) // a small, possibly empty, slice
-		if len(misc) > 0 {
+		pairs = s.createAttrValPairs(rng) // a small, possibly empty, slice
+		if len(pairs) > 0 {
 			// DEBUG
-			fmt.Printf("created %d AttrValPair\n", len(misc))
+			fmt.Printf("created %d AttrValPair\n", len(pairs))
 			// END
 			break
 		}
 	}
-	p, event := s.doTestParseAttr(c, s.textFromAttrValPair(misc), misc)
+	input := XML_DECL + DOCTYPE_DECL + "<root" + s.textFromAttrValPair(pairs) + "/>"
+	p, event := s.doTestParseAttr(c, input, pairs)
 	_, _ = p, event
 
-	// making sure that we all agree on what white space is
-	c.Assert(p.IsS('\t'), Equals, true)
-	c.Assert(p.IsS('\r'), Equals, true)
-	c.Assert(p.IsS('\n'), Equals, true)
-	c.Assert(p.IsS(' '), Equals, true)
 }

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	gc "github.com/jddixon/xgo/context"
 	gu "github.com/jddixon/xgo/util"
-	"io"
 	. "gopkg.in/check.v1"
+	"io"
 	"strings"
 )
 

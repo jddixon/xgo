@@ -4,8 +4,8 @@ package lex
 
 import (
 	"fmt"
-	"io"
 	. "gopkg.in/check.v1"
+	"io"
 	"strings"
 	u "unicode"
 )

@@ -23,6 +23,14 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 		return
 	}
 
+	// XXX jdd RESET PARSER STATE
+	p.attributeCount = 0
+	p.attributeName = make([]string, 0)
+	// XXX etc
+	p.attributeNameHash = make([]uint32, 0)
+	p.attributeValue = make([]string, 0)
+	// END RESET PARSER STATE
+
 	var (
 		nameRunes, prefixRunes []rune
 		name, prefix           string
@@ -98,8 +106,9 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 
 		for err == nil {
 			for p.IsS(ch) && err == nil {
+				// skip additional white spaces
 				ch, err = p.NextCh()
-			} // skip additional white spaces
+			}
 
 			if err != nil || ch == '>' {
 				break
@@ -118,6 +127,9 @@ func (p *Parser) parseStartTag() (curEvent PullEvent, err error) {
 				break // XXX inside if ?
 			} else if isNameStartChar(ch) {
 				// we think we have an attribute
+				// DEBUG
+				fmt.Printf("pushing back %c (0x%x)\n", ch, ch)
+				// END
 				p.PushBack(ch)
 				ch, err = p.parseAttribute()
 				// XXX HANDLE ANY ERROR
