@@ -4,7 +4,7 @@ package md
 
 import (
 	"fmt"
-	xr "github.com/jddixon/xlattice_go/rnglib"
+	xr "github.com/jddixon/rnglib_go"
 	. "gopkg.in/check.v1"
 )
 
@@ -19,10 +19,10 @@ func (s *XLSuite) doScanOK(c *C, text string, from uint) (
 	offset, tagNdx, err := scanForTag(runes, from)
 	c.Assert(err, IsNil)
 	// DEBUG
-	if true {
-		fmt.Printf("%-6s returns offset %d, tagNdx %d\n",
-			text, offset, tagNdx)
-	}
+	//if true {
+	//	fmt.Printf("%-6s returns offset %d, tagNdx %d\n",
+	//		text, offset, tagNdx)
+	//}
 	// END
 	c.Assert(offset > 0, Equals, true)
 	elm = &InlineHtmlElm{

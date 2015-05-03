@@ -3,6 +3,14 @@ xgo/md/TODO
 2015-03-08
     * change to use https://github.com/jgm/CommonMark as source for
         markdown tests
+        - add commonmark spec.txt under md/commonmark                   * DONE
+        - add extracted tests as md/commonmark/test-dumped.json         * DONE
+        - add license file (COPYING.spec)                               * DONE
+        - do whatever is necessary to replace markdown-testsuite/
+            in tests
+        - drop markdown-testsuite/
+        - [elaborate as necessary:] edit code as necessary
+        - extract the resulting md/ as a separate github project
 
 2014-06-04 (prep for splitting off as separate project on github)
     * move xgoMarkdown from xgo/cmd into md/cmd subdirectory            * DONE

@@ -1,5 +1,9 @@
 xgo/TODO
 
+2015-03-29
+    * do clean up, md/ subdirectory having been moved to markdown_go
+        - this includes dropping sharedev xgo md_b branch
+
 2014-01-20
     * documentation desperately needed ;-)
 

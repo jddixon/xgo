@@ -285,7 +285,7 @@ func scanForTag(buf []rune, from uint) (
 			}
 			if !matched {
 				// DEBUG
-				fmt.Printf("NOT MATCHED: %c %c %c\n", ch0, ch1, ch2)
+				//fmt.Printf("NOT MATCHED: %c %c %c\n", ch0, ch1, ch2)
 				// END
 				return
 			}
@@ -366,8 +366,8 @@ func scanForTag(buf []rune, from uint) (
 	}
 	tagNdx = tagMap[strTag]
 	// DEBUG
-	fmt.Printf("MATCH '%s' => %s, index %d\n",
-		string(tag), strTag, tagNdx)
+	//fmt.Printf("MATCH '%s' => %s, index %d\n",
+	//	string(tag), strTag, tagNdx)
 	// END
 	return
 }
