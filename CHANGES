@@ -1,5 +1,8 @@
 xgo/CHANGES
 
+v0.1.4
+    2015-05-04
+        * md moved to separate repository markdown_go               SLOC  9333
 v0.1.3
     2014-03-17                                                      SLOC  7866
         * markdown passes 89/102 tests
