@@ -1,8 +1,12 @@
 xgo/CHANGES
 
+v0.1.6
+    2015-09-18
+        * added missing *.md
+        * simple description of project in index.html                SLOC 9333
 v0.1.5
     2015-07-04
-        * update .gitignore                                         S:PC  0333
+        * update .gitignore                                         SLOC  9333
 v0.1.4
     2015-05-04
         * md moved to separate repository markdown_go               SLOC  9333
