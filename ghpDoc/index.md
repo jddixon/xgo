@@ -1,9 +1,9 @@
 <h1 class="libTop">xgo</h1>
 
-This project contains a number of sub-projects in various stages of 
+This project contains a number of sub-projects in various stages of
 development.
 
-## Project Status 
+## Project Status
 
 A partial list of sub-projects:
 

@@ -1,9 +1,9 @@
-#xgo
+# xgo
 
-This project contains a number of sub-projects in various stages of 
+This project contains a number of sub-projects in various stages of
 development.
 
-## Project Status 
+## Project Status
 
 A partial list of sub-projects:
 
@@ -16,5 +16,6 @@ A partial list of sub-projects:
 * **xml/xmlpull**, a partical implementation of [XMLPullParser](http://www.xmlpull.org); incomplete
 
 ## On-line Documentation
-More information on the **xgo** project can be found 
-[here](https://jddixon.github.io/xgo)
+
+More information on the **xgo** project can be found
+[here](://jddixon.github.io/xgo)

@@ -8,7 +8,7 @@ As the term is used here, a template is a UTF8 document in which the
 character sequence `${` (dollar - left bracket) begins a symbol name
 and the right bracket `}` ends the symbol name.  Whatever is between
 the brackets is first **trimmed** (leading and trailing spaces are removed)
-and then used to extract the value of the symbol from the 
+and then used to extract the value of the symbol from the
 [context](context.html).
 
 ## What It's Used For
