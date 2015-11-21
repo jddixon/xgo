@@ -1,9 +1,12 @@
 xgo/CHANGES
 
+v0.1.7
+    2015-11-21
+        * minor edits to *.md                                       SLOC 9333
 v0.1.6
     2015-09-18
         * added missing *.md
-        * simple description of project in index.html                SLOC 9333
+        * simple description of project in index.html               SLOC 9333
 v0.1.5
     2015-07-04
         * update .gitignore                                         SLOC  9333
