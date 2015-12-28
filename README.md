@@ -18,4 +18,4 @@ A partial list of sub-projects:
 ## On-line Documentation
 
 More information on the **xgo** project can be found
-[here](://jddixon.github.io/xgo)
+[here](https://jddixon.github.io/xgo)
