@@ -1,5 +1,8 @@
 xgo/CHANGES
 
+v0.1.9
+    2016-02-26
+        * drop redundant web pages, fix dead links, LICENSE         SLOC 9333
 v0.1.8
     2015-12-27
         * fix dead link
@@ -40,4 +43,5 @@ v0.1.0
         * skeletal xml/xmlpull parser, xml_pull_parserI.go 
         * xml/om node types complete, also attr,attr_list,cdata,    SLOC  1231
             comment,pi,text,node_test.go
+
 
