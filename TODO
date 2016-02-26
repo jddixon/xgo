@@ -1,5 +1,8 @@
 xgo/TODO
 
+2016/02-26
+    * go test ./... fails, tries to parse mdZZZ
+
 2015-03-29
     * do clean up, md/ subdirectory having been moved to markdown_go
         - this includes dropping sharedev xgo md_b branch
