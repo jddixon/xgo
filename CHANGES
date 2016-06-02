@@ -1,5 +1,8 @@
 xgo/CHANGES
 
+v0.1.10.1
+    2016-06-02
+        * strip out Java code, reducing it to:                      SLOC  7616
 v0.1.10
     2016-06-02
         * add bkp2U, other bash scrips; update .dvcz                SLOC 14415
@@ -46,6 +49,7 @@ v0.1.0
         * skeletal xml/xmlpull parser, xml_pull_parserI.go 
         * xml/om node types complete, also attr,attr_list,cdata,    SLOC   1231
             comment,pi,text,node_test.go
+
 
 
 
