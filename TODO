@@ -1,5 +1,8 @@
 xgo/TODO
 
+2016-06-02
+    * test.all runs tests in excluded directory mdZZZ
+
 2016/02-26
     * go test ./... fails, tries to parse mdZZZ
 
