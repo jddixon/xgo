@@ -1,0 +1,14 @@
+
+dir:clr:template/tmp
+
+dir:local:context
+dir:local:data
+dir:local:lex
+dir:local:lorem_ipsum
+dir:local:reST
+dir:local:template
+dir:local:util
+dir:local:xgo
+dir:local:xml
+
+dir:ign:mdZZZ

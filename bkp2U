@@ -4,9 +4,14 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/go/src/github.com/jddixon/xgo
   
-  rm -rf template/tmp/* 
+  blListGen \
+    -d ../xgo \
+    -1L  \
+    -u $DVCZ_UDIR \
+    -X mdZZZ \
+    -X .ssh \
+    $@
   
-  pySloc -L go  -X mdZZZ -X *.pb.go -v $@
 else
   echo "DEV_BASE is not defined"
 fi
