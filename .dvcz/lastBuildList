@@ -7,36 +7,36 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-xgo v0.1.10.1
-2016-06-02 19:02:38
+xgo_go v0.2.0
+2016-06-06 17:36:18
 # START CONTENT #
-xgo
+xgo_go
  .copyright 5ca9ec93b0d3e8c39e1a1c673eeb1ceddaf618a4
  .dvcz
-  builds 35a259aab1477769de0aeb5070b5587b3d156d0b
-  lastBuildList 6c4b607874bcd5cefed0051b95e8923371fc553d
-  projCfg db773bfd951d105ee5f3f5e3ba03e068cd703dac
+  builds ef58bcbcbcfe6a7d4857d647a25c725f5d3af8a8
+  lastBuildList 95bc5b934cc8cd0b94bc128e24fb61a9e5ee609f
+  projCfg 4929e69284bb37f9c02bc6bc6098a46fc432a213
   projCfg.local 14850a616bfbfc5d03a77eac5f658d8ce9a2604b
-  version b34b3a830b5c0b70c8addd0950b20c402834f2a2
+  version 806cb8f80de67993964d02b5499315fdf364315d
  .gitignore 88549a39e8e421b4ac75aee4ada67ed12a14b4c4
- CHANGES e0be1ea1464f6ffc292bf1b4622ab9bd4a49720a
+ CHANGES 819963d8cc6ab27e21e9444154fe2748afe2a1c3
  LICENSE.md c2132880e33efb76f034c6424f14e9eba235cc23
- README.md a356a6fca483e300823f916a2f527e20e475843d
+ README.md 14281321be5531b4561c69649b299fba5e5c2ad0
  TODO 40be7350d028c626cb6428918b3a292ff5a38cc1
- bkp2U 4cc943a44b41855a0106a90092da32d46145f794
+ bkp2U 5f7b703c6c4e005cccf6eda0eaabc6aee2689cd7
  cmd
   xgoT
    errors.go ce14a4b95d58d594ca461584f962c3f7c9491d6e
-   xgoT.go 99170eb80c12986fc68e74613c441a2d3322be22
+   xgoT.go 78c8179d638b9b852c24388c32db1674c27dc448
   xgoXPP
-   xgoXPP.go 20de44084cae3fc0ee55b8855c73020f165e1397
+   xgoXPP.go aa95cba61f1d12f63c25b454b7a5dac0cdfa0c02
  context
   TODO fee9f3070ad471c9bea8053803814d0928bbda81
   context.go 5b1718ec54e2ab53653559e6dc8e9817b8fa3cc7
   context_test.go 3061992edf794d0ba57b44799d41dcda43d3126c
   errors.go f6b3f3a2402d00989b7d59fbec13d09150eda06d
   gocheck_test.go 5fa3a7d51b2b590bb88146ea7ac840c4858dbfbc
- countem 7ccc6e079c23e327be2608b6a91a7e6e81617034
+ countem f6993ca61df2f01c7386e091c385adb42ac8e816
  data
   kademlia-specs.html bbb83a0c490abc9699ef9a4be044cc832cbd060e
   kademlia-specs.xml 6caf09945365905beb0a237b4bd0fb2d19e0152d
@@ -47,7 +47,7 @@ xgo
   template.md cf1fcd180040d3d3893d922da1e707613ca6c5f9
   xgoMarkdown.md ddd1f457da21ce7693f6ef3feab8b1b6137dec12
   xgoT.md 748cec55de4db29e5ab455b310e43fd8f0659830
- installit d3bd0231ad9b584987180595e3a351d64a2a317b
+ installit 96e88d70340c50eae5b4cde37e08b70b041ed49b
  json
  lex
   TODO 86430aa4638695303a4859796d70b5741976525b
@@ -62,17 +62,17 @@ xgo
   THE_TEXT.md c1917c7916165c0d777b1572603dc5f8fae792c6
   definibus1.txt 797a089f1b660b6a68acf3f0e3211e8fa38655ab
  reST
- styleit b5b5959162f3cec77208e210c876a937d9bf6304
+ styleit f19f7ee4e41c78d134999385d1892938c7a626ee
  template
   TODO dc6dddfd26c417921a12d15857e982f44f051860
-  apply.go 6cb9a65c4077bb957b5bb401cd7f38a64e38844b
-  apply_test.go 99a977aeb55600555670d2d2699afb39673a2680
+  apply.go 3e1cb555f29061bdd2c8432f768a9f36bbacd198
+  apply_test.go d397333bacb08e2cac049f97fbdddc651a483ea9
   errors.go 6f0edbc70bf3881e0415730afd147d57d76bd541
   gocheck_test.go 261974b9f34405c9758c332a0243ca2d9e65729b
-  options.go d1c35db0b289971fa9d3faf633ca650032323922
+  options.go 20ca9d3a6548788862574e03a4cc18bef02eebff
   processor.go 6fb8af42d99eacfa46b5d1542fe7c6c6ef787cf7
-  processor_test.go b5190bba94a0b00d7fc823a1d006392f0bb6abe5
- test.all 6be1bca63dd0e673edb8a1806445ae6d6b8a5fe5
+  processor_test.go 2326ddcf346c31c1480fecbf4bd2b140d4004ff4
+ test.all 37845a0d41540fb07f2e6f28107598f844c00f36
  util
   TODO 5d7501c8ae285d34d64a2b92a22c85f3064e1feb
   byte_buffer.go ce6829428b0ecc9d6b433fe187f442652355f944
@@ -81,7 +81,7 @@ xgo
   gocheck_test.go f158e122d76caa26320af9de36be6eb75aa46618
   str_intern.go 8245e9a8420ec47bd149973a34e6c5586ada59ca
   str_intern_test.go 36803cdf2e4a0ad6e79087e0d50f651e40050451
- version.go eaea08d98cf53ee53ec85ae7272f97f5034924f2
+ version.go e21c0ae21af08fadc05a77220d9a1abdd0597ea1
  xgo
   TODO 95fbec007400a4a7d0a8d150bfc46074279dc174
  xml
@@ -143,7 +143,7 @@ xgo
    parseDocTypeDecl.go ad1f1d3f94fd9999a785af67e3a9b5d8f46cbd06
    parseDocTypeDecl_test.go b026de32c437aa2bef1a2f3c179df968ff71de7e
    parseEndTag.go 34c5263e3038cb612c7b14dfa5e712ce9c0305d6
-   parseEntityRef.go b4da3fe598ec83399fc6fd7b36999fe0fe9ae0d6
+   parseEntityRef.go 6158a2f5f47a0a942270aa8f78b57960c3b84350
    parseEpilog.go d4d2e9cc8b5a830296830e7942810337310d649e
    parseMisc.go b7340703ea4592ca9b30b638fc449f68867f881b
    parseMisc_test.go 1dd73645dbdb51b41eaaf064c4ef460586f271f8
@@ -153,7 +153,7 @@ xgo
    parseStartTag.go be41f96dd4cc17397de6c35e4e3f77ebdb213202
    parseXmlDecl.go 44ccd19abd28a3c59c46a39f18155f389bd15136
    parseXmlDecl_test.go 7ec5d9044e3a133dd010e9bfea1c5a61510a7ffa
-   parser.go ab581a5cc1344cac449c7e252e4d57ffe07366ad
+   parser.go 4b4683ed3785622c2999720404d14ab728b7a36c
    printable.go 4b93d2b5ade2d8bb568867091a6a3005c8cb0e86
    properties.go 9c9d61be9e174857ea0214550508fb431f1cb414
    renamed 98cc9f51ead269a0363bbe5cd7a6c5e03f0f5ae4
@@ -183,9 +183,9 @@ xgo
    test
    uri.go e2c701a647e89e214f33f66c521c2b360df324e4
    util.go b34575e3bcc8ebad623129a6a67ec900a578ec6b
-   xmlPullError.go 1191883d2608ff6c7b49b5ceb34c16c622b68d17
+   xmlPullError.go 6222364ad04bf8d3d2078b2f18a093ed811a77cb
    xmlpull_error_test.go 7179f2a993a4bafee7402311c0eb783f63f950d7
    xmlpull_parserI.go 21d97d59fdbac080646c29c8a28f71bfa4736dd6
 # END CONTENT #
 
-YNL1eZiaMDt2G5nXASiS/xrDmSldZj/qscXxJ53YAWOoixRPJPmlQVYXvvfI32gLaNOCaGZji2x/sWtCgfYlVkqn2+XHr5cqUrM5pO6Ik3/I7jGtEbapfXn9DXAR22+BJY6PZYkFMlFytjStiQjW9vNxOEJD8AfDaqL7APYu6r9vO1RTdfAPYAVnMn1JK2vzDfUDRnYIDo7cxRJOD8IkEpsAUkJIu2hmRHgmikQrMuXcf42foA6IrQGp+kGzK/bjiWi6VBkVGYcvSX0Ke5pMGfGx5NYKGpBx8SgfSMHMXXgFeCVkNXgvrTbcCuhnhlgxQp5V0SA9Wx7L55IuBiknVw==
+NBT7+pXS/a8HeJnGsh4SLH01GjgzpaTDr6f2x7jvc3QMUutKZ4N4zffwz+Jic3h0ph7LtFWwqkyzY8myl4+MBY4A3r0+sZAerq66noP7EJoq5KSrT4Xf+wDmSPGpwCz9DotmnI2N/Bj0cyNpXnpBSzE1vXXqzqR0FRFfjcIY26rnXYpi+ZEbBZsFenANsM18UJkiGOv+rdit5djUXya6ulA+dkPxsl7c1CBMgjzPqTvAwg5Oo2p3VKhHun85Wq4b+2Ny1eL2/emGTo40SZhWCaQwGYeR5RzoJu3x8SdeoKa0nXy0or6RE//NIQG9IiONW9N12M4jIIeyC1jAJFJGbQ==

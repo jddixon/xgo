@@ -3,8 +3,8 @@ package template
 import (
 	"bufio"
 	"fmt"
-	gc "github.com/jddixon/xgo/context"
-	gl "github.com/jddixon/xgo/lex"
+	gc "github.com/jddixon/xgo_go/context"
+	gl "github.com/jddixon/xgo_go/lex"
 	"io"
 )
 

@@ -1,12 +1,13 @@
 :?0.0.1?:
-project:xgo
-package:xgo
+project:xgo_go
+package:xgo_go
 mainlang:go
-version:0.1.9
-versionDate:2016-02-26
+version:0.1.10.1
+versionDate:2016-06-02
 :?dirs?:
 dir:std:ghpDoc
 dir:std:.dvcz
+dir:pkg:xgo_go
 dir:local:context
 dir:local:data
 dir:local:lex

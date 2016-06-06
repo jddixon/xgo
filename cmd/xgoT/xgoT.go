@@ -1,12 +1,12 @@
 package main
 
-// xgo/cmd/xgoT/xgoT.go
+// xgo_go/cmd/xgoT/xgoT.go
 
 import (
 	"flag"
 	"fmt"
-	gc "github.com/jddixon/xgo/context"
-	gt "github.com/jddixon/xgo/template"
+	gc "github.com/jddixon/xgo_go/context"
+	gt "github.com/jddixon/xgo_go/template"
 	"io/ioutil"
 	"os"
 )

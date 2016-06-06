@@ -2,7 +2,7 @@ package xmlpull
 
 import (
 	"fmt"
-	// gu "github.com/jddixon/xgo/util"		// for INTERNING
+	// gu "github.com/jddixon/xgo_go/util"		// for INTERNING
 )
 
 var _ = fmt.Print
