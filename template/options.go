@@ -3,7 +3,7 @@ package template
 // xgo/template/options.go
 
 import (
-	gc "github.com/jddixon/xgo/context"
+	gc "github.com/jddixon/xgo_go/context"
 )
 
 // Options normally set from the command line or derived from those.

@@ -2,7 +2,7 @@
 
 if [ ! -z "${DEV_BASE// }" ]
 then
-  cd $DEV_BASE/go/src/github.com/jddixon/xgo
+  cd $DEV_BASE/go/src/github.com/jddixon/xgo_go
   
   rm -rf template/tmp/* 
   

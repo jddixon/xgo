@@ -2,7 +2,7 @@ package xmlpull
 
 import (
 	"fmt"
-	gl "github.com/jddixon/xgo/lex"
+	gl "github.com/jddixon/xgo_go/lex"
 	"io"
 )
 

@@ -5,7 +5,7 @@ package template
 import (
 	"fmt"
 	xr "github.com/jddixon/rnglib_go"
-	gc "github.com/jddixon/xgo/context"
+	gc "github.com/jddixon/xgo_go/context"
 	xf "github.com/jddixon/xlUtil_go/lfs"
 	. "gopkg.in/check.v1"
 	"io/ioutil"
