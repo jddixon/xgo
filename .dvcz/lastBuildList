@@ -7,19 +7,19 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-xgo_go v0.2.0
-2016-06-06 17:36:18
+xgo_go v0.2.1
+2016-06-30 16:46:57
 # START CONTENT #
 xgo_go
  .copyright 5ca9ec93b0d3e8c39e1a1c673eeb1ceddaf618a4
  .dvcz
-  builds ef58bcbcbcfe6a7d4857d647a25c725f5d3af8a8
-  lastBuildList 95bc5b934cc8cd0b94bc128e24fb61a9e5ee609f
-  projCfg 4929e69284bb37f9c02bc6bc6098a46fc432a213
+  builds dbcb4a97ff748aaca54a2f753607ed72f55f3247
+  lastBuildList b7a4c8320e1c5a570e56c25da79737d8457a38ee
+  projCfg d9242d0bdd00a5b9188df77b8fc2d835ed5c462a
   projCfg.local 14850a616bfbfc5d03a77eac5f658d8ce9a2604b
-  version 806cb8f80de67993964d02b5499315fdf364315d
- .gitignore 88549a39e8e421b4ac75aee4ada67ed12a14b4c4
- CHANGES 819963d8cc6ab27e21e9444154fe2748afe2a1c3
+  version 74a0d01c21ca24a1f2c02b620fef719c7441a1cd
+ .gitignore ec0f9002629753cd248c6a672ef3de695c30f4b7
+ CHANGES b7b6ac796f6ac48738de6e6e4f3671eeaa7de3d3
  LICENSE.md c2132880e33efb76f034c6424f14e9eba235cc23
  README.md 14281321be5531b4561c69649b299fba5e5c2ad0
  TODO 40be7350d028c626cb6428918b3a292ff5a38cc1
@@ -43,7 +43,26 @@ xgo_go
  ghpDoc
   TODO 9f4c35843b757501f8a9592c93ca17560126ab78
   context.md 16f4d1f633eba13126da2d17376b0de7a46124e1
-  index.md 60c8a40f178268bdf0a4b8bc1ad7842819344460
+  css
+   LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
+   css
+    LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
+    ghp.css 1d6ebe8a6cf8f61f4645a793cb087dfae2420f33
+    main.css 018ed80b8a6e6607bc7c08595fa5a7fa56853885
+    normalize.css cba40c7ce3d558d00ff79d7505ac3d348015ec9c
+   ghp.css 1d6ebe8a6cf8f61f4645a793cb087dfae2420f33
+   main.css 018ed80b8a6e6607bc7c08595fa5a7fa56853885
+   normalize.css cba40c7ce3d558d00ff79d7505ac3d348015ec9c
+  img
+   GitHub-Mark-32px.png fabe53eb72f9b6d3d47cd95aff31ffc45c2fdbf8
+   chunk.jpg de2b27e41f1547fc14b13399f5906b4303b49657
+   chunk2.jpg d0593d312dbb8ea837c17b28cb639726e29ea93b
+   cluster-with-clients.jpg c167d04c0c6b5736ef9fe4cdc3fcce1956fdea78
+   simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
+   xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
+   xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
+   xlattice.batik.jpg debe9220564203118dc53df0f5a48d77669fe367
+  index.md 2e30ad0ef0f63cb125bb3147bc335336a396fdd8
   template.md cf1fcd180040d3d3893d922da1e707613ca6c5f9
   xgoMarkdown.md ddd1f457da21ce7693f6ef3feab8b1b6137dec12
   xgoT.md 748cec55de4db29e5ab455b310e43fd8f0659830
@@ -81,7 +100,7 @@ xgo_go
   gocheck_test.go f158e122d76caa26320af9de36be6eb75aa46618
   str_intern.go 8245e9a8420ec47bd149973a34e6c5586ada59ca
   str_intern_test.go 36803cdf2e4a0ad6e79087e0d50f651e40050451
- version.go e21c0ae21af08fadc05a77220d9a1abdd0597ea1
+ version.go 2f32474a7e22db0e436c91631422c32c55ec558c
  xgo
   TODO 95fbec007400a4a7d0a8d150bfc46074279dc174
  xml
@@ -188,4 +207,4 @@ xgo_go
    xmlpull_parserI.go 21d97d59fdbac080646c29c8a28f71bfa4736dd6
 # END CONTENT #
 
-NBT7+pXS/a8HeJnGsh4SLH01GjgzpaTDr6f2x7jvc3QMUutKZ4N4zffwz+Jic3h0ph7LtFWwqkyzY8myl4+MBY4A3r0+sZAerq66noP7EJoq5KSrT4Xf+wDmSPGpwCz9DotmnI2N/Bj0cyNpXnpBSzE1vXXqzqR0FRFfjcIY26rnXYpi+ZEbBZsFenANsM18UJkiGOv+rdit5djUXya6ulA+dkPxsl7c1CBMgjzPqTvAwg5Oo2p3VKhHun85Wq4b+2Ny1eL2/emGTo40SZhWCaQwGYeR5RzoJu3x8SdeoKa0nXy0or6RE//NIQG9IiONW9N12M4jIIeyC1jAJFJGbQ==
+AJnzR4JCYJ9ltbgc4TKhZ96KOzLydZr/VaPUWqcDlBo8C+OPzjPyFKpk3vL+jmalhh0Pt36/IC/HqL1R/JP0UgMtYG+TOH8ZtltGKYohhSwYMJJ0j7kA7hDx9XUIxlMee0r7+QMfh5RxVSIJkjWg8+BIAZW/4KNQ6gL4sTx2mn0jIQGg4fd1xXnv7afHlJi+KFSK8lQZR3WlCEUK25gEw5CvO4cZIjQq24DCpezx0+iqkWR/sIl7xotBsPadLH+pkThDWsdw395F0bvGDSFwWVmoSdA9N9zSdLv37bJXYl82kdxwTSvtcUd/0oDwSXRJ2NnhQusgnXEhEyzQ1ICbFg==
