@@ -6,7 +6,7 @@ then
   
   rm -rf template/tmp/* 
   
-  pySloc -L go  -X mdZZZ -X *.pb.go -v $@
+  pySloc -L go cmd/xgoT/xgoT.go cmd/xgoXPP/xgoXPP.go  -X mdZZZ -X *.pb.go -v $@
 else
   echo "DEV_BASE is not defined"
 fi

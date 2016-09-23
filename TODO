@@ -1,7 +1,10 @@
-xgo/TODO
+xgo_go/TODO
+
+2016-06-23
+    * cmd/xgoT/xgoT.go is empty
 
 2016-06-02
-    * test.all runs tests in excluded directory mdZZZ
+    * test.all runs tests in excluded directory mdZZZ                   * NOW OK
 
 2016/02-26
     * go test ./... fails, tries to parse mdZZZ

@@ -1,4 +1,6 @@
 
+txt:std:LICENSE-MIT.md
+
 dir:clr:template/tmp
 
 dir:local:context
