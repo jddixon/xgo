@@ -1,5 +1,8 @@
 xgo_go/CHANGES
 
+v0.2.3
+    2017-05-20
+        * add projConfig.toml                                       SLOC  8111
 v0.2.2
     2016-09-23
         * standardized licensing                                    SLOC  8105
@@ -58,6 +61,7 @@ v0.1.0
         * skeletal xml/xmlpull parser, xml_pull_parserI.go 
         * xml/om node types complete, also attr,attr_list,cdata,    SLOC   1231
             comment,pi,text,node_test.go
+
 
 
 
