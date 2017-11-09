@@ -1,6 +1,6 @@
 package xgo
 
 const (
-	VERSION      = "0.2.3"
-	VERSION_DATE = "2017-05-20"
+	VERSION      = "0.2.4"
+	VERSION_DATE = "2017-11-09"
 )
